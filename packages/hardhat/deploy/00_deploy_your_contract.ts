@@ -31,6 +31,14 @@ const deployDealOrNot: DeployFunction = async function (hre: HardhatRuntimeEnvir
       log: true,
       autoMine: true,
     });
+  } else if (hre.network.name === "flareTestnet") {
+    console.log("🔄 Deploying to Flare Testnet");
+    vrfContract = await deploy("FlareVRF", {
+      from: deployer,
+      args: [],
+      log: true,
+      autoMine: true,
+    });
   } else {
     // Get the deployed contract to interact with it after deploying.
     vrfContract = await deploy("BaseVRF", {

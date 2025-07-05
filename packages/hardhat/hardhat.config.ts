@@ -170,6 +170,10 @@ const config: HardhatUserConfig = {
       url: "https://testnet.evm.nodes.onflow.org",
       accounts: [deployerPrivateKey],
     },
+    flareTestnet: {
+      url: "https://coston2-api.flare.network/ext/C/rpc",
+      accounts: [deployerPrivateKey],
+    },
   },
   // Configuration for harhdat-verify plugin
   etherscan: {

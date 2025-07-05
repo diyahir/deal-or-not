@@ -10,18 +10,17 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr_1fr] gap-6">
-        <div className="lg:col-span-1">
-          <Cases />
-          <div className="mt-6">
-            <BankersOffer />
-          </div>
-        </div>
+    <div className="grid grid-cols-5 gap-6">
+      <div className="col-span-1">
+        <Amounts />
+      </div>
+      <div className="col-span-3 flex flex-col gap-6">
+        <Cases />
+        <BankersOffer />
+      </div>
 
-        <div className="lg:col-span-1">
-          <Amounts />
-        </div>
+      <div className="col-span-1">
+        <Amounts isLast />
       </div>
     </div>
   );

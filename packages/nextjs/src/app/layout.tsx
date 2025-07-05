@@ -32,7 +32,7 @@ const monadTestnet = defineChain({
 });
 
 const config = getDefaultConfig({
-  appName: 'Deal or no deal',
+  appName: 'Nad or no Nad',
   projectId: '134f0e99f1b28f5fc5482a9ac6126a51',
   chains: [monadTestnet, anvil],
   transports: {

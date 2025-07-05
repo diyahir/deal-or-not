@@ -1,21 +1,18 @@
 'use client';
 
-import logo from '@/assets/logo.png';
+import nad from '@/assets/nad.png';
 import Image from 'next/image';
-import Link from 'next/link';
 import React from 'react';
 import Wallet from '../Wallet/Wallet';
 
 export default function Header() {
   return (
     <>
-      <div className="w-full flex p-4 xl:px-[10vw] items-center bg-[#001427] lg:bg-[#00152C] justify-between">
-        <div className="flex justify-start items-center">
-          <Link href="/" className="cursor-pointer">
-            <Image className="w-auto h-10 sm:h-[75px] cursor-pointer" alt="Magma" src={logo} />
-          </Link>
+      <div className="w-full grid grid-cols-3 p-4 pt-8 items-center bg-[#00152C]">
+        <div className="col-start-2 col-span-1 flex justify-center items-center">
+          <Image className="w-full" alt="Nad or No Nad" src={nad} />
         </div>
-        <div className="hidden lg:flex items-center ml-4 gap-4 justify-end">
+        <div className="col-start-3 col-span-1 flex items-center ml-4 gap-4 justify-end">
           <Wallet />
         </div>
       </div>

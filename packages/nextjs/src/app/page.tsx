@@ -5,8 +5,8 @@ import { Cases } from '@/components/Cases';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Deal or No Deal',
-  description: 'Deal or No Deal Game'
+  title: 'Nad or no Nad',
+  description: 'Nad or no Nad Game'
 };
 
 export default function Page() {

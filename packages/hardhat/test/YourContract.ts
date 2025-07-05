@@ -121,7 +121,7 @@ describe("DealOrNot", function () {
       await expect(dealOrNot.connect(player1).eliminateBoxes(gameId)).to.be.revertedWith("Not your game");
     });
 
-    it("Should prevent eliminating boxes when game is not in Playing state", async function () {
+    it("Should allow eliminating boxes when game is in OfferMade state (rejecting deal)", async function () {
       // Start a new game for this test
       const tx = await dealOrNot.connect(player2).startGame({ value: ENTRY_FEE });
       await tx.wait();
@@ -133,7 +133,34 @@ describe("DealOrNot", function () {
       // Eliminate boxes first to move to OfferMade state
       await dealOrNot.connect(player2).eliminateBoxes(gameId);
 
-      // Try to eliminate boxes again while in OfferMade state
+      let gameState = await dealOrNot.getGameState(gameId);
+      expect(gameState.state).to.equal(2); // GameState.OfferMade
+
+      // Eliminate more boxes while in OfferMade state (this should reject the deal and continue)
+      await dealOrNot.connect(player2).eliminateBoxes(gameId);
+
+      gameState = await dealOrNot.getGameState(gameId);
+      expect(gameState.state).to.equal(2); // GameState.OfferMade (new offer)
+      expect(gameState.currentRound).to.equal(2);
+    });
+
+    it("Should prevent eliminating boxes when game is completed", async function () {
+      // Start a new game for this test
+      const tx = await dealOrNot.connect(player2).startGame({ value: ENTRY_FEE });
+      await tx.wait();
+
+      // Get the current game ID
+      const totalGames = await dealOrNot.getTotalGames();
+      const gameId = totalGames - 1n;
+
+      // Eliminate boxes and accept the deal to complete the game
+      await dealOrNot.connect(player2).eliminateBoxes(gameId);
+      await dealOrNot.connect(player2).acceptDeal(gameId);
+
+      const gameState = await dealOrNot.getGameState(gameId);
+      expect(gameState.state).to.equal(3); // GameState.DealTaken
+
+      // Try to eliminate boxes when game is completed
       await expect(dealOrNot.connect(player2).eliminateBoxes(gameId)).to.be.revertedWith("Invalid game state");
     });
 
@@ -151,13 +178,10 @@ describe("DealOrNot", function () {
       let eliminatedBoxes = await dealOrNot.getEliminatedBoxes(gameId);
       expect(eliminatedBoxes.length).to.equal(6);
 
-      // Reject deal and continue to round 2
-      await dealOrNot.connect(player2).rejectDeal(gameId);
-
-      // Round 2: Should eliminate 5 more boxes (total 11)
+      // Eliminate more boxes (implicitly rejects deal and continues to round 2)
       await dealOrNot.connect(player2).eliminateBoxes(gameId);
       eliminatedBoxes = await dealOrNot.getEliminatedBoxes(gameId);
-      expect(eliminatedBoxes.length).to.equal(11);
+      expect(eliminatedBoxes.length).to.equal(11); // 6 + 5
     });
 
     it("Should not eliminate player's box or already eliminated boxes", async function () {
@@ -212,7 +236,7 @@ describe("DealOrNot", function () {
       expect(playerBalanceAfter).to.be.greaterThan(playerBalanceBefore);
     });
 
-    it("Should allow rejecting a deal and continue to next round", async function () {
+    it("Should allow rejecting a deal by eliminating more boxes", async function () {
       // Start a new game and eliminate first round
       const tx = await dealOrNot.connect(player1).startGame({ value: ENTRY_FEE });
       await tx.wait();
@@ -224,15 +248,21 @@ describe("DealOrNot", function () {
       const eliminateTx = await dealOrNot.connect(player1).eliminateBoxes(gameId);
       await eliminateTx.wait();
 
-      const rejectTx = await dealOrNot.connect(player1).rejectDeal(gameId);
-      await rejectTx.wait();
+      // Game should be in OfferMade state after first elimination
+      let gameState = await dealOrNot.getGameState(gameId);
+      expect(gameState.state).to.equal(2); // GameState.OfferMade
 
-      const gameState = await dealOrNot.getGameState(gameId);
-      expect(gameState.state).to.equal(1); // GameState.Playing
+      // Eliminate more boxes (implicitly rejects the deal)
+      const eliminateMoreTx = await dealOrNot.connect(player1).eliminateBoxes(gameId);
+      await eliminateMoreTx.wait();
+
+      gameState = await dealOrNot.getGameState(gameId);
+      expect(gameState.state).to.equal(2); // GameState.OfferMade (new offer)
       expect(gameState.isActive).to.equal(true);
+      expect(gameState.currentRound).to.equal(2);
     });
 
-    it("Should only allow the game owner to accept/reject deals", async function () {
+    it("Should only allow the game owner to accept deals", async function () {
       // Start a new game and eliminate first round
       const tx = await dealOrNot.connect(player1).startGame({ value: ENTRY_FEE });
       await tx.wait();
@@ -245,8 +275,6 @@ describe("DealOrNot", function () {
       await eliminateTx.wait();
 
       await expect(dealOrNot.connect(player2).acceptDeal(gameId)).to.be.revertedWith("Not your game");
-
-      await expect(dealOrNot.connect(player2).rejectDeal(gameId)).to.be.revertedWith("Not your game");
     });
   });
 
@@ -376,15 +404,16 @@ describe("DealOrNot", function () {
       const totalGames = await dealOrNot.getTotalGames();
       const gameId = totalGames - 1n;
 
-      // Play through all rounds by rejecting deals
+      // Play through all rounds by eliminating boxes (implicitly rejecting deals)
       const roundEliminations = [6, 5, 4, 3, 2, 1]; // From contract
 
       for (let i = 0; i < roundEliminations.length; i++) {
         await dealOrNot.connect(player1).eliminateBoxes(gameId);
 
-        // If not the final round, reject the deal
+        // If not the final round, eliminate more boxes (reject the deal)
         if (i < roundEliminations.length - 1) {
-          await dealOrNot.connect(player1).rejectDeal(gameId);
+          const gameState = await dealOrNot.getGameState(gameId);
+          expect(gameState.state).to.equal(2); // GameState.OfferMade
         }
       }
 
@@ -393,8 +422,8 @@ describe("DealOrNot", function () {
       expect(gameState.state).to.equal(2); // GameState.OfferMade
       expect(gameState.currentRound).to.equal(6);
 
-      // Reject the final deal to complete the game
-      await dealOrNot.connect(player1).rejectDeal(gameId);
+      // Try to eliminate more boxes (reject the final deal) to complete the game
+      await dealOrNot.connect(player1).eliminateBoxes(gameId);
 
       const finalGameState = await dealOrNot.getGameState(gameId);
       expect(finalGameState.state).to.equal(4); // GameState.GameCompleted

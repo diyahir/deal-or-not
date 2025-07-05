@@ -1,12 +1,16 @@
 'use client';
 
+import VaultClose from '@/assets/vault-close.png';
 import { useAppContext } from '@/contexts/AppContext';
 import { useGameContract } from '@/hooks/useGameContract';
 import DealOrNotABI from '@/shared/abi/DealOrNot.json';
+import Image from 'next/image';
+import { useState } from 'react';
 import { usePublicClient, useWriteContract } from 'wagmi';
+import { LoadingSmall } from './Loading';
 
-// TODO: styles when removing and loadings
 export function Case({ caseNumber, gameId }: { caseNumber: number; gameId: bigint }) {
+  const [loading, setLoading] = useState(false);
   const { game, setGame } = useAppContext();
   const { writeContractAsync } = useWriteContract();
   const client = usePublicClient();
@@ -21,6 +25,7 @@ export function Case({ caseNumber, gameId }: { caseNumber: number; gameId: bigin
       eliminations === 18 ||
       eliminations > 19
     ) {
+      setLoading(true);
       const hash = await writeContractAsync({
         abi: DealOrNotABI,
         address: gameContract,
@@ -48,14 +53,15 @@ export function Case({ caseNumber, gameId }: { caseNumber: number; gameId: bigin
       eliminations: game.eliminations + 1,
       selectedBoxes: game.selectedBoxes.concat([caseNumber])
     });
+    setLoading(false);
   };
 
   return (
-    <button
-      onClick={eliminateBoxes}
-      className="relative w-16 h-16 rounded-lg shadow-md transition-all duration-200 font-bold text-black border-2"
-    >
-      {caseNumber}
-    </button>
+    <div onClick={eliminateBoxes} className="flex flex-col items-center justify-end cursor-pointer">
+      <Image alt="box" src={VaultClose} width="100" height="100" />
+      <span className="-mt-4 rounded-full border-[#f86e02] border bg-[#03213f] px-3 text-sm h-[22px] flex items-center">
+        {loading ? <LoadingSmall /> : caseNumber}
+      </span>
+    </div>
   );
 }

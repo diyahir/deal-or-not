@@ -15,7 +15,13 @@ describe("DealOrNot", function () {
   before(async () => {
     [owner, player1, player2] = await ethers.getSigners();
     const dealOrNotFactory = await ethers.getContractFactory("DealOrNot");
-    dealOrNot = (await dealOrNotFactory.deploy(owner.address)) as DealOrNot;
+
+    const vrfContractFactory = await ethers.getContractFactory("BaseVRF");
+    const vrfContract = await vrfContractFactory.deploy();
+    await vrfContract.waitForDeployment(); // TODO: get from deployment
+    const vrfContractAddress = await vrfContract.getAddress();
+
+    dealOrNot = (await dealOrNotFactory.deploy(owner.address, vrfContractAddress)) as DealOrNot;
     await dealOrNot.waitForDeployment();
 
     // Deposit house funds for testing
@@ -365,7 +371,12 @@ describe("DealOrNot", function () {
     it("Should handle insufficient house funds", async function () {
       // Deploy a new contract with minimal house funds
       const newContract = await ethers.getContractFactory("DealOrNot");
-      const testContract = await newContract.deploy(owner.address);
+      const vrfContractFactory = await ethers.getContractFactory("BaseVRF");
+      const vrfContract = await vrfContractFactory.deploy();
+      await vrfContract.waitForDeployment(); // TODO: get from deployment
+      const vrfContractAddress = await vrfContract.getAddress();
+
+      const testContract = await newContract.deploy(owner.address, vrfContractAddress); // TODO: get from deployment
       await testContract.waitForDeployment();
 
       // Deposit minimal house funds

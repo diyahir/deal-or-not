@@ -50,11 +50,15 @@
     "verify": "yarn hardhat:verify"
   },
   "devDependencies": {
+    "@oasisprotocol/sapphire-hardhat": "^2.22.2",
     "husky": "~9.1.6",
     "lint-staged": "~13.2.2"
   },
   "packageManager": "yarn@3.2.3",
   "engines": {
     "node": ">=20.18.3"
+  },
+  "dependencies": {
+    "@pythnetwork/entropy-sdk-solidity": "^2.0.0"
   }
 }

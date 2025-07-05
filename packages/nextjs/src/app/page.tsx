@@ -8,8 +8,6 @@ export const metadata: Metadata = {
   description: 'Deal or No Deal Game'
 };
 
-// TODO: eliminate boxes, then call get game info and map data
-// TODO: every 3 and 4 get offer
 export default function Page() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-200 via-yellow-300 to-yellow-400 p-4">

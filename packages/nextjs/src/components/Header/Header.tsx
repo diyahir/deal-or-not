@@ -7,7 +7,7 @@ import Wallet from '../Wallet/Wallet';
 
 export default function Header() {
   return (
-    <div className="w-full grid grid-cols-3 px-4 py-8 items-center">
+    <div className="w-full grid grid-cols-3 px-4 py-6 items-center">
       <div className="col-start-2 col-span-1 flex justify-center items-center">
         <Image className="w-full" alt="Nad or No Nad" src={nad} />
       </div>

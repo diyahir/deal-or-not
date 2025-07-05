@@ -27,7 +27,10 @@ export function Cases() {
   });
 
   return (
-    <div className="border border-[#f86e02] rounded-xl text-white bg-[#01152C] p-8">
+    <div className="border border-[#f86e02] rounded-xl text-white bg-[#01152C] p-6">
+      <h1 className="text-4xl font-bold text-center">
+        Pick <span className="text-[#f86e02]">3</span>&nbsp;more boxes
+      </h1>
       {caseRows.map((row, rowIndex) => (
         <div key={rowIndex} className="flex justify-center gap-3">
           {row.map((caseNumber) =>
@@ -39,12 +42,7 @@ export function Cases() {
                 </span>
               </div>
             ) : (
-              <Case
-                key={caseNumber}
-                caseNumber={caseNumber}
-                // TODO: last -> somehow set how many steps are left on each
-                gameId={gameId as bigint}
-              />
+              <Case key={caseNumber} caseNumber={caseNumber} gameId={gameId as bigint} />
             )
           )}
         </div>

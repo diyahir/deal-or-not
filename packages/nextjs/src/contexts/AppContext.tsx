@@ -9,8 +9,6 @@ type Game = {
 type AppContext = {
   game: Game;
   setGame: Dispatch<SetStateAction<Game>>;
-  skipOne: boolean;
-  setSkipOne: Dispatch<SetStateAction<boolean>>;
 };
 
 const AppContext = createContext<AppContext>({
@@ -47,10 +45,7 @@ const AppContext = createContext<AppContext>({
     selectedBoxes: []
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  setGame: (game) => {},
-  skipOne: false,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  setSkipOne: (skipOne) => {}
+  setGame: (game) => {}
 });
 
 export function useAppContext() {
@@ -90,9 +85,8 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
     eliminations: 0,
     selectedBoxes: []
   });
-  const [skipOne, setSkipOne] = useState(false);
 
-  return <AppContext.Provider value={{ game, setGame, skipOne, setSkipOne }}>{children}</AppContext.Provider>;
+  return <AppContext.Provider value={{ game, setGame }}>{children}</AppContext.Provider>;
 };
 
 export default AppProvider;

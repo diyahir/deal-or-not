@@ -1,8 +1,10 @@
 'use client';
 
+import VaultClose from '@/assets/vault-close.png';
 import { useAppContext } from '@/contexts/AppContext';
 import { useGameContract } from '@/hooks/useGameContract';
 import DealOrNotABI from '@/shared/abi/DealOrNot.json';
+import Image from 'next/image';
 import { usePublicClient, useWriteContract } from 'wagmi';
 
 // TODO: styles when removing and loadings
@@ -50,5 +52,10 @@ export function Case({ caseNumber, gameId }: { caseNumber: number; gameId: bigin
     });
   };
 
-  return <button onClick={eliminateBoxes}>{caseNumber}</button>;
+  return (
+    <div onClick={eliminateBoxes} className="flex flex-col items-center justify-end cursor-pointer">
+      <Image alt="box" src={VaultClose} width="100" height="100" />
+      <span className="-mt-4 rounded-full border-[#f86e02] border bg-[#03213f] px-3 text-sm">{caseNumber}</span>
+    </div>
+  );
 }

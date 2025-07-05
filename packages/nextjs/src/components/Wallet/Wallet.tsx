@@ -34,7 +34,7 @@ export default function Wallet() {
               <Popover>
                 <PopoverTrigger
                   className={cn(
-                    'text-xs sm:text-base bg-[#F86E00] text-white py-1 px-2 sm:py-2 sm:px-4',
+                    'text-xs sm:text-base bg-[#f86e02] text-white py-1 px-2 sm:py-2 sm:px-4',
                     'rounded-full flex justify-between items-center gap-2'
                   )}
                 >
@@ -87,7 +87,7 @@ export default function Wallet() {
           return (
             <button
               onClick={openConnectModal}
-              className="text-xs sm:text-base bg-[#F86E00] text-white py-1 px-2 sm:py-2 sm:px-4 rounded-full"
+              className="text-xs sm:text-base bg-[#f86e02] text-white py-1 px-2 sm:py-2 sm:px-4 rounded-full"
             >
               Connect Wallet
             </button>

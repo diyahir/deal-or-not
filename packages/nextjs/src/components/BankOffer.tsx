@@ -66,13 +66,13 @@ export function BankOffer() {
   };
 
   return (
-    <div className="border-2 mx-auto border-[#F86E00] rounded-[32px] text-white bg-[#03213f] p-4 flex flex-col justify-center gap-6 items-center w-[625px] h-[200px]">
+    <div className="border mx-auto border-[#f86e02] rounded-xl text-white bg-[#01152C] p-4 flex flex-col justify-center gap-6 items-center w-[625px] h-[200px]">
       {(gameState as { isActive?: boolean })?.isActive ? (
         <>
           <div className="flex items-center w-fit mx-auto justify-between bg-[#1b4061] rounded-full">
-            <span className="text-2xl font-semibold bg-[#F86E00] rounded-full p-4">BANK OFFER:</span>
+            <span className="text-2xl font-semibold bg-[#f86e02] rounded-full p-4">BANK OFFER:</span>
             <span className="text-[#F86E00] text-2xl font-semibold pl-12 pr-4">
-              {formatEther((offer as bigint) || 0n)} gMON
+              {Number(formatEther((offer as bigint) || 0n)).toFixed(5)} gMON
             </span>
           </div>
 
@@ -80,7 +80,7 @@ export function BankOffer() {
             <button onClick={acceptDeal} className="bg-[#3fa43e] text-2xl font-semibold rounded-lg py-4 px-8">
               ACCEPT
             </button>
-            <span className="bg-[#F86E00] text-[#1b4061] font-semibold text-xl px-1 h-fit">OR</span>
+            <span className="bg-[#f86e02] text-[#1b4061] font-semibold text-xl px-1 h-fit">OR</span>
             <button onClick={declineDeal} className="bg-[#de5151] text-2xl font-semibold rounded-lg py-4 px-8">
               DECLINE
             </button>

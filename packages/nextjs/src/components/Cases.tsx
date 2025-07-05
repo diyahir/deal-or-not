@@ -1,9 +1,10 @@
 'use client';
 
+import VaultOpen from '@/assets/vault-open.png';
 import { useAppContext } from '@/contexts/AppContext';
 import { useGameContract } from '@/hooks/useGameContract';
 import DealOrNotABI from '@/shared/abi/DealOrNot.json';
-import React, { useState } from 'react';
+import Image from 'next/image';
 import { useAccount, useReadContract, useWriteContract } from 'wagmi';
 import { Case } from './Case';
 
@@ -40,11 +41,18 @@ export function Cases() {
   };
 
   return (
-    <div className="border-2 border-[#F86E00] rounded-[32px] text-white bg-[#03213f] p-8">
+    <div className="border border-[#f86e02] rounded-xl text-white bg-[#01152C] p-8">
       {caseRows.map((row, rowIndex) => (
         <div key={rowIndex} className="flex justify-center gap-3">
           {row.map((caseNumber) =>
-            game.selectedBoxes.find((selected) => selected === caseNumber) ? null : (
+            game.selectedBoxes.find((selected) => selected === caseNumber) ? (
+              <div className="flex flex-col items-center justify-end cursor-not-allowed">
+                <Image alt="box" src={VaultOpen} width="100" height="100" />
+                <span className="-mt-4 rounded-full border-[#f86e02] border bg-[#03213f] px-3 text-sm">
+                  {caseNumber}
+                </span>
+              </div>
+            ) : (
               <Case
                 key={caseNumber}
                 caseNumber={caseNumber}

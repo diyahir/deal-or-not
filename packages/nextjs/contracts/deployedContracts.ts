@@ -6,8 +6,8 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
   31337: {
-    DealOrNoDeal: {
-      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+    DealOrNot: {
+      address: "0x610178dA211FEF7D417bC0e6FeD39F05609AD788",
       abi: [
         {
           inputs: [
@@ -197,31 +197,6 @@ const deployedContracts = {
           inputs: [
             {
               indexed: true,
-              internalType: "uint256",
-              name: "gameId",
-              type: "uint256",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "offer",
-              type: "uint256",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "round",
-              type: "uint256",
-            },
-          ],
-          name: "OfferMade",
-          type: "event",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
               internalType: "address",
               name: "previousOwner",
               type: "address",
@@ -315,11 +290,6 @@ const deployedContracts = {
               name: "gameId",
               type: "uint256",
             },
-            {
-              internalType: "uint256[]",
-              name: "boxIndexes",
-              type: "uint256[]",
-            },
           ],
           name: "eliminateBoxes",
           outputs: [],
@@ -362,19 +332,9 @@ const deployedContracts = {
               type: "uint256",
             },
             {
-              internalType: "uint256",
-              name: "lastOffer",
-              type: "uint256",
-            },
-            {
-              internalType: "enum DealOrNoDeal.GameState",
+              internalType: "enum DealOrNot.GameState",
               name: "state",
               type: "uint8",
-            },
-            {
-              internalType: "uint256",
-              name: "createdAt",
-              type: "uint256",
             },
             {
               internalType: "bool",
@@ -480,29 +440,14 @@ const deployedContracts = {
                   type: "uint256",
                 },
                 {
-                  internalType: "uint256",
-                  name: "lastOffer",
-                  type: "uint256",
-                },
-                {
-                  internalType: "uint256[]",
-                  name: "remainingBoxes",
-                  type: "uint256[]",
-                },
-                {
                   internalType: "uint256[]",
                   name: "eliminatedBoxes",
                   type: "uint256[]",
                 },
                 {
-                  internalType: "enum DealOrNoDeal.GameState",
+                  internalType: "enum DealOrNot.GameState",
                   name: "state",
                   type: "uint8",
-                },
-                {
-                  internalType: "uint256",
-                  name: "createdAt",
-                  type: "uint256",
                 },
                 {
                   internalType: "bool",
@@ -510,7 +455,7 @@ const deployedContracts = {
                   type: "bool",
                 },
               ],
-              internalType: "struct DealOrNoDeal.Game",
+              internalType: "struct DealOrNot.Game",
               name: "",
               type: "tuple",
             },
@@ -754,7 +699,11 @@ const deployedContracts = {
           type: "receive",
         },
       ],
-      inheritedFunctions: {},
+      inheritedFunctions: {
+        owner: "@openzeppelin/contracts/access/Ownable.sol",
+        renounceOwnership: "@openzeppelin/contracts/access/Ownable.sol",
+        transferOwnership: "@openzeppelin/contracts/access/Ownable.sol",
+      },
     },
   },
 } as const;

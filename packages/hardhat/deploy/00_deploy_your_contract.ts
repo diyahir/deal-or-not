@@ -3,12 +3,12 @@ import { DeployFunction } from "hardhat-deploy/types";
 import { Contract } from "ethers";
 
 /**
- * Deploys a contract named "DealOrNoDeal" using the deployer account and
+ * Deploys a contract named "DealOrNot" using the deployer account and
  * constructor arguments set to the deployer address
  *
  * @param hre HardhatRuntimeEnvironment object.
  */
-const deployDealOrNoDeal: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+const deployDealOrNot: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   /*
     On localhost, the deployer account is the one that comes with Hardhat, which is already funded.
 
@@ -22,7 +22,7 @@ const deployDealOrNoDeal: DeployFunction = async function (hre: HardhatRuntimeEn
   const { deployer } = await hre.getNamedAccounts();
   const { deploy } = hre.deployments;
 
-  await deploy("DealOrNoDeal", {
+  await deploy("DealOrNot", {
     from: deployer,
     // Contract constructor arguments
     args: [deployer],
@@ -33,23 +33,23 @@ const deployDealOrNoDeal: DeployFunction = async function (hre: HardhatRuntimeEn
   });
 
   // Get the deployed contract to interact with it after deploying.
-  const dealOrNoDealContract = await hre.ethers.getContract<Contract>("DealOrNoDeal", deployer);
-  console.log("🎯 DealOrNoDeal contract deployed!");
-  console.log("📊 Total boxes:", await dealOrNoDealContract.TOTAL_BOXES());
-  console.log("💰 Entry fee:", hre.ethers.formatEther(await dealOrNoDealContract.ENTRY_FEE()), "ETH");
-  console.log("🏦 House funds:", hre.ethers.formatEther(await dealOrNoDealContract.getHouseFunds()), "ETH");
+  const dealOrNotContract = await hre.ethers.getContract<Contract>("DealOrNot", deployer);
+  console.log("🎯 DealOrNot contract deployed!");
+  console.log("📊 Total boxes:", await dealOrNotContract.TOTAL_BOXES());
+  console.log("💰 Entry fee:", hre.ethers.formatEther(await dealOrNotContract.ENTRY_FEE()), "ETH");
+  console.log("🏦 House funds:", hre.ethers.formatEther(await dealOrNotContract.getHouseFunds()), "ETH");
 
   // Optional: Deposit some initial house funds for testing
   if (hre.network.name === "localhost" || hre.network.name === "hardhat") {
     console.log("🏦 Depositing initial house funds for testing...");
     const depositAmount = hre.ethers.parseEther("100"); // 100 ETH for testing
-    await dealOrNoDealContract.depositHouseFunds({ value: depositAmount });
+    await dealOrNotContract.depositHouseFunds({ value: depositAmount });
     console.log("✅ Deposited", hre.ethers.formatEther(depositAmount), "ETH to house funds");
   }
 };
 
-export default deployDealOrNoDeal;
+export default deployDealOrNot;
 
 // Tags are useful if you have multiple deploy files and only want to run one of them.
-// e.g. yarn deploy --tags DealOrNoDeal
-deployDealOrNoDeal.tags = ["DealOrNoDeal"];
+// e.g. yarn deploy --tags DealOrNot
+deployDealOrNot.tags = ["DealOrNot"];

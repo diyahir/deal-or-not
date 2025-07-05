@@ -7,7 +7,6 @@ import DealOrNotABI from '@/shared/abi/DealOrNot.json';
 import Image from 'next/image';
 import { usePublicClient, useWriteContract } from 'wagmi';
 
-// TODO: styles when removing and loadings
 export function Case({ caseNumber, gameId }: { caseNumber: number; gameId: bigint }) {
   const { game, setGame } = useAppContext();
   const { writeContractAsync } = useWriteContract();

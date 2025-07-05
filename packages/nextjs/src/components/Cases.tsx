@@ -46,7 +46,7 @@ export function Cases() {
         <div key={rowIndex} className="flex justify-center gap-3">
           {row.map((caseNumber) =>
             game.selectedBoxes.find((selected) => selected === caseNumber) ? (
-              <div className="flex flex-col items-center justify-end cursor-not-allowed">
+              <div key={caseNumber} className="flex flex-col items-center justify-end cursor-not-allowed">
                 <Image alt="box" src={VaultOpen} width="100" height="100" />
                 <span className="-mt-4 rounded-full border-[#f86e02] border bg-[#03213f] px-3 text-sm">
                   {caseNumber}

@@ -8,11 +8,14 @@ import DealOrNotABI from '@/shared/abi/DealOrNot.json';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useState } from 'react';
 import { formatEther } from 'viem';
-import { useAccount, useReadContract, useWriteContract } from 'wagmi';
+import { useAccount, usePublicClient, useReadContract, useWriteContract } from 'wagmi';
 
 export function BankOffer() {
+  const client = usePublicClient();
   const { address, chain } = useAccount();
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingAccept, setIsLoadingAccept] = useState(false);
+  const [isLoadingReject, setIsLoadingReject] = useState(false);
   const gameContract = useGameContract();
   const { data: gameId } = useReadContract({
     abi: DealOrNotABI,
@@ -41,12 +44,17 @@ export function BankOffer() {
   const { writeContractAsync } = useWriteContract();
 
   const acceptDeal = async () => {
-    await writeContractAsync({
+    setIsLoadingAccept(true);
+    const hash = await writeContractAsync({
       abi: DealOrNotABI,
       address: gameContract,
       functionName: 'acceptDeal',
       args: [gameId]
     });
+    await client?.waitForTransactionReceipt({
+      hash
+    });
+    setIsLoadingAccept(false);
   };
 
   const declineDeal = async () => {
@@ -56,13 +64,18 @@ export function BankOffer() {
   };
 
   const startGame = async () => {
-    await writeContractAsync({
+    setIsLoading(true);
+    const hash = await writeContractAsync({
       abi: DealOrNotABI,
       address: gameContract,
       functionName: 'startGame',
       // 12 ether
       value: 12000000000000000000n
     });
+    await client?.waitForTransactionReceipt({
+      hash
+    });
+    setIsLoading(false);
   };
 
   return (
@@ -77,12 +90,18 @@ export function BankOffer() {
           </div>
 
           <div className="flex items-center justify-center gap-2 bg-[#1b4061] rounded-lg p-1.5 text-white">
-            <button onClick={acceptDeal} className="bg-[#3fa43e] text-2xl font-semibold rounded-lg py-4 px-8">
-              ACCEPT
+            <button
+              onClick={acceptDeal}
+              className="bg-[#3fa43e] text-2xl font-semibold rounded-lg py-4 px-8 min-w-[155px] flex justify-center"
+            >
+              {isLoadingAccept ? <Loading /> : 'ACCEPT'}
             </button>
             <span className="bg-[#f86e02] text-[#1b4061] font-semibold text-xl px-1 h-fit">OR</span>
-            <button onClick={declineDeal} className="bg-[#de5151] text-2xl font-semibold rounded-lg py-4 px-8">
-              DECLINE
+            <button
+              onClick={declineDeal}
+              className="bg-[#de5151] text-2xl font-semibold rounded-lg py-4 px-8 min-w-[160px] flex justify-center"
+            >
+              {isLoadingReject ? <Loading /> : 'DECLINE'}
             </button>
           </div>
         </>

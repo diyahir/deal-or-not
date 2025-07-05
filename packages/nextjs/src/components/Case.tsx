@@ -9,13 +9,17 @@ import { useState } from 'react';
 import { usePublicClient, useWriteContract } from 'wagmi';
 import { LoadingSmall } from './Loading';
 
-export function Case({ caseNumber, gameId }: { caseNumber: number; gameId: bigint }) {
+export function Case({ caseNumber, gameId }: { caseNumber: number; gameId: bigint | undefined }) {
   const [loading, setLoading] = useState(false);
-  const { game, setGame } = useAppContext();
+  const { game, setGame, skipOne, setSkipOne } = useAppContext();
   const { writeContractAsync } = useWriteContract();
   const client = usePublicClient();
   const gameContract = useGameContract();
+
   const eliminateBoxes = async () => {
+    if (typeof gameId !== 'bigint') {
+      return;
+    }
     const { eliminations } = game;
     if (
       eliminations === 0 ||
@@ -25,16 +29,20 @@ export function Case({ caseNumber, gameId }: { caseNumber: number; gameId: bigin
       eliminations === 18 ||
       eliminations > 19
     ) {
-      setLoading(true);
-      const hash = await writeContractAsync({
-        abi: DealOrNotABI,
-        address: gameContract,
-        functionName: 'eliminateBoxes',
-        args: [gameId]
-      });
-      await client?.waitForTransactionReceipt({
-        hash
-      });
+      if (skipOne) {
+        setSkipOne(false);
+      } else {
+        setLoading(true);
+        const hash = await writeContractAsync({
+          abi: DealOrNotABI,
+          address: gameContract,
+          functionName: 'eliminateBoxes',
+          args: [gameId]
+        });
+        await client?.waitForTransactionReceipt({
+          hash
+        });
+      }
     }
     const eliminatedBoxesIndexes = await client?.readContract({
       address: gameContract,

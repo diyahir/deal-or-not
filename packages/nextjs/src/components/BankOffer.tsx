@@ -2,6 +2,7 @@
 
 import { Loading } from '@/components/Loading';
 import SwitchNetwork from '@/components/Wallet/SwitchNetwork';
+import { useAppContext } from '@/contexts/AppContext';
 import { useGameContract } from '@/hooks/useGameContract';
 import { cn } from '@/lib/utils';
 import DealOrNotABI from '@/shared/abi/DealOrNot.json';
@@ -12,6 +13,7 @@ import { useAccount, usePublicClient, useReadContract, useWriteContract } from '
 
 export function BankOffer() {
   const client = usePublicClient();
+  const { setSkipOne } = useAppContext();
   const { address, chain } = useAccount();
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingAccept, setIsLoadingAccept] = useState(false);
@@ -58,9 +60,19 @@ export function BankOffer() {
   };
 
   const declineDeal = async () => {
-    // TODO: Implement decline logic
     // TODO: implement reset context
-    console.log('Declining deal...');
+    setIsLoadingReject(true);
+    const hash = await writeContractAsync({
+      abi: DealOrNotABI,
+      address: gameContract,
+      functionName: 'eliminateBoxes',
+      args: [gameId]
+    });
+    await client?.waitForTransactionReceipt({
+      hash
+    });
+    setSkipOne(true);
+    setIsLoadingReject(false);
   };
 
   const startGame = async () => {

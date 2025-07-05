@@ -5,7 +5,7 @@ import { useAppContext } from '@/contexts/AppContext';
 import { useGameContract } from '@/hooks/useGameContract';
 import DealOrNotABI from '@/shared/abi/DealOrNot.json';
 import Image from 'next/image';
-import { useAccount, useReadContract, useWriteContract } from 'wagmi';
+import { useAccount, useReadContract } from 'wagmi';
 import { Case } from './Case';
 
 const caseRows = [
@@ -16,29 +16,15 @@ const caseRows = [
 ];
 
 export function Cases() {
-  const { address, chain } = useAccount();
+  const { address } = useAccount();
   const { game } = useAppContext();
-  const { data: writeHash, writeContractAsync } = useWriteContract();
   const gameContract = useGameContract();
   const { data: gameId } = useReadContract({
     abi: DealOrNotABI,
     address: gameContract,
     functionName: 'gameIds',
-    args: [address],
-    query: {
-      enabled: !!writeHash
-    }
+    args: [address]
   });
-
-  const startGame = async () => {
-    await writeContractAsync({
-      abi: DealOrNotABI,
-      address: gameContract,
-      functionName: 'startGame',
-      // 12 ether
-      value: 12000000000000000000n
-    });
-  };
 
   return (
     <div className="border border-[#f86e02] rounded-xl text-white bg-[#01152C] p-8">
@@ -56,7 +42,6 @@ export function Cases() {
               <Case
                 key={caseNumber}
                 caseNumber={caseNumber}
-                // TODO: last -> gameid can be undefined, also wait for tx but display ui as fallback
                 // TODO: last -> somehow set how many steps are left on each
                 gameId={gameId as bigint}
               />

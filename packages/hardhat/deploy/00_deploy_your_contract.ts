@@ -39,6 +39,14 @@ const deployDealOrNot: DeployFunction = async function (hre: HardhatRuntimeEnvir
       log: true,
       autoMine: true,
     });
+  } else if (hre.network.name === "oasisTestnet") {
+    console.log("🔄 Deploying to Oasis Testnet");
+    vrfContract = await deploy("OasisVRF", {
+      from: deployer,
+      args: [],
+      log: true,
+      autoMine: true,
+    });
   } else {
     // Get the deployed contract to interact with it after deploying.
     vrfContract = await deploy("BaseVRF", {

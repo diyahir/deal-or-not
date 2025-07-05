@@ -10,15 +10,15 @@ describe("SecureRandomConsumer Contract", function () {
     it("Should fail to deploy on local network (Flare ContractRegistry not available)", async function () {
       // On local Hardhat network, the Flare ContractRegistry doesn't exist
       // so the contract deployment should fail during construction
-      const SecureRandomConsumerFactory = await ethers.getContractFactory("SecureRandomConsumer");
+      const FlareVRFFactory = await ethers.getContractFactory("FlareVRF");
 
-      await expect(SecureRandomConsumerFactory.deploy()).to.be.reverted;
+      await expect(FlareVRFFactory.deploy()).to.be.reverted;
     });
 
     it("Should be deployable contract factory", async function () {
       // Verify the contract factory exists and is valid
-      const SecureRandomConsumerFactory = await ethers.getContractFactory("SecureRandomConsumer");
-      expect(SecureRandomConsumerFactory).to.be.an("object");
+      const FlareVRFFactory = await ethers.getContractFactory("FlareVRF");
+      expect(FlareVRFFactory).to.be.an("object");
     });
   });
 
@@ -29,8 +29,8 @@ describe("SecureRandomConsumer Contract", function () {
 
       // On local Hardhat network, deployment will fail
       // On Flare network, the contract would deploy successfully
-      const SecureRandomConsumerFactory = await ethers.getContractFactory("SecureRandomConsumer");
-      await expect(SecureRandomConsumerFactory.deploy()).to.be.reverted;
+      const FlareVRFFactory = await ethers.getContractFactory("FlareVRF");
+      await expect(FlareVRFFactory.deploy()).to.be.reverted;
     });
   });
 });

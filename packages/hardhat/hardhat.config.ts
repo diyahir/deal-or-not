@@ -174,10 +174,13 @@ const config: HardhatUserConfig = {
       url: "https://coston2-api.flare.network/ext/C/rpc",
       accounts: [deployerPrivateKey],
     },
+    oasisTestnet: {
+      url: "https://testnet.sapphire.oasis.io",
+      accounts: [deployerPrivateKey],
+    },
     monadTestnet: {
       url: "https://rpc-testnet.monadinfra.com",
       accounts: [deployerPrivateKey],
-      chainId: 10143,
     },
   },
   // Configuration for harhdat-verify plugin

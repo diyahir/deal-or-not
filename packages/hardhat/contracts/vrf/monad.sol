@@ -8,19 +8,59 @@ import { IEntropy } from "@pythnetwork/entropy-sdk-solidity/IEntropy.sol";
 contract MonadVRF is IEntropyConsumer {
     IEntropy public entropy;
     address public entropyProvider;
+    address public owner;
 
     // Storage for random numbers
     mapping(uint64 => bytes32) public randomNumbers;
 
-    constructor() {
-        entropy = IEntropy(entropy.getDefaultProvider());
-        entropyProvider = entropy.getDefaultProvider();
+    // Events
+    event EntropyProviderSet(address indexed provider);
+    event EntropyContractSet(address indexed entropy);
+    event RandomNumberRequested(uint64 indexed sequenceNumber, bytes32 userRandomNumber);
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only owner can call this function");
+        _;
     }
 
-    function requestRandomNumber(bytes32 userRandomNumber) external payable {
+    constructor(address _entropyAddress) {
+        require(_entropyAddress != address(0), "Entropy address cannot be zero");
+        owner = msg.sender;
+        entropy = IEntropy(_entropyAddress);
+
+        // For testing purposes, we'll set entropyProvider to zero initially
+        // It can be set later using setEntropyProvider function
+        entropyProvider = address(0);
+
+        emit EntropyContractSet(_entropyAddress);
+    }
+
+    // Function to set entropy provider (useful for testing and configuration)
+    function setEntropyProvider(address _entropyProvider) external onlyOwner {
+        entropyProvider = _entropyProvider;
+        emit EntropyProviderSet(_entropyProvider);
+    }
+
+    // Function to initialize entropy provider from entropy contract
+    function initializeEntropyProvider() external onlyOwner {
+        require(address(entropy) != address(0), "Entropy contract not set");
+        entropyProvider = entropy.getDefaultProvider();
+        emit EntropyProviderSet(entropyProvider);
+    }
+
+    function requestRandomNumber(bytes32 userRandomNumber) external payable returns (uint64) {
+        require(entropyProvider != address(0), "Entropy provider not set");
+        require(address(entropy) != address(0), "Entropy contract not set");
+
         uint256 fee = entropy.getFee(entropyProvider);
+        require(msg.value >= fee, "Insufficient fee provided");
 
         uint64 sequenceNumber = entropy.requestWithCallback{ value: fee }(entropyProvider, userRandomNumber);
+
+        // Emit event before returning
+        emit RandomNumberRequested(sequenceNumber, userRandomNumber);
+
+        return sequenceNumber;
     }
 
     // @param sequenceNumber The sequence number of the request.

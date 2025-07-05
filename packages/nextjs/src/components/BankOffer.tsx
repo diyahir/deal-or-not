@@ -44,7 +44,7 @@ export function BankOffer() {
   });
   const { writeContractAsync } = useWriteContract();
 
-  // TODO: implement reset context and only accept when you actually can, maybe put something different on offer accepted, toast accepted
+  // TODO: implement reset context, maybe put something different on offer accepted, toast accepted
   const acceptDeal = async () => {
     setIsLoadingAccept(true);
     const hash = await writeContractAsync({
@@ -75,23 +75,35 @@ export function BankOffer() {
   };
 
   return (
-    <div className="border mx-auto border-[#f86e02] rounded-xl text-white bg-[#01152C] p-4 flex flex-col justify-center gap-6 items-center w-[625px] h-[200px]">
-      {(gameState as { isActive?: boolean })?.isActive ? (
-        <>
-          <div className="flex items-center w-fit mx-auto justify-between bg-[#1b4061] rounded-full">
-            <span className="text-2xl font-semibold bg-[#f86e02] rounded-full p-4">BANK OFFER:</span>
-            <span className="text-[#F86E00] text-2xl font-semibold pl-12 pr-4">
-              {Number(formatEther((offer as bigint) || 0n)).toFixed(5)} gMON
-            </span>
-          </div>
+    <div
+      className={cn(
+        'border mx-auto border-[#f86e02] rounded-xl text-white bg-[#01152C] p-4 flex flex-col justify-center gap-6',
+        'items-center w-[625px] h-[200px]'
+      )}
+    >
+      <div
+        className={cn(
+          'flex items-center w-fit mx-auto justify-between bg-[#1b4061] rounded-full',
+          !game.canAccept && 'opacity-50'
+        )}
+      >
+        <span className="text-2xl font-semibold bg-[#f86e02] rounded-full p-4">BANK OFFER:</span>
+        <span className="text-[#F86E00] text-2xl font-semibold pl-12 pr-4">
+          {game.canAccept ? `${Number(formatEther((offer as bigint) || 0n)).toFixed(5)} gMON` : 'no offers yet'}
+        </span>
+      </div>
 
-          <button
-            onClick={acceptDeal}
-            className="bg-[#3fa43e] text-2xl font-semibold rounded-lg py-4 px-8 min-w-[155px] flex justify-center"
-          >
-            {isLoadingAccept ? <Loading /> : 'ACCEPT'}
-          </button>
-        </>
+      {(gameState as { isActive?: boolean })?.isActive ? (
+        <button
+          onClick={acceptDeal}
+          className={cn(
+            'bg-[#3fa43e] text-2xl font-semibold rounded-lg py-4 px-8 min-w-[155px] flex justify-center',
+            !game.canAccept && 'cursor-not-allowed opacity-50 hover:opacity-50'
+          )}
+          disabled={!game.canAccept}
+        >
+          {isLoadingAccept ? <Loading /> : 'ACCEPT'}
+        </button>
       ) : (
         <ConnectButton.Custom>
           {({ account, openConnectModal, mounted }) => {
@@ -103,9 +115,7 @@ export function BankOffer() {
 
             return (
               <button
-                className={cn(
-                  'bg-[#F86E00] text-white py-2 px-4 rounded-full min-w-[72px] w-full flex justify-center items-center'
-                )}
+                className="bg-[#F86E00] text-white text-2xl font-semibold rounded-lg py-4 px-8 min-w-[190px] flex justify-center"
                 onClick={!isConnected ? openConnectModal : startGame}
                 disabled={isLoading}
               >

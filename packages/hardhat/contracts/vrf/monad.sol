@@ -1,11 +1,12 @@
 pragma solidity ^0.8.0;
 
 // solhint-disable-next-line no-unused-import
+import "../interfaces/IVRF.sol";
 import { IEntropyConsumer } from "@pythnetwork/entropy-sdk-solidity/IEntropyConsumer.sol";
 import { IEntropy } from "@pythnetwork/entropy-sdk-solidity/IEntropy.sol";
 
 // @param entropyAddress The address of the entropy contract.
-contract MonadVRF is IEntropyConsumer {
+contract MonadVRF is IVRF, IEntropyConsumer {
     IEntropy public entropy;
     address public entropyProvider;
     address public owner;
@@ -48,7 +49,7 @@ contract MonadVRF is IEntropyConsumer {
         emit EntropyProviderSet(entropyProvider);
     }
 
-    function requestRandomNumber(bytes32 userRandomNumber) external payable returns (uint64) {
+    function requestRandomNumber(bytes32 userRandomNumber) external payable override returns (uint256) {
         require(entropyProvider != address(0), "Entropy provider not set");
         require(address(entropy) != address(0), "Entropy contract not set");
 
@@ -60,7 +61,7 @@ contract MonadVRF is IEntropyConsumer {
         // Emit event before returning
         emit RandomNumberRequested(sequenceNumber, userRandomNumber);
 
-        return sequenceNumber;
+        return uint256(sequenceNumber);
     }
 
     // @param sequenceNumber The sequence number of the request.
@@ -84,7 +85,7 @@ contract MonadVRF is IEntropyConsumer {
     }
 
     // Function to retrieve stored random number
-    function getRandomNumber(uint64 sequenceNumber) external view returns (bytes32) {
-        return randomNumbers[sequenceNumber];
+    function getRandomNumber(uint256 sequenceNumber) external view override returns (uint256) {
+        return uint256(randomNumbers[uint64(sequenceNumber)]);
     }
 }

@@ -1,5 +1,5 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { DeployFunction } from "hardhat-deploy/types";
+import { DeployFunction, DeployResult } from "hardhat-deploy/types";
 import { Contract } from "ethers";
 
 /**
@@ -22,13 +22,24 @@ const deployDealOrNot: DeployFunction = async function (hre: HardhatRuntimeEnvir
   const { deployer } = await hre.getNamedAccounts();
   const { deploy } = hre.deployments;
 
-  // Get the deployed contract to interact with it after deploying.
-  const vrfContract = await deploy("BaseVRF", {
-    from: deployer,
-    args: [],
-    log: true,
-    autoMine: true,
-  });
+  let vrfContract: DeployResult;
+  if (hre.network.name === "flowTestnet") {
+    console.log("🔄 Deploying to Flow Testnet");
+    vrfContract = await deploy("FlowVRF", {
+      from: deployer,
+      args: [],
+      log: true,
+      autoMine: true,
+    });
+  } else {
+    // Get the deployed contract to interact with it after deploying.
+    vrfContract = await deploy("BaseVRF", {
+      from: deployer,
+      args: [],
+      log: true,
+      autoMine: true,
+    });
+  }
 
   await deploy("DealOrNot", {
     from: deployer,

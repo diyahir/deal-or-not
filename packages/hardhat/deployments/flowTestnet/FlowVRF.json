@@ -1,0 +1,310 @@
+{
+  "address": "0xff67B22AD5c8c6EAA2EA2302EEe6b2333cA0c2cb",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "requestId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "randomNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "RandomFulfilled",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "requestId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "flowRequestId",
+          "type": "uint256"
+        }
+      ],
+      "name": "RandomRequested",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "requestId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "randomResult",
+          "type": "uint64"
+        }
+      ],
+      "name": "RandomnessFulfilled",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "requestId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "flowHeight",
+          "type": "uint64"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "evmHeight",
+          "type": "uint256"
+        }
+      ],
+      "name": "RandomnessRequested",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "requestId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "flowHeight",
+          "type": "uint64"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "evmHeight",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "randomSource",
+          "type": "bytes32"
+        }
+      ],
+      "name": "RandomnessSourced",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "requestId",
+          "type": "uint256"
+        }
+      ],
+      "name": "canFulfillRequest",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "requestId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getRandomNumber",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "_userRandomNumber",
+          "type": "bytes32"
+        }
+      ],
+      "name": "requestRandomNumber",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "payable",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x1294f76b6bd3f07061c428bf0bf458658f93bbb5089bafbecf0c3fb4fb526172",
+  "receipt": {
+    "to": null,
+    "from": "0x654B45fAdB36731BBB81571B649Ccd7E6a8c2CEF",
+    "contractAddress": "0xff67B22AD5c8c6EAA2EA2302EEe6b2333cA0c2cb",
+    "transactionIndex": 0,
+    "gasUsed": "857875",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x294849b67381c4d2c21d2a20fc8fab2a15e097bc4044d741f878275f993d919d",
+    "transactionHash": "0x1294f76b6bd3f07061c428bf0bf458658f93bbb5089bafbecf0c3fb4fb526172",
+    "logs": [],
+    "blockNumber": 56348484,
+    "cumulativeGasUsed": "857875",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "numDeployments": 1,
+  "solcInputHash": "0df58f8c92a5f1be515a242128b87306",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.25+commit.b61c2a91\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"randomNumber\",\"type\":\"uint256\"}],\"name\":\"RandomFulfilled\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"flowRequestId\",\"type\":\"uint256\"}],\"name\":\"RandomRequested\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"requestId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"randomResult\",\"type\":\"uint64\"}],\"name\":\"RandomnessFulfilled\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"requestId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"flowHeight\",\"type\":\"uint64\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"evmHeight\",\"type\":\"uint256\"}],\"name\":\"RandomnessRequested\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"requestId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"flowHeight\",\"type\":\"uint64\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"evmHeight\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"randomSource\",\"type\":\"bytes32\"}],\"name\":\"RandomnessSourced\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"requestId\",\"type\":\"uint256\"}],\"name\":\"canFulfillRequest\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"requestId\",\"type\":\"uint256\"}],\"name\":\"getRandomNumber\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_userRandomNumber\",\"type\":\"bytes32\"}],\"name\":\"requestRandomNumber\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"payable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Flow VRF implementation using Flow's native secure randomness Implements the IVRF interface for compatibility with DealOrNot contract\",\"kind\":\"dev\",\"methods\":{\"canFulfillRequest(uint256)\":{\"details\":\"This method checks if a request can be fulfilled.\",\"params\":{\"requestId\":\"The ID of the randomness request to check.\"},\"returns\":{\"_0\":\"canFulfill Whether the request can be fulfilled.\"}},\"getRandomNumber(uint256)\":{\"details\":\"Get the random number for a request\",\"params\":{\"requestId\":\"The request ID returned by requestRandomNumber\"},\"returns\":{\"_0\":\"The random number from Flow's VRF\"}},\"requestRandomNumber(bytes32)\":{\"details\":\"Request a random number using Flow's native VRF\",\"params\":{\"_userRandomNumber\":\"Additional entropy from user (can be used for extra randomness)\"},\"returns\":{\"_0\":\"requestId The unique identifier for this random number request\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/vrf/flow.sol\":\"FlowVRF\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@onflow/flow-sol-utils/src/cadence-arch/CadenceArchUtils.sol\":{\"content\":\"// SPDX-License-Identifier: Unlicense\\npragma solidity ^0.8.19;\\n\\n/**\\n * @dev This contract is a base contract to facilitate easier consumption of the Cadence Arch pre-compiles. Implementing\\n * contracts can use this contract to fetch the current Flow block height and fetch random numbers from the Cadence\\n * runtime.\\n */\\nlibrary CadenceArchUtils {\\n    // Cadence Arch pre-compile address\\n    address public constant cadenceArch = 0x0000000000000000000000010000000000000001;\\n\\n    /**\\n     * @dev This method returns the current Flow block height.\\n     *\\n     * @return flowBlockHeight The current Flow block height.\\n     */\\n    function _flowBlockHeight() internal view returns (uint64) {\\n        (bool ok, bytes memory data) = cadenceArch.staticcall(abi.encodeWithSignature(\\\"flowBlockHeight()\\\"));\\n        require(ok, \\\"Unsuccessful call to Cadence Arch pre-compile when fetching Flow block height\\\");\\n\\n        uint64 output = abi.decode(data, (uint64));\\n        return output;\\n    }\\n\\n    /**\\n     * @dev This method uses the Cadence Arch pre-compiles to return a random number from the Cadence runtime. Consumers\\n     * should know this is a revertible random source and should only be used as a source of randomness when called by\\n     * trusted callers - i.e. with trust that the caller won't revert on result.\\n     *\\n     * @return randomSource The random source.\\n     */\\n    function _revertibleRandom() internal view returns (uint64) {\\n        (bool ok, bytes memory data) = cadenceArch.staticcall(abi.encodeWithSignature(\\\"revertibleRandom()\\\"));\\n        require(ok, \\\"Unsuccessful call to Cadence Arch pre-compile when fetching revertible random number\\\");\\n\\n        uint64 output = abi.decode(data, (uint64));\\n        return output;\\n    }\\n\\n    /**\\n     * @dev This method uses the Cadence Arch pre-compiles to returns a random source for a given Flow block height.\\n     * The provided height must be at least one block in the past.\\n     *\\n     * @param flowHeight The Flow block height for which to get the random source.\\n     * @return randomSource The random source for the given Flow block height.\\n     */\\n    function _getRandomSource(uint64 flowHeight) internal view returns (bytes32) {\\n        (bool ok, bytes memory data) =\\n            cadenceArch.staticcall(abi.encodeWithSignature(\\\"getRandomSource(uint64)\\\", flowHeight));\\n        require(ok, \\\"Unsuccessful call to Cadence Arch pre-compile when fetching random source\\\");\\n\\n        // Decode the result as bytes32 & return\\n        bytes32 result = abi.decode(data, (bytes32));\\n        return result;\\n    }\\n}\\n\",\"keccak256\":\"0xb1013b0eaeedb9871c10d03366e2780eda14776aeaff6a1b0c8f030368e02718\",\"license\":\"Unlicense\"},\"@onflow/flow-sol-utils/src/random/CadenceRandomConsumer.sol\":{\"content\":\"// SPDX-License-Identifier: Unlicense\\npragma solidity ^0.8.19;\\n\\nimport {CadenceArchUtils} from \\\"../cadence-arch/CadenceArchUtils.sol\\\";\\nimport {Xorshift128plus} from \\\"./Xorshift128plus.sol\\\";\\n\\n/**\\n * @dev This contract is a base contract for secure consumption of Flow's protocol-native randomness via the Cadence\\n * Arch pre-compile. Implementing contracts benefit from the commit-reveal scheme below, ensuring that callers cannot\\n * revert on undesirable random results.\\n */\\nabstract contract CadenceRandomConsumer {\\n    using Xorshift128plus for Xorshift128plus.PRG;\\n\\n    // A struct to store the request details\\n    struct Request {\\n        // The Flow block height at which the request was made\\n        uint64 flowHeight;\\n        // The EVM block height at which the request was made\\n        uint256 evmHeight;\\n        // Whether the request has been fulfilled\\n        bool fulfilled;\\n    }\\n\\n    // Events\\n    event RandomnessRequested(uint256 indexed requestId, uint64 flowHeight, uint256 evmHeight);\\n    event RandomnessSourced(uint256 indexed requestId, uint64 flowHeight, uint256 evmHeight, bytes32 randomSource);\\n    event RandomnessFulfilled(uint256 indexed requestId, uint64 randomResult);\\n\\n    // A list of requests where each request is identified by its index in the array\\n    Request[] private _requests;\\n    // A counter to keep track of the number of requests made, serving as the request ID\\n    uint256 private _requestCounter;\\n\\n    ///////////////////\\n    // PUBLIC FUNCTIONS\\n    ///////////////////\\n\\n    /**\\n     * @dev This method checks if a request can be fulfilled.\\n     *\\n     * @param requestId The ID of the randomness request to check.\\n     * @return canFulfill Whether the request can be fulfilled.\\n     */\\n    function canFulfillRequest(uint256 requestId) public view returns (bool) {\\n        uint256 requestIndex = requestId - 1;\\n        if (requestIndex >= _requests.length) {\\n            return false;\\n        }\\n        Request storage request = _requests[requestIndex];\\n        uint64 flowHeight = CadenceArchUtils._flowBlockHeight();\\n        return !request.fulfilled && request.flowHeight < flowHeight;\\n    }\\n\\n    /////////////////////\\n    // INTERNAL FUNCTIONS\\n    /////////////////////\\n\\n    /**\\n     * @dev This method returns a ***REVERTIBLE** random number in the range [min, max].\\n     * NOTE: The fact that this method is revertible means that it should only be used in cases where the initiating\\n     * caller is trusted not to revert on the result.\\n     *\\n     * @param min The minimum value of the range (inclusive).\\n     * @param max The maximum value of the range (inclusive).\\n     * @return random The random number in the range [min, max].\\n     */\\n    function _getRevertibleRandomInRange(uint64 min, uint64 max) internal view returns (uint64) {\\n        bytes memory seed = abi.encodePacked(_aggregateRevertibleRandom256());\\n        bytes memory salt = abi.encodePacked(block.number);\\n\\n        // Instantiate a PRG with the aggregate bytes and salt with current block number\\n        Xorshift128plus.PRG memory prg;\\n        prg.seed(seed, salt);\\n\\n        return _getNumberInRange(prg, min, max);\\n    }\\n\\n    /**\\n     * ----- COMMIT STEP -----\\n     */\\n\\n    /**\\n     * @dev This method serves as the commit step in this contract's commit-reveal scheme\\n     *\\n     * Here a caller places commits at Flow block n to reveal a random number at >= block n+1\\n     * This is because the random source for a Flow block is not available until after the finalization of that block.\\n     * Implementing contracts may wish to affiliate the request ID with the caller's address or some other identifier\\n     * so the relevant request can be fulfilled.\\n     * Emits a {RandomnessRequested} event.\\n     *\\n     * @return requestId The ID of the request.\\n     */\\n    function _requestRandomness() internal returns (uint256) {\\n        // Identify the request by the current request counter, incrementing first so implementations can use 0 for\\n        // invalid requests - e.g. myRequests[msg.sender] == 0 means the caller has no pending requests\\n        _requestCounter++;\\n        uint256 requestId = _requestCounter;\\n        // Store the heights at which the request was made. Note that the Flow block height and EVM block height are\\n        // not the same. But since Flow blocks ultimately determine usage of secure randomness, we gate requests by\\n        // Flow block height.\\n        Request memory request = Request(CadenceArchUtils._flowBlockHeight(), block.number, false);\\n\\n        // Store the request in the list of requests\\n        _requests.push(request);\\n\\n        emit RandomnessRequested(requestId, request.flowHeight, request.evmHeight);\\n\\n        // Finally return the request ID\\n        return requestId;\\n    }\\n\\n    /**\\n     * ----- REVEAL STEP -----\\n     */\\n\\n    /**\\n     * @dev This method fulfills a random request and returns a random number as a uint64.\\n     *\\n     * @param requestId The ID of the randomness request to fulfill.\\n     * @return randomResult The random number.\\n     */\\n    function _fulfillRandomRequest(uint256 requestId) internal returns (uint64) {\\n        bytes memory seed = abi.encodePacked(_fulfillRandomness(requestId));\\n        bytes memory salt = abi.encodePacked(requestId);\\n\\n        // Instantiate a PRG, seeding with the random value and salting with the request ID\\n        Xorshift128plus.PRG memory prg;\\n        prg.seed(seed, salt);\\n\\n        uint64 randomResult = prg.nextUInt64();\\n\\n        emit RandomnessFulfilled(requestId, randomResult);\\n\\n        return randomResult;\\n    }\\n\\n    /**\\n     * @dev This method fulfills a random request and safely returns an unbiased random number in the range inclusive [min, max].\\n     *\\n     * @param requestId The ID of the randomness request to fulfill.\\n     * @param min The minimum value of the range (inclusive).\\n     * @param max The maximum value of the range (inclusive).\\n     * @return randomResult The random number in the inclusive range [min, max].\\n     */\\n    function _fulfillRandomInRange(uint256 requestId, uint64 min, uint64 max) internal returns (uint64) {\\n        // Ensure that the request is fulfilled at a Flow block height greater than the one at which the request was made\\n        // Get the random source for the Flow block at which the request was made\\n        bytes memory seed = abi.encodePacked(_fulfillRandomness(requestId));\\n        bytes memory salt = abi.encodePacked(requestId);\\n\\n        // Instantiate a PRG with the random source and the request ID\\n        Xorshift128plus.PRG memory prg;\\n        prg.seed(seed, salt);\\n\\n        uint64 randomResult = _getNumberInRange(prg, min, max); // Get a random number in the range [min, max]\\n\\n        emit RandomnessFulfilled(requestId, randomResult);\\n\\n        return randomResult;\\n    }\\n\\n    ////////////////////\\n    // PRIVATE FUNCTIONS\\n    ////////////////////\\n\\n    /**\\n     * @dev This method returns a number in the range [min, max] from the given value with a variation on rejection\\n     * sampling.\\n     * NOTE: You may be tempted to simply use `value % (max - min + 1)` to get a number in a range. However, this\\n     * method is not secure is susceptible to the modulo bias. This method provides an unbiased alternative for secure\\n     * secure use of randomness.\\n     *\\n     * @param prg The PRG to use for generating the random number.\\n     * @param min The minimum value of the range (inclusive).\\n     * @param max The maximum value of the range (inclusive).\\n     * @return random The random number in the range [min, max].\\n     */\\n    function _getNumberInRange(Xorshift128plus.PRG memory prg, uint64 min, uint64 max) private pure returns (uint64) {\\n        require(max > min, \\\"Max must be greater than min\\\");\\n\\n        uint64 range = max - min;\\n        uint64 bitsRequired = _mostSignificantBit(range); // Number of bits needed to cover the range\\n        uint256 mask = (1 << bitsRequired) - 1; // Create a bitmask to extract relevant bits\\n\\n        uint256 shiftLimit = 256 / bitsRequired; // Number of shifts needed to cover 256 bits\\n        uint256 shifts = 0; // Initialize shift counter\\n\\n        uint64 candidate = 0; // Initialize candidate\\n        uint256 value = prg.nextUInt256(); // Assign the first 256 bits of randomness\\n\\n        while (true) {\\n            candidate = uint64(value & mask); // Apply the bitmask to extract bits\\n            if (candidate <= range) {\\n                break; // Found a suitable candidate within the target range\\n            }\\n\\n            // Shift by the number of bits covered by the mask\\n            value = value >> bitsRequired;\\n            shifts++;\\n\\n            // Get a new value if we've exhausted the current one\\n            if (shifts == shiftLimit) {\\n                value = prg.nextUInt256();\\n                shifts = 0;\\n            }\\n        }\\n\\n        // Scale candidate to the range [min, max]\\n        return min + candidate;\\n    }\\n\\n    /**\\n     * @dev This method serves as the reveal step in this contract's commit-reveal scheme\\n     *\\n     * Here a caller reveals a random number at least one block after the commit block\\n     * This is because the random source for a Flow block is not available until after the finalization of that block.\\n     * Note that the random source for a given Flow block is singular. In order to ensure that requests made at the same\\n     * block height are unique, implementing contracts should use some pseudo-random method to generate a unique value\\n     * from the seed along with a salt.\\n     * Emits a {RandomnessFulfilled} event.\\n     *\\n     * @param requestId The ID of the randomness request to fulfill.\\n     * @return randomResult The random value generated from the Flow block.\\n     */\\n    function _fulfillRandomness(uint256 requestId) private returns (bytes32) {\\n        // Get the request details. Recall that request IDs are 1-indexed to allow for 0 to be used as an invalid value\\n        uint256 requestIndex = requestId - 1;\\n        require(requestIndex < _requests.length, \\\"Invalid request ID - value exceeds the number of existing requests\\\");\\n\\n        // Access & validate the request\\n        Request storage request = _requests[requestIndex];\\n        _validateRequest(request);\\n        request.fulfilled = true; // Mark the request as fulfilled\\n\\n        // Get the random source for the Flow block at which the request was made, emit & return\\n        bytes32 randomSource = CadenceArchUtils._getRandomSource(request.flowHeight);\\n\\n        emit RandomnessSourced(requestId, request.flowHeight, request.evmHeight, randomSource);\\n\\n        return randomSource;\\n    }\\n\\n    /**\\n     * @dev This method aggregates 256 bits of randomness by calling _revertibleRandom() 4 times.\\n     *\\n     * @return randomValue The aggregated 256 bits of randomness.\\n     */\\n    function _aggregateRevertibleRandom256() private view returns (uint256) {\\n        // Call _revertibleRandom() 4 times to aggregate 256 bits of randomness\\n        uint256 randomValue = uint256(CadenceArchUtils._revertibleRandom());\\n        randomValue |= (uint256(CadenceArchUtils._revertibleRandom()) << 64);\\n        randomValue |= (uint256(CadenceArchUtils._revertibleRandom()) << 128);\\n        randomValue |= (uint256(CadenceArchUtils._revertibleRandom()) << 192);\\n        return randomValue;\\n    }\\n\\n    /**\\n     * @dev This method returns the most significant bit of a uint64.\\n     *\\n     * @param x The input value.\\n     * @return bits The most significant bit of the input value.\\n     */\\n    function _mostSignificantBit(uint64 x) private pure returns (uint64) {\\n        uint64 bits = 0;\\n        while (x > 0) {\\n            x >>= 1;\\n            bits++;\\n        }\\n        return bits;\\n    }\\n\\n    /**\\n     * @dev This method validates a given request, ensuring that it has not been fulfilled and that the Flow block height\\n     * has passed.\\n     *\\n     * @param request The request to validate.\\n     */\\n    function _validateRequest(Request storage request) private view {\\n        require(!request.fulfilled, \\\"Request already fulfilled\\\");\\n        require(\\n            request.flowHeight < CadenceArchUtils._flowBlockHeight(),\\n            \\\"Cannot fulfill request until subsequent Flow network block height\\\"\\n        );\\n    }\\n}\\n\",\"keccak256\":\"0xfbff8387f1732cf00a1dd413f882d633b4eb975b4961555208e7a9d59360cd7c\",\"license\":\"Unlicense\"},\"@onflow/flow-sol-utils/src/random/Xorshift128plus.sol\":{\"content\":\"// SPDX-License-Identifier: Unlicense\\npragma solidity ^0.8.19;\\n\\n/**\\n * @dev This library implements the Xorshift128+ pseudo-random number generator (PRG) algorithm.\\n */\\nlibrary Xorshift128plus {\\n    /**\\n     * @dev While not limited to 128 bits of state, this PRG is largely informed by xorshift128+\\n     */\\n    struct PRG {\\n        uint64 state0;\\n        uint64 state1;\\n    }\\n\\n    /**\\n     * @dev Initializer for PRG struct\\n     *\\n     * @param prg The PRG struct to seed\\n     * @param sourceOfRandomness The entropy bytes used to seed the PRG. It is recommended to use at least 16\\n     * bytes of entropy.\\n     * @param salt The bytes used to salt the source of randomness\\n     */\\n    function seed(PRG memory prg, bytes memory sourceOfRandomness, bytes memory salt) internal pure {\\n        require(\\n            sourceOfRandomness.length >= 16, \\\"At least 16 bytes of entropy should be used when initializing the PRG\\\"\\n        );\\n        bytes memory tmp = abi.encodePacked(sourceOfRandomness, salt);\\n        bytes32 hash = keccak256(tmp);\\n\\n        prg.state0 = _bigEndianBytesToUint64(abi.encodePacked(hash), 0);\\n        prg.state1 = _bigEndianBytesToUint64(abi.encodePacked(hash), 8);\\n\\n        _requireNonZero(prg);\\n    }\\n\\n    /**\\n     * @dev Advances the PRG state and generates the next UInt64 value\\n     * See https://arxiv.org/pdf/1404.0390.pdf for implementation details and reasoning for triplet selection.\\n     * Note that state only advances when this function is called from a transaction. Calls from within a script\\n     * will not advance state and will return the same value.\\n     *\\n     * @return The next UInt64 value\\n     */\\n    function nextUInt64(PRG memory prg) internal pure returns (uint64) {\\n        _requireNonZero(prg);\\n\\n        uint64 a = prg.state0;\\n        uint64 b = prg.state1;\\n\\n        prg.state0 = b;\\n\\n        // Allow the states to wrap around\\n        unchecked {\\n            a ^= a << 23; // a\\n            a ^= a >> 17; // b\\n            a ^= b ^ (b >> 26); // c\\n        }\\n\\n        prg.state1 = a;\\n\\n        unchecked {\\n            return a + b; // Addition with wrapping\\n        }\\n    }\\n\\n    /**\\n     * @dev Advances the PRG state and generates the next UInt256 value by concatenating 4 UInt64 values\\n     *\\n     * @return The next UInt256 value\\n     */\\n    function nextUInt256(PRG memory prg) internal pure returns (uint256) {\\n        uint256 result = uint256(nextUInt64(prg));\\n        result |= uint256(nextUInt64(prg)) << 64;\\n        result |= uint256(nextUInt64(prg)) << 128;\\n        result |= uint256(nextUInt64(prg)) << 192;\\n        return result;\\n    }\\n\\n    /**\\n     * @dev Helper function to convert an array of big endian bytes to Word64\\n     *\\n     * @param input The bytes to convert\\n     * @param start The index of the first byte to convert\\n     *\\n     * @return The Word64 value\\n     */\\n    function _bigEndianBytesToUint64(bytes memory input, uint256 start) private pure returns (uint64) {\\n        require(input.length >= start + 8, \\\"Invalid byte length\\\");\\n        uint64 value = 0;\\n        for (uint256 i = 0; i < 8; i++) {\\n            value = (value << 8) | uint64(uint8(input[start + i]));\\n        }\\n        return value;\\n    }\\n\\n    function _requireNonZero(PRG memory prg) private pure {\\n        require(prg.state0 != 0 || prg.state1 != 0, \\\"PRG initial state is 0 - must be initialized as non-zero\\\");\\n    }\\n}\\n\",\"keccak256\":\"0x946b8c9d80b1ca879e08d6e57ccc34cf75d425459854dcc0e47ff73f0d2f162f\",\"license\":\"Unlicense\"},\"contracts/interfaces/IVRF.sol\":{\"content\":\"// SPDX-License-Identifier: GPL-3.0\\npragma solidity >=0.7.0 <0.9.0;\\n\\ninterface IVRF {\\n    function requestRandomNumber(bytes32) external payable returns (uint256);\\n\\n    function getRandomNumber(uint256 requestId) external returns (uint256);\\n}\\n\",\"keccak256\":\"0xa9e0d7d663603bbf425d2b647c730aa4aaf1e5ac3c9cb23ac14944f531930c94\",\"license\":\"GPL-3.0\"},\"contracts/vrf/flow.sol\":{\"content\":\"// SPDX-License-Identifier: GPL-3.0\\npragma solidity >=0.7.0 <0.9.0;\\n\\nimport \\\"../interfaces/IVRF.sol\\\";\\nimport {CadenceRandomConsumer} from \\\"@onflow/flow-sol-utils/src/random/CadenceRandomConsumer.sol\\\";\\n\\n/**\\n * @dev Flow VRF implementation using Flow's native secure randomness\\n * Implements the IVRF interface for compatibility with DealOrNot contract\\n */\\ncontract FlowVRF is IVRF, CadenceRandomConsumer {\\n    event RandomRequested(bytes32 indexed requestId, uint256 indexed flowRequestId);\\n    event RandomFulfilled(bytes32 indexed requestId, uint256 randomNumber);\\n\\n    /**\\n     * @dev Request a random number using Flow's native VRF\\n     * @param _userRandomNumber Additional entropy from user (can be used for extra randomness)\\n     * @return requestId The unique identifier for this random number request\\n     */\\n    function requestRandomNumber(bytes32 _userRandomNumber) external payable override returns (uint256) {\\n        // Generate a unique request ID\\n        // Request randomness from Flow's native VRF\\n        uint256 flowRequestId = _requestRandomness();\\n\\n        return flowRequestId;\\n    }\\n\\n    /**\\n     * @dev Get the random number for a request\\n     * @param requestId The request ID returned by requestRandomNumber\\n     * @return The random number from Flow's VRF\\n     */\\n    function getRandomNumber(uint256 requestId) external override returns (uint256) {\\n        uint256 randomNumber = _fulfillRandomInRange(requestId, 0, type(uint64).max);\\n\\n        return randomNumber;\\n    }\\n}\\n\",\"keccak256\":\"0x1fc680de3fa10cf463bfef0055f4f8497d9ab73b8fddaf622db66045ae12ef5c\",\"license\":\"GPL-3.0\"}},\"version\":1}",
+  "bytecode": "0x6080604052348015600f57600080fd5b50610e8f8061001f6000396000f3fe6080604052600436106100345760003560e01c8063b37217a414610039578063bd313d781461006c578063d59fd63c1461007f575b600080fd5b34801561004557600080fd5b50610059610054366004610ca1565b6100af565b6040519081526020015b60405180910390f35b61005961007a366004610ca1565b6100d5565b34801561008b57600080fd5b5061009f61009a366004610ca1565b6100e7565b6040519015158152602001610063565b6000806100c58360006001600160401b03610165565b6001600160401b03169392505050565b6000806100e0610223565b9392505050565b6000806100f5600184610cd0565b600054909150811061010a5750600092915050565b600080828154811061011e5761011e610ce3565b906000526020600020906003020190506000610138610364565b600283015490915060ff1615801561015c575081546001600160401b038083169116105b95945050505050565b6000806101718561049b565b60405160200161018391815260200190565b60408051601f198184030181528282526020830188905292506000910160408051601f198184030181528282019091526000808352602083015291506101ca8184846105e0565b60006101d7828888610713565b6040516001600160401b038216815290915088907fe3e452ff947e18cea0f62f23d405e522ac808f69346c5f59ddc4bd722ac10d039060200160405180910390a2979650505050505050565b600180546000918261023483610cf9565b91905055506000600154905060006040518060600160405280610255610364565b6001600160401b0390811682524360208084019190915260006040938401819052805460018101825590805284517f290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e5636003909202918201805467ffffffffffffffff191691909416908117909355848201517f290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e5648201819055858501517f290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e565909201805460ff19169215159290921790915583519283529082015291925083917f7886956edccde10901843c3e51fc26016455e9248e210a29c2a57ead63ad226e910160405180910390a250919050565b60408051600481526024810182526020810180516001600160e01b03166329f43eb360e11b17905290516000918291829168010000000000000001916103aa9190610d42565b600060405180830381855afa9150503d80600081146103e5576040519150601f19603f3d011682016040523d82523d6000602084013e6103ea565b606091505b50915091508161047d5760405162461bcd60e51b815260206004820152604d60248201527f556e7375636365737366756c2063616c6c20746f20436164656e63652041726360448201527f68207072652d636f6d70696c65207768656e206665746368696e6720466c6f7760648201526c08189b1bd8dac81a195a59da1d609a1b608482015260a4015b60405180910390fd5b6000818060200190518101906104939190610d4e565b949350505050565b6000806104a9600184610cd0565b600054909150811061052e5760405162461bcd60e51b815260206004820152604260248201527f496e76616c69642072657175657374204944202d2076616c756520657863656560448201527f647320746865206e756d626572206f66206578697374696e6720726571756573606482015261747360f01b608482015260a401610474565b600080828154811061054257610542610ce3565b9060005260206000209060030201905061055b81610842565b60028101805460ff191660011790558054600090610581906001600160401b031661092e565b82546001840154604080516001600160401b0390931683526020830191909152810182905290915085907f01f207584638dfbb3f1d85bba3809672fcb07a3d2e291308293ba78b7f1984909060600160405180910390a2949350505050565b6010825110156106665760405162461bcd60e51b815260206004820152604560248201527f4174206c65617374203136206279746573206f6620656e74726f70792073686f60448201527f756c642062652075736564207768656e20696e697469616c697a696e67207468606482015264652050524760d81b608482015260a401610474565b6000828260405160200161067b929190610d77565b60405160208183030381529060405290506000818051906020012090506106c4816040516020016106ae91815260200190565b6040516020818303038152906040526000610a6a565b6001600160401b0316855260408051602081018390526106f591016040516020818303038152906040526008610a6a565b6001600160401b0316602086015261070c85610b16565b5050505050565b6000826001600160401b0316826001600160401b0316116107765760405162461bcd60e51b815260206004820152601c60248201527f4d6178206d7573742062652067726561746572207468616e206d696e000000006044820152606401610474565b60006107828484610d8c565b9050600061078f82610bac565b905060006107aa60016001600160401b03841681901b610cd0565b905060006107ba83610100610db3565b6001600160401b0316905060008060006107d38b610be2565b90505b8481169150866001600160401b0316826001600160401b03161115610829576001600160401b0386161c8261080a81610cf9565b9350508383036108245761081d8b610be2565b9050600092505b6107d6565b610833828b610de7565b9b9a5050505050505050505050565b600281015460ff16156108975760405162461bcd60e51b815260206004820152601960248201527f5265717565737420616c72656164792066756c66696c6c6564000000000000006044820152606401610474565b61089f610364565b81546001600160401b0391821691161061092b5760405162461bcd60e51b815260206004820152604160248201527f43616e6e6f742066756c66696c6c207265717565737420756e74696c2073756260448201527f73657175656e7420466c6f77206e6574776f726b20626c6f636b2068656967686064820152601d60fa1b608482015260a401610474565b50565b6040516001600160401b038216602482015260009081908190680100000000000000019060440160408051601f198184030181529181526020820180516001600160e01b0316633c53afdf60e11b1790525161098a9190610d42565b600060405180830381855afa9150503d80600081146109c5576040519150601f19603f3d011682016040523d82523d6000602084013e6109ca565b606091505b509150915081610a545760405162461bcd60e51b815260206004820152604960248201527f556e7375636365737366756c2063616c6c20746f20436164656e63652041726360448201527f68207072652d636f6d70696c65207768656e206665746368696e672072616e646064820152686f6d20736f7572636560b81b608482015260a401610474565b60008180602001905181019061015c9190610e07565b6000610a77826008610e20565b83511015610abd5760405162461bcd60e51b8152602060048201526013602482015272092dcecc2d8d2c840c4f2e8ca40d8cadccee8d606b1b6044820152606401610474565b6000805b6008811015610b0c5784610ad58286610e20565b81518110610ae557610ae5610ce3565b60209101015160f81c60089290921b68ffffffffffffffff00169190911790600101610ac1565b5090505b92915050565b80516001600160401b0316151580610b3a575060208101516001600160401b031615155b61092b5760405162461bcd60e51b815260206004820152603860248201527f50524720696e697469616c2073746174652069732030202d206d75737420626560448201527f20696e697469616c697a6564206173206e6f6e2d7a65726f00000000000000006064820152608401610474565b6000805b6001600160401b03831615610b10576001836001600160401b0316901c92508080610bda90610e33565b915050610bb0565b600080610bee83610c44565b6001600160401b031690506040610c0484610c44565b6001600160401b0316901b176080610c1b84610c44565b6001600160401b0316901b1760c0610c3284610c44565b6001600160401b0316901b1792915050565b6000610c4f82610b16565b5080516020820180516001600160401b03808216909452601783901b6a7fffffffffffffff80000016909218601181901c657fffffffffff1618601a83901c643fffffffff1683181892831690520190565b600060208284031215610cb357600080fd5b5035919050565b634e487b7160e01b600052601160045260246000fd5b81810381811115610b1057610b10610cba565b634e487b7160e01b600052603260045260246000fd5b600060018201610d0b57610d0b610cba565b5060010190565b6000815160005b81811015610d335760208185018101518683015201610d19565b50600093019283525090919050565b60006100e08284610d12565b600060208284031215610d6057600080fd5b81516001600160401b03811681146100e057600080fd5b6000610493610d868386610d12565b84610d12565b6001600160401b03828116828216039080821115610dac57610dac610cba565b5092915050565b60006001600160401b0380841680610ddb57634e487b7160e01b600052601260045260246000fd5b92169190910492915050565b6001600160401b03818116838216019080821115610dac57610dac610cba565b600060208284031215610e1957600080fd5b5051919050565b80820180821115610b1057610b10610cba565b60006001600160401b03808316818103610e4f57610e4f610cba565b600101939250505056fea26469706673582212205dd5398eaa55d92b0cd31a7d0c38ccf89aff7b4e99b0d4cae903f2cc31ac9a8c64736f6c63430008190033",
+  "deployedBytecode": "0x6080604052600436106100345760003560e01c8063b37217a414610039578063bd313d781461006c578063d59fd63c1461007f575b600080fd5b34801561004557600080fd5b50610059610054366004610ca1565b6100af565b6040519081526020015b60405180910390f35b61005961007a366004610ca1565b6100d5565b34801561008b57600080fd5b5061009f61009a366004610ca1565b6100e7565b6040519015158152602001610063565b6000806100c58360006001600160401b03610165565b6001600160401b03169392505050565b6000806100e0610223565b9392505050565b6000806100f5600184610cd0565b600054909150811061010a5750600092915050565b600080828154811061011e5761011e610ce3565b906000526020600020906003020190506000610138610364565b600283015490915060ff1615801561015c575081546001600160401b038083169116105b95945050505050565b6000806101718561049b565b60405160200161018391815260200190565b60408051601f198184030181528282526020830188905292506000910160408051601f198184030181528282019091526000808352602083015291506101ca8184846105e0565b60006101d7828888610713565b6040516001600160401b038216815290915088907fe3e452ff947e18cea0f62f23d405e522ac808f69346c5f59ddc4bd722ac10d039060200160405180910390a2979650505050505050565b600180546000918261023483610cf9565b91905055506000600154905060006040518060600160405280610255610364565b6001600160401b0390811682524360208084019190915260006040938401819052805460018101825590805284517f290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e5636003909202918201805467ffffffffffffffff191691909416908117909355848201517f290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e5648201819055858501517f290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e565909201805460ff19169215159290921790915583519283529082015291925083917f7886956edccde10901843c3e51fc26016455e9248e210a29c2a57ead63ad226e910160405180910390a250919050565b60408051600481526024810182526020810180516001600160e01b03166329f43eb360e11b17905290516000918291829168010000000000000001916103aa9190610d42565b600060405180830381855afa9150503d80600081146103e5576040519150601f19603f3d011682016040523d82523d6000602084013e6103ea565b606091505b50915091508161047d5760405162461bcd60e51b815260206004820152604d60248201527f556e7375636365737366756c2063616c6c20746f20436164656e63652041726360448201527f68207072652d636f6d70696c65207768656e206665746368696e6720466c6f7760648201526c08189b1bd8dac81a195a59da1d609a1b608482015260a4015b60405180910390fd5b6000818060200190518101906104939190610d4e565b949350505050565b6000806104a9600184610cd0565b600054909150811061052e5760405162461bcd60e51b815260206004820152604260248201527f496e76616c69642072657175657374204944202d2076616c756520657863656560448201527f647320746865206e756d626572206f66206578697374696e6720726571756573606482015261747360f01b608482015260a401610474565b600080828154811061054257610542610ce3565b9060005260206000209060030201905061055b81610842565b60028101805460ff191660011790558054600090610581906001600160401b031661092e565b82546001840154604080516001600160401b0390931683526020830191909152810182905290915085907f01f207584638dfbb3f1d85bba3809672fcb07a3d2e291308293ba78b7f1984909060600160405180910390a2949350505050565b6010825110156106665760405162461bcd60e51b815260206004820152604560248201527f4174206c65617374203136206279746573206f6620656e74726f70792073686f60448201527f756c642062652075736564207768656e20696e697469616c697a696e67207468606482015264652050524760d81b608482015260a401610474565b6000828260405160200161067b929190610d77565b60405160208183030381529060405290506000818051906020012090506106c4816040516020016106ae91815260200190565b6040516020818303038152906040526000610a6a565b6001600160401b0316855260408051602081018390526106f591016040516020818303038152906040526008610a6a565b6001600160401b0316602086015261070c85610b16565b5050505050565b6000826001600160401b0316826001600160401b0316116107765760405162461bcd60e51b815260206004820152601c60248201527f4d6178206d7573742062652067726561746572207468616e206d696e000000006044820152606401610474565b60006107828484610d8c565b9050600061078f82610bac565b905060006107aa60016001600160401b03841681901b610cd0565b905060006107ba83610100610db3565b6001600160401b0316905060008060006107d38b610be2565b90505b8481169150866001600160401b0316826001600160401b03161115610829576001600160401b0386161c8261080a81610cf9565b9350508383036108245761081d8b610be2565b9050600092505b6107d6565b610833828b610de7565b9b9a5050505050505050505050565b600281015460ff16156108975760405162461bcd60e51b815260206004820152601960248201527f5265717565737420616c72656164792066756c66696c6c6564000000000000006044820152606401610474565b61089f610364565b81546001600160401b0391821691161061092b5760405162461bcd60e51b815260206004820152604160248201527f43616e6e6f742066756c66696c6c207265717565737420756e74696c2073756260448201527f73657175656e7420466c6f77206e6574776f726b20626c6f636b2068656967686064820152601d60fa1b608482015260a401610474565b50565b6040516001600160401b038216602482015260009081908190680100000000000000019060440160408051601f198184030181529181526020820180516001600160e01b0316633c53afdf60e11b1790525161098a9190610d42565b600060405180830381855afa9150503d80600081146109c5576040519150601f19603f3d011682016040523d82523d6000602084013e6109ca565b606091505b509150915081610a545760405162461bcd60e51b815260206004820152604960248201527f556e7375636365737366756c2063616c6c20746f20436164656e63652041726360448201527f68207072652d636f6d70696c65207768656e206665746368696e672072616e646064820152686f6d20736f7572636560b81b608482015260a401610474565b60008180602001905181019061015c9190610e07565b6000610a77826008610e20565b83511015610abd5760405162461bcd60e51b8152602060048201526013602482015272092dcecc2d8d2c840c4f2e8ca40d8cadccee8d606b1b6044820152606401610474565b6000805b6008811015610b0c5784610ad58286610e20565b81518110610ae557610ae5610ce3565b60209101015160f81c60089290921b68ffffffffffffffff00169190911790600101610ac1565b5090505b92915050565b80516001600160401b0316151580610b3a575060208101516001600160401b031615155b61092b5760405162461bcd60e51b815260206004820152603860248201527f50524720696e697469616c2073746174652069732030202d206d75737420626560448201527f20696e697469616c697a6564206173206e6f6e2d7a65726f00000000000000006064820152608401610474565b6000805b6001600160401b03831615610b10576001836001600160401b0316901c92508080610bda90610e33565b915050610bb0565b600080610bee83610c44565b6001600160401b031690506040610c0484610c44565b6001600160401b0316901b176080610c1b84610c44565b6001600160401b0316901b1760c0610c3284610c44565b6001600160401b0316901b1792915050565b6000610c4f82610b16565b5080516020820180516001600160401b03808216909452601783901b6a7fffffffffffffff80000016909218601181901c657fffffffffff1618601a83901c643fffffffff1683181892831690520190565b600060208284031215610cb357600080fd5b5035919050565b634e487b7160e01b600052601160045260246000fd5b81810381811115610b1057610b10610cba565b634e487b7160e01b600052603260045260246000fd5b600060018201610d0b57610d0b610cba565b5060010190565b6000815160005b81811015610d335760208185018101518683015201610d19565b50600093019283525090919050565b60006100e08284610d12565b600060208284031215610d6057600080fd5b81516001600160401b03811681146100e057600080fd5b6000610493610d868386610d12565b84610d12565b6001600160401b03828116828216039080821115610dac57610dac610cba565b5092915050565b60006001600160401b0380841680610ddb57634e487b7160e01b600052601260045260246000fd5b92169190910492915050565b6001600160401b03818116838216019080821115610dac57610dac610cba565b600060208284031215610e1957600080fd5b5051919050565b80820180821115610b1057610b10610cba565b60006001600160401b03808316818103610e4f57610e4f610cba565b600101939250505056fea26469706673582212205dd5398eaa55d92b0cd31a7d0c38ccf89aff7b4e99b0d4cae903f2cc31ac9a8c64736f6c63430008190033",
+  "devdoc": {
+    "details": "Flow VRF implementation using Flow's native secure randomness Implements the IVRF interface for compatibility with DealOrNot contract",
+    "kind": "dev",
+    "methods": {
+      "canFulfillRequest(uint256)": {
+        "details": "This method checks if a request can be fulfilled.",
+        "params": {
+          "requestId": "The ID of the randomness request to check."
+        },
+        "returns": {
+          "_0": "canFulfill Whether the request can be fulfilled."
+        }
+      },
+      "getRandomNumber(uint256)": {
+        "details": "Get the random number for a request",
+        "params": {
+          "requestId": "The request ID returned by requestRandomNumber"
+        },
+        "returns": {
+          "_0": "The random number from Flow's VRF"
+        }
+      },
+      "requestRandomNumber(bytes32)": {
+        "details": "Request a random number using Flow's native VRF",
+        "params": {
+          "_userRandomNumber": "Additional entropy from user (can be used for extra randomness)"
+        },
+        "returns": {
+          "_0": "requestId The unique identifier for this random number request"
+        }
+      }
+    },
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 163,
+        "contract": "contracts/vrf/flow.sol:FlowVRF",
+        "label": "_requests",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_array(t_struct(Request)135_storage)dyn_storage"
+      },
+      {
+        "astId": 165,
+        "contract": "contracts/vrf/flow.sol:FlowVRF",
+        "label": "_requestCounter",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_uint256"
+      }
+    ],
+    "types": {
+      "t_array(t_struct(Request)135_storage)dyn_storage": {
+        "base": "t_struct(Request)135_storage",
+        "encoding": "dynamic_array",
+        "label": "struct CadenceRandomConsumer.Request[]",
+        "numberOfBytes": "32"
+      },
+      "t_bool": {
+        "encoding": "inplace",
+        "label": "bool",
+        "numberOfBytes": "1"
+      },
+      "t_struct(Request)135_storage": {
+        "encoding": "inplace",
+        "label": "struct CadenceRandomConsumer.Request",
+        "members": [
+          {
+            "astId": 130,
+            "contract": "contracts/vrf/flow.sol:FlowVRF",
+            "label": "flowHeight",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint64"
+          },
+          {
+            "astId": 132,
+            "contract": "contracts/vrf/flow.sol:FlowVRF",
+            "label": "evmHeight",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 134,
+            "contract": "contracts/vrf/flow.sol:FlowVRF",
+            "label": "fulfilled",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_bool"
+          }
+        ],
+        "numberOfBytes": "96"
+      },
+      "t_uint256": {
+        "encoding": "inplace",
+        "label": "uint256",
+        "numberOfBytes": "32"
+      },
+      "t_uint64": {
+        "encoding": "inplace",
+        "label": "uint64",
+        "numberOfBytes": "8"
+      }
+    }
+  }
+}

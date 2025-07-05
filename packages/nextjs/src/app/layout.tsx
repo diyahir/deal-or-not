@@ -1,11 +1,14 @@
 'use client';
 
+import Header from '@/components/Header/Header';
 import AppProvider from '@/contexts/AppContext';
 import { cn } from '@/lib/utils';
 import { alchemyRpcUrl, blockExplorer, monadRpcUrl } from '@/shared/constants';
+import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import '@rainbow-me/rainbowkit/styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { defineChain } from 'viem';
-import { createConfig, fallback, http, WagmiProvider } from 'wagmi';
+import { fallback, http, WagmiProvider } from 'wagmi';
 import { audiowide, roboto } from './fonts';
 import './globals.css';
 
@@ -27,11 +30,10 @@ const monadTestnet = defineChain({
   testnet: true
 });
 
-const config = createConfig({
+const config = getDefaultConfig({
+  appName: 'Deal or no deal',
+  projectId: '134f0e99f1b28f5fc5482a9ac6126a51',
   chains: [monadTestnet],
-  batch: {
-    multicall: true
-  },
   transports: {
     [monadTestnet.id]: fallback([http(alchemyRpcUrl), http(monadRpcUrl)])
   },
@@ -50,7 +52,12 @@ export default function RootLayout({
       <body>
         <WagmiProvider config={config}>
           <QueryClientProvider client={queryClient}>
-            <AppProvider>{children}</AppProvider>
+            <RainbowKitProvider>
+              <AppProvider>
+                <Header />
+                {children}
+              </AppProvider>
+            </RainbowKitProvider>
           </QueryClientProvider>
         </WagmiProvider>
       </body>

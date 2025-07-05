@@ -1,3 +1,11 @@
+'use client';
+
+import { Loading } from '@/components/Loading';
+import SwitchNetwork from '@/components/Wallet/SwitchNetwork';
+import { cn } from '@/lib/utils';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import React, { useEffect, useState } from 'react';
+import { useAccount } from 'wagmi';
 import { Case } from './Case';
 
 interface CasesProps {
@@ -7,6 +15,14 @@ interface CasesProps {
 }
 
 export function Cases({ selectedCase, openedCases = [], onCaseClick }: CasesProps) {
+  const { chain } = useAccount();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const caseRows = [
     [21, 22, 23, 24, 25, 26],
     [14, 15, 16, 17, 18, 19, 20],
@@ -34,7 +50,31 @@ export function Cases({ selectedCase, openedCases = [], onCaseClick }: CasesProp
 
       <div className="mt-6 text-center">
         <div className="bg-black bg-opacity-50 text-white p-3 rounded-lg">
-          <h3 className="text-lg font-bold">Select your case</h3>
+          <ConnectButton.Custom>
+            {({ account, openConnectModal, mounted }) => {
+              const isConnected = mounted && account;
+
+              if (isConnected && !chain) {
+                return <SwitchNetwork />;
+              }
+
+              return (
+                <button
+                  className={cn(
+                    'bg-[#F86E00] text-white py-2 px-4 rounded-full min-w-[72px] w-full flex justify-center items-center',
+                    isMounted && 'cursor-not-allowed opacity-50 hover:opacity-50'
+                  )}
+                  onClick={
+                    // isConnected ? 'fn' :
+                    openConnectModal
+                  }
+                  disabled={isLoading}
+                >
+                  {!isMounted || isLoading ? <Loading /> : isConnected ? 'Select your case' : 'Connect Wallet'}
+                </button>
+              );
+            }}
+          </ConnectButton.Custom>
         </div>
       </div>
     </div>

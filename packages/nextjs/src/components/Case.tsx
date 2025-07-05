@@ -50,12 +50,5 @@ export function Case({ caseNumber, gameId }: { caseNumber: number; gameId: bigin
     });
   };
 
-  return (
-    <button
-      onClick={eliminateBoxes}
-      className="relative w-16 h-16 rounded-lg shadow-md transition-all duration-200 font-bold text-black border-2"
-    >
-      {caseNumber}
-    </button>
-  );
+  return <button onClick={eliminateBoxes}>{caseNumber}</button>;
 }

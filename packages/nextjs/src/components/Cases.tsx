@@ -40,23 +40,21 @@ export function Cases() {
   };
 
   return (
-    <div className="bg-gradient-to-b from-red-900 to-red-700 p-8 rounded-lg shadow-lg border-4 border-red-800">
-      <div className="space-y-4">
-        {caseRows.map((row, rowIndex) => (
-          <div key={rowIndex} className="flex justify-center gap-3">
-            {row.map((caseNumber) =>
-              game.selectedBoxes.find((selected) => selected === caseNumber) ? null : (
-                <Case
-                  key={caseNumber}
-                  caseNumber={caseNumber}
-                  // TODO: gameid can be undefined, also wait for tx but display ui as fallback
-                  gameId={gameId as bigint}
-                />
-              )
-            )}
-          </div>
-        ))}
-      </div>
+    <div className="border-2 border-[#F86E00] rounded-[32px] text-white bg-[#03213f] p-8">
+      {caseRows.map((row, rowIndex) => (
+        <div key={rowIndex} className="flex justify-center gap-3">
+          {row.map((caseNumber) =>
+            game.selectedBoxes.find((selected) => selected === caseNumber) ? null : (
+              <Case
+                key={caseNumber}
+                caseNumber={caseNumber}
+                // TODO: gameid can be undefined, also wait for tx but display ui as fallback
+                gameId={gameId as bigint}
+              />
+            )
+          )}
+        </div>
+      ))}
     </div>
   );
 }

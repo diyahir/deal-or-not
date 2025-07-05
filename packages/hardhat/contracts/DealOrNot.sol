@@ -48,8 +48,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
     uint256 public houseFunds;
 
     // Constants
-    uint256 public constant ENTRY_FEE = 1 ether;
-    uint256 public constant MAX_PRIZE = 30 ether;
+    uint256 public constant ENTRY_FEE = 12 ether;
     uint256 public constant HOUSE_OFFER_PERCENTAGE = 75; // 75% of EV
     uint256 public constant TOTAL_BOXES = 26;
 
@@ -95,32 +94,32 @@ contract DealOrNot is ReentrancyGuard, Ownable {
      */
     function _initializePrizePool() internal {
         prizePool = [
+            0.00001 ether,
+            0.0001 ether,
+            0.0005 ether,
+            0.001 ether,
+            0.0025 ether,
+            0.005 ether,
+            0.0075 ether,
             0.01 ether,
+            0.02 ether,
+            0.03 ether,
+            0.04 ether,
             0.05 ether,
+            0.075 ether,
             0.1 ether,
-            0.25 ether,
             0.5 ether,
-            0.75 ether,
             1 ether,
-            1.5 ether,
-            2 ether,
             2.5 ether,
-            3 ether,
-            4 ether,
             5 ether,
-            6 ether,
-            7 ether,
-            8 ether,
-            9 ether,
+            7.5 ether,
             10 ether,
-            12 ether,
-            15 ether,
-            18 ether,
             20 ether,
-            22 ether,
-            25 ether,
-            27 ether,
-            30 ether
+            30 ether,
+            40 ether,
+            50 ether,
+            75 ether,
+            100 ether
         ];
     }
 

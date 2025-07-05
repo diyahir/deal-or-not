@@ -9,7 +9,7 @@ describe("DealOrNot", function () {
   let player1: HardhatEthersSigner;
   let player2: HardhatEthersSigner;
 
-  const ENTRY_FEE = ethers.parseEther("1");
+  const ENTRY_FEE = ethers.parseEther("12");
   const HOUSE_FUNDS = ethers.parseEther("100");
 
   before(async () => {
@@ -34,8 +34,8 @@ describe("DealOrNot", function () {
     it("Should have the correct prize pool", async function () {
       const prizePool = await dealOrNot.getPrizePool();
       expect(prizePool.length).to.equal(26);
-      expect(prizePool[0]).to.equal(ethers.parseEther("0.01"));
-      expect(prizePool[25]).to.equal(ethers.parseEther("30"));
+      expect(prizePool[0]).to.equal(ethers.parseEther("0.00001"));
+      expect(prizePool[25]).to.equal(ethers.parseEther("100"));
     });
 
     it("Should set the correct owner", async function () {
@@ -321,8 +321,8 @@ describe("DealOrNot", function () {
 
   describe("View Functions", function () {
     it("Should return correct box values", async function () {
-      expect(await dealOrNot.getBoxValue(0)).to.equal(ethers.parseEther("0.01"));
-      expect(await dealOrNot.getBoxValue(25)).to.equal(ethers.parseEther("30"));
+      expect(await dealOrNot.getBoxValue(0)).to.equal(ethers.parseEther("0.00001"));
+      expect(await dealOrNot.getBoxValue(25)).to.equal(ethers.parseEther("100"));
 
       await expect(dealOrNot.getBoxValue(26)).to.be.revertedWith("Invalid box index");
     });

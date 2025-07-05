@@ -26,19 +26,20 @@ interface CasesProps {
 export function Cases({ selectedCase, openedCases = [], onCaseClick }: CasesProps) {
   const { address, chain } = useAccount();
   const [isLoading, setIsLoading] = useState(false);
-  const { data: hash, writeContractAsync } = useWriteContract();
+  const { data: writeHash, writeContractAsync } = useWriteContract();
+  console.log('writeHash', writeHash);
   const gameContract = useGameContract();
-  const { data } = useReadContract({
+  const { data: gameId } = useReadContract({
     abi: DealOrNotABI,
     address: gameContract,
     functionName: 'gameIds',
     args: [address],
     query: {
-      enabled: !!hash
+      enabled: !!writeHash
     }
   });
 
-  const writeContract = async () => {
+  const startGame = async () => {
     // setIsLoading(true);
     await writeContractAsync({
       abi: DealOrNotABI,
@@ -46,6 +47,16 @@ export function Cases({ selectedCase, openedCases = [], onCaseClick }: CasesProp
       functionName: 'startGame',
       // 12 ether
       value: 12000000000000000000n
+    });
+  };
+
+  const eliminateBoxes = async () => {
+    // setIsLoading(true);
+    await writeContractAsync({
+      abi: DealOrNotABI,
+      address: gameContract,
+      functionName: 'eliminateBoxes',
+      args: [gameId]
     });
   };
 
@@ -82,10 +93,18 @@ export function Cases({ selectedCase, openedCases = [], onCaseClick }: CasesProp
                   className={cn(
                     'bg-[#F86E00] text-white py-2 px-4 rounded-full min-w-[72px] w-full flex justify-center items-center'
                   )}
-                  onClick={isConnected ? writeContract : openConnectModal}
+                  onClick={!isConnected ? openConnectModal : typeof gameId === 'bigint' ? eliminateBoxes : startGame}
                   disabled={isLoading}
                 >
-                  {isLoading ? <Loading /> : isConnected ? 'Start Game' : 'Connect Wallet'}
+                  {isLoading ? (
+                    <Loading />
+                  ) : !isConnected ? (
+                    'Connect Wallet'
+                  ) : typeof gameId === 'bigint' ? (
+                    'Select your case'
+                  ) : (
+                    'Start Game'
+                  )}
                 </button>
               );
             }}

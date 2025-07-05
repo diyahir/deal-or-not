@@ -1,5 +1,5 @@
 import { Amounts } from '@/components/Amounts';
-import { BankersOffer } from '@/components/BankersOffer';
+import { BankOffer } from '@/components/BankOffer';
 import { Cases } from '@/components/Cases';
 import type { Metadata } from 'next';
 
@@ -16,7 +16,7 @@ export default function Page() {
       </div>
       <div className="col-span-3 flex flex-col gap-6">
         <Cases />
-        <BankersOffer />
+        <BankOffer />
       </div>
 
       <div className="col-span-1">

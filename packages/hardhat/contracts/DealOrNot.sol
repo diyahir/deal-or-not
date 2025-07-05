@@ -51,7 +51,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
     uint256 public houseFunds;
 
     // Constants
-    uint256 public constant ENTRY_FEE = 12 ether;
+    uint256 public constant ENTRY_FEE = 0.1 ether;
     uint256 public constant HOUSE_OFFER_PERCENTAGE = 75; // 75% of EV
     uint256 public constant TOTAL_BOXES = 26;
 

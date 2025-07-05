@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   114: {
     DealOrNot: {
-      address: "0x2e7C133C9Cd6a667FCC13fcA9c8fb8Abb7c0effc",
+      address: "0xff67B22AD5c8c6EAA2EA2302EEe6b2333cA0c2cb",
       abi: [
         {
           inputs: [
@@ -806,7 +806,7 @@ const deployedContracts = {
   },
   545: {
     DealOrNot: {
-      address: "0x562b84AF8644FCFdfBBccf6F83D3CB0eEf223b99",
+      address: "0x720B1E2a3fCc52B2c8df125911D42D453e5A473d",
       abi: [
         {
           inputs: [
@@ -1717,9 +1717,30 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
   },
+  10143: {
+    MonadVRF: {
+      address: "0x74550773C1661d573458a93E5FAB23015BD09be3",
+      abi: [
+        "constructor(address _entropyAddress)",
+        "event EntropyContractSet(address indexed entropy)",
+        "event EntropyProviderSet(address indexed provider)",
+        "event RandomNumberRequested(uint64 indexed sequenceNumber, bytes32 userRandomNumber)",
+        "function _entropyCallback(uint64 sequence, address provider, bytes32 randomNumber)",
+        "function entropy() view returns (address)",
+        "function entropyProvider() view returns (address)",
+        "function getRandomNumber(uint64 sequenceNumber) view returns (bytes32)",
+        "function initializeEntropyProvider()",
+        "function owner() view returns (address)",
+        "function randomNumbers(uint64) view returns (bytes32)",
+        "function requestRandomNumber(bytes32 userRandomNumber) payable returns (uint64)",
+        "function setEntropyProvider(address _entropyProvider)",
+      ],
+      inheritedFunctions: {},
+    },
+  },
   23295: {
     DealOrNot: {
-      address: "0x2e7C133C9Cd6a667FCC13fcA9c8fb8Abb7c0effc",
+      address: "0xff67B22AD5c8c6EAA2EA2302EEe6b2333cA0c2cb",
       abi: [
         {
           inputs: [
@@ -2544,7 +2565,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     DealOrNot: {
-      address: "0xa82fF9aFd8f496c3d6ac40E2a0F282E47488CFc9",
+      address: "0x9d4454B023096f34B160D6B654540c56A1F81688",
       abi: [
         {
           inputs: [
@@ -3277,6 +3298,25 @@ const deployedContracts = {
         renounceOwnership: "@openzeppelin/contracts/access/Ownable.sol",
         transferOwnership: "@openzeppelin/contracts/access/Ownable.sol",
       },
+    },
+    MonadVRF: {
+      address: "0x36C02dA8a0983159322a80FFE9F24b1acfF8B570",
+      abi: [
+        "constructor(address _entropyAddress)",
+        "event EntropyContractSet(address indexed entropy)",
+        "event EntropyProviderSet(address indexed provider)",
+        "event RandomNumberRequested(uint64 indexed sequenceNumber, bytes32 userRandomNumber)",
+        "function _entropyCallback(uint64 sequence, address provider, bytes32 randomNumber)",
+        "function entropy() view returns (address)",
+        "function entropyProvider() view returns (address)",
+        "function getRandomNumber(uint256 sequenceNumber) view returns (uint256)",
+        "function initializeEntropyProvider()",
+        "function owner() view returns (address)",
+        "function randomNumbers(uint64) view returns (bytes32)",
+        "function requestRandomNumber(bytes32 userRandomNumber) payable returns (uint256)",
+        "function setEntropyProvider(address _entropyProvider)",
+      ],
+      inheritedFunctions: {},
     },
   },
 } as const;

@@ -9,7 +9,7 @@ describe("DealOrNot", function () {
   let player1: HardhatEthersSigner;
   let player2: HardhatEthersSigner;
 
-  const ENTRY_FEE = ethers.parseEther("12");
+  const ENTRY_FEE = ethers.parseEther("0.1");
   const HOUSE_FUNDS = ethers.parseEther("100");
 
   before(async () => {

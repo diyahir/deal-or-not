@@ -2,6 +2,7 @@ import { createContext, useContext, useState, type Dispatch, type SetStateAction
 
 type Game = {
   amounts: { available: boolean; qty: bigint }[];
+  canAccept: boolean;
   eliminations: number;
   selectedBoxes: number[];
 };
@@ -41,6 +42,7 @@ const AppContext = createContext<AppContext>({
       { available: true, qty: 75000000000000000000n }, // 75 ether
       { available: true, qty: 100000000000000000000n } // 100 ether
     ],
+    canAccept: false,
     eliminations: 0,
     selectedBoxes: []
   },
@@ -82,6 +84,7 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
       { available: true, qty: 75000000000000000000n }, // 75 ether
       { available: true, qty: 100000000000000000000n } // 100 ether
     ],
+    canAccept: false,
     eliminations: 0,
     selectedBoxes: []
   });

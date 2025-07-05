@@ -2,6 +2,7 @@
 
 import { Loading } from '@/components/Loading';
 import SwitchNetwork from '@/components/Wallet/SwitchNetwork';
+import { useAppContext } from '@/contexts/AppContext';
 import { useGameContract } from '@/hooks/useGameContract';
 import { cn } from '@/lib/utils';
 import DealOrNotABI from '@/shared/abi/DealOrNot.json';
@@ -12,10 +13,10 @@ import { useAccount, usePublicClient, useReadContract, useWriteContract } from '
 
 export function BankOffer() {
   const client = usePublicClient();
+  const { game } = useAppContext();
   const { address, chain } = useAccount();
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingAccept, setIsLoadingAccept] = useState(false);
-  const [isLoadingReject, setIsLoadingReject] = useState(false);
   const gameContract = useGameContract();
   const { data: gameId } = useReadContract({
     abi: DealOrNotABI,
@@ -43,6 +44,7 @@ export function BankOffer() {
   });
   const { writeContractAsync } = useWriteContract();
 
+  // TODO: implement reset context and only accept when you actually can, maybe put something different on offer accepted, toast accepted
   const acceptDeal = async () => {
     setIsLoadingAccept(true);
     const hash = await writeContractAsync({
@@ -55,12 +57,6 @@ export function BankOffer() {
       hash
     });
     setIsLoadingAccept(false);
-  };
-
-  const declineDeal = async () => {
-    // TODO: Implement decline logic
-    // TODO: implement reset context
-    console.log('Declining deal...');
   };
 
   const startGame = async () => {
@@ -89,21 +85,12 @@ export function BankOffer() {
             </span>
           </div>
 
-          <div className="flex items-center justify-center gap-2 bg-[#1b4061] rounded-lg p-1.5 text-white">
-            <button
-              onClick={acceptDeal}
-              className="bg-[#3fa43e] text-2xl font-semibold rounded-lg py-4 px-8 min-w-[155px] flex justify-center"
-            >
-              {isLoadingAccept ? <Loading /> : 'ACCEPT'}
-            </button>
-            <span className="bg-[#f86e02] text-[#1b4061] font-semibold text-xl px-1 h-fit">OR</span>
-            <button
-              onClick={declineDeal}
-              className="bg-[#de5151] text-2xl font-semibold rounded-lg py-4 px-8 min-w-[160px] flex justify-center"
-            >
-              {isLoadingReject ? <Loading /> : 'DECLINE'}
-            </button>
-          </div>
+          <button
+            onClick={acceptDeal}
+            className="bg-[#3fa43e] text-2xl font-semibold rounded-lg py-4 px-8 min-w-[155px] flex justify-center"
+          >
+            {isLoadingAccept ? <Loading /> : 'ACCEPT'}
+          </button>
         </>
       ) : (
         <ConnectButton.Custom>

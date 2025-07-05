@@ -9,13 +9,17 @@ import { useState } from 'react';
 import { usePublicClient, useWriteContract } from 'wagmi';
 import { LoadingSmall } from './Loading';
 
-export function Case({ caseNumber, gameId }: { caseNumber: number; gameId: bigint }) {
+export function Case({ caseNumber, gameId }: { caseNumber: number; gameId: bigint | undefined }) {
   const [loading, setLoading] = useState(false);
   const { game, setGame } = useAppContext();
   const { writeContractAsync } = useWriteContract();
   const client = usePublicClient();
   const gameContract = useGameContract();
+
   const eliminateBoxes = async () => {
+    if (typeof gameId !== 'bigint') {
+      return;
+    }
     const { eliminations } = game;
     if (
       eliminations === 0 ||
@@ -50,6 +54,7 @@ export function Case({ caseNumber, gameId }: { caseNumber: number; gameId: bigin
           available: i === Number((eliminatedBoxesIndexes as bigint[])[game.eliminations]) ? false : amount.available
         };
       }),
+      canAccept: true,
       eliminations: game.eliminations + 1,
       selectedBoxes: game.selectedBoxes.concat([caseNumber])
     });

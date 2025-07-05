@@ -154,6 +154,25 @@ const deployMonadVRF: DeployFunction = async function (hre: HardhatRuntimeEnviro
   console.log("2. Or initialize from entropy contract: await contract.initializeEntropyProvider()");
   console.log("3. Request random number: await contract.requestRandomNumber('0x...', { value: fee })");
   console.log("4. Get random number: await contract.getRandomNumber(sequenceNumber)");
+
+  const { deployer } = await hre.getNamedAccounts();
+  console.log("deployer", deployer);
+  const { deploy } = hre.deployments;
+  await deploy("DealOrNot", {
+    from: deployer,
+    // Contract constructor arguments
+    args: [deployer, monadVRF.address],
+    log: true,
+    // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
+    // automatically mining the contract deployment transaction. There is no effect on live networks.
+    autoMine: true,
+  });
+
+  const dealOrNotContract = await hre.ethers.getContract<Contract>("DealOrNot", deployer);
+  console.log("🎯 DealOrNot contract deployed!");
+  console.log("📊 Total boxes:", await dealOrNotContract.TOTAL_BOXES());
+  console.log("💰 Entry fee:", hre.ethers.formatEther(await dealOrNotContract.ENTRY_FEE()), "ETH");
+  console.log("🏦 House funds:", hre.ethers.formatEther(await dealOrNotContract.getHouseFunds()), "ETH");
 };
 
 export default deployMonadVRF;

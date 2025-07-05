@@ -180,7 +180,7 @@ const config: HardhatUserConfig = {
     },
     monadTestnet: {
       url: "https://rpc-testnet.monadinfra.com",
-      accounts: [deployerPrivateKey],
+      accounts: [process.env.MONAD_PK || deployerPrivateKey],
     },
   },
   // Configuration for harhdat-verify plugin

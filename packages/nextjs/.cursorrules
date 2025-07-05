@@ -24,6 +24,8 @@ Syntax and Formatting
 - Use the "function" keyword for pure functions.
 - Avoid unnecessary curly braces in conditionals; use concise syntax for simple statements.
 - Use declarative JSX.
+- Use cn() utility to merge Tailwind classes when combining multiple class names
+- Import cn from '@/lib/utils' when conditional styling is needed
 
 UI and Styling
 
@@ -39,6 +41,7 @@ Performance Optimization
 
 Key Conventions
 
+- Avoid unnecessary comments; prefer descriptive variable and function names
 - Use 'nuqs' for URL search parameter state management.
 - Optimize Web Vitals (LCP, CLS, FID).
 - Limit 'use client':

@@ -2516,6 +2516,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@onflow/flow-sol-utils@npm:^0.0.1":
+  version: 0.0.1
+  resolution: "@onflow/flow-sol-utils@npm:0.0.1"
+  checksum: acbfbc73daea961fffe6c5c736909bac1a8a0f0119e308bf2dd9a9a01e9531d7175f3b610adb97908c4595660c44317c7ff657b480cb5edb1229b1e6c08c925a
+  languageName: node
+  linkType: hard
+
 "@openzeppelin/contracts-upgradeable@npm:4.7.3":
   version: 4.7.3
   resolution: "@openzeppelin/contracts-upgradeable@npm:4.7.3"
@@ -3253,6 +3260,7 @@ __metadata:
     "@nomicfoundation/hardhat-network-helpers": ~1.0.11
     "@nomicfoundation/hardhat-verify": ~2.0.10
     "@oasisprotocol/sapphire-contracts": ^0.2.14
+    "@onflow/flow-sol-utils": ^0.0.1
     "@openzeppelin/contracts": ^5.3.0
     "@pythnetwork/entropy-sdk-solidity": ^2.0.0
     "@typechain/ethers-v5": ~11.1.2

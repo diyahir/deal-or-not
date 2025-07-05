@@ -22,17 +22,24 @@ const deployDealOrNot: DeployFunction = async function (hre: HardhatRuntimeEnvir
   const { deployer } = await hre.getNamedAccounts();
   const { deploy } = hre.deployments;
 
+  // Get the deployed contract to interact with it after deploying.
+  const vrfContract = await deploy("BaseVRF", {
+    from: deployer,
+    args: [],
+    log: true,
+    autoMine: true,
+  });
+
   await deploy("DealOrNot", {
     from: deployer,
     // Contract constructor arguments
-    args: [deployer],
+    args: [deployer, vrfContract.address],
     log: true,
     // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
     // automatically mining the contract deployment transaction. There is no effect on live networks.
     autoMine: true,
   });
 
-  // Get the deployed contract to interact with it after deploying.
   const dealOrNotContract = await hre.ethers.getContract<Contract>("DealOrNot", deployer);
   console.log("🎯 DealOrNot contract deployed!");
   console.log("📊 Total boxes:", await dealOrNotContract.TOTAL_BOXES());

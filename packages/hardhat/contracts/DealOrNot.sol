@@ -7,6 +7,7 @@ import "hardhat/console.sol";
 // Use openzeppelin to inherit battle-tested implementations
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "./interfaces/IVRF.sol";
 
 /**
  * A Deal or Not smart contract that allows multiple players to play concurrent games
@@ -43,6 +44,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
     mapping(address => uint256) public gameIds;
     mapping(uint256 => Game) public games;
     mapping(address => uint256[]) public playerGames;
+    mapping(uint256 => bytes32) public requestIds;
     uint256 public nextGameId;
 
     // House funds
@@ -52,6 +54,9 @@ contract DealOrNot is ReentrancyGuard, Ownable {
     uint256 public constant ENTRY_FEE = 12 ether;
     uint256 public constant HOUSE_OFFER_PERCENTAGE = 75; // 75% of EV
     uint256 public constant TOTAL_BOXES = 26;
+
+    // VRF
+    IVRF public vrf;
 
     // Round elimination requirements
     uint256[] public roundEliminations = [6, 5, 4, 3, 2, 1]; // Boxes to eliminate per round
@@ -86,7 +91,8 @@ contract DealOrNot is ReentrancyGuard, Ownable {
         _;
     }
 
-    constructor(address _owner) Ownable(_owner) {
+    constructor(address _owner, address _vrf) Ownable(_owner) {
+        vrf = IVRF(_vrf);
         _initializePrizePool();
     }
 
@@ -149,6 +155,9 @@ contract DealOrNot is ReentrancyGuard, Ownable {
         playerGames[msg.sender].push(gameId);
         gameIds[msg.sender] = gameId;
 
+        bytes32 requestId = vrf.requestRandomNumber(bytes32(gameId));
+        requestIds[gameId] = requestId;
+
         emit GameStarted(gameId, msg.sender, playerBoxIndex);
 
         return gameId;
@@ -181,6 +190,10 @@ contract DealOrNot is ReentrancyGuard, Ownable {
         game.state = GameState.OfferMade;
 
         emit BoxesEliminated(gameId, boxesToEliminate, game.currentRound);
+
+        // request a new random number
+        bytes32 requestId = vrf.requestRandomNumber(bytes32(gameId));
+        requestIds[gameId] = requestId;
     }
 
     /**
@@ -202,7 +215,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
 
         // More efficient selection without creating large temporary arrays
         while (selectedCount < numToEliminate && attempts < maxAttempts) {
-            uint256 randomBox = _generateRandomBoxForElimination(gameId, selectedCount, attempts);
+            uint256 randomBox = _generateRandomBoxForElimination(gameId);
 
             // Check if box is available (not player's box, not already eliminated, not already selected)
             if (
@@ -248,25 +261,8 @@ contract DealOrNot is ReentrancyGuard, Ownable {
     /**
      * Generate random box index with better entropy
      */
-    function _generateRandomBoxForElimination(uint256 gameId, uint256 iteration, uint256 attempt)
-        internal
-        view
-        returns (uint256)
-    {
-        uint256 randomSeed = uint256(
-            keccak256(
-                abi.encodePacked(
-                    block.timestamp,
-                    block.prevrandao,
-                    gameId,
-                    iteration,
-                    attempt,
-                    games[gameId].eliminatedBoxes.length,
-                    blockhash(block.number - 1),
-                    tx.origin // Add more entropy
-                )
-            )
-        );
+    function _generateRandomBoxForElimination(uint256 gameId) internal view returns (uint256) {
+        uint256 randomSeed = vrf.getRandomNumber(requestIds[gameId]);
 
         return randomSeed % TOTAL_BOXES;
     }

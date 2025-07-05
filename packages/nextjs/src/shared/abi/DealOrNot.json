@@ -5,6 +5,11 @@
         "internalType": "address",
         "name": "_owner",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_vrf",
+        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
@@ -633,6 +638,25 @@
         "type": "uint256"
       }
     ],
+    "name": "requestIds",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "name": "roundEliminations",
     "outputs": [
       {
@@ -668,6 +692,19 @@
     "name": "transferOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "vrf",
+    "outputs": [
+      {
+        "internalType": "contract IVRF",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {

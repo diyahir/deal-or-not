@@ -1,8 +1,8 @@
+import volcanoImage from '@/assets/volcano.png';
 import { Amounts } from '@/components/Amounts';
 import { BankersOffer } from '@/components/BankersOffer';
 import { Cases } from '@/components/Cases';
 import type { Metadata } from 'next';
-import volcanoImage from '@/assets/volcano.png';
 
 export const metadata: Metadata = {
   title: 'Deal or No Deal',
@@ -23,12 +23,6 @@ export default function Page() {
     >
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr_1fr] gap-6">
-          {/* Low amounts - left side */}
-          <div className="lg:col-span-1">
-            <Amounts showLowAmounts={true} />
-          </div>
-
-          {/* Cases and Banker's Offer - center */}
           <div className="lg:col-span-1">
             <Cases />
             <div className="mt-6">
@@ -36,9 +30,8 @@ export default function Page() {
             </div>
           </div>
 
-          {/* High amounts - right side */}
           <div className="lg:col-span-1">
-            <Amounts showLowAmounts={false} />
+            <Amounts />
           </div>
         </div>
       </div>

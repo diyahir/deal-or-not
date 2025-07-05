@@ -26,23 +26,21 @@ contract DealOrNot is ReentrancyGuard, Ownable {
 
     // Individual game struct
     struct Game {
-        address player;
-        uint256 deposit;
-        uint256 gameId;
-        uint256 playerBoxIndex;
-        uint256 currentRound;
-        uint256 lastOffer;
-        uint256[] remainingBoxes;
-        uint256[] eliminatedBoxes;
-        GameState state;
-        uint256 createdAt;
-        bool isActive;
+        address player; // Player address
+        uint256 deposit; // Deposit amount
+        uint256 gameId; // Game ID
+        uint256 playerBoxIndex; // Index of the player's box
+        uint256 currentRound; // Current round of the game
+        uint256[] eliminatedBoxes; // Boxes that have been eliminated
+        GameState state; // Current state of the game
+        bool isActive; // Whether the game is still active
     }
 
     // Prize pool (fixed amounts in wei) - 26 boxes total
     uint256[] public prizePool;
 
     // Game tracking
+    mapping(address => uint256) public gameIds;
     mapping(uint256 => Game) public games;
     mapping(address => uint256[]) public playerGames;
     uint256 public nextGameId;
@@ -51,8 +49,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
     uint256 public houseFunds;
 
     // Constants
-    uint256 public constant ENTRY_FEE = 1 ether;
-    uint256 public constant MAX_PRIZE = 30 ether;
+    uint256 public constant ENTRY_FEE = 12 ether;
     uint256 public constant HOUSE_OFFER_PERCENTAGE = 75; // 75% of EV
     uint256 public constant TOTAL_BOXES = 26;
 
@@ -62,7 +59,6 @@ contract DealOrNot is ReentrancyGuard, Ownable {
     // Events
     event GameStarted(uint256 indexed gameId, address indexed player, uint256 playerBox);
     event BoxesEliminated(uint256 indexed gameId, uint256[] eliminatedBoxes, uint256 round);
-    event OfferMade(uint256 indexed gameId, uint256 offer, uint256 round);
     event DealAccepted(uint256 indexed gameId, address indexed player, uint256 payout);
     event DealRejected(uint256 indexed gameId, uint256 round);
     event GameCompleted(uint256 indexed gameId, address indexed player, uint256 finalPayout);
@@ -99,53 +95,43 @@ contract DealOrNot is ReentrancyGuard, Ownable {
      */
     function _initializePrizePool() internal {
         prizePool = [
+            0.00001 ether,
+            0.0001 ether,
+            0.0005 ether,
+            0.001 ether,
+            0.0025 ether,
+            0.005 ether,
+            0.0075 ether,
             0.01 ether,
+            0.02 ether,
+            0.03 ether,
+            0.04 ether,
             0.05 ether,
+            0.075 ether,
             0.1 ether,
-            0.25 ether,
             0.5 ether,
-            0.75 ether,
             1 ether,
-            1.5 ether,
-            2 ether,
             2.5 ether,
-            3 ether,
-            4 ether,
             5 ether,
-            6 ether,
-            7 ether,
-            8 ether,
-            9 ether,
+            7.5 ether,
             10 ether,
-            12 ether,
-            15 ether,
-            18 ether,
             20 ether,
-            22 ether,
-            25 ether,
-            27 ether,
-            30 ether
+            30 ether,
+            40 ether,
+            50 ether,
+            75 ether,
+            100 ether
         ];
     }
 
     /**
      * Start a new game - player deposits 1 ETH and selects their box
      */
-    function startGame() external payable nonReentrant {
+    function startGame() external payable nonReentrant returns (uint256) {
         require(msg.value == ENTRY_FEE, "Must deposit exactly 1 ETH");
 
         uint256 gameId = nextGameId++;
         uint256 playerBoxIndex = _generateRandomBoxIndex(gameId, msg.sender);
-
-        // Initialize remaining boxes (all except player's box)
-        uint256[] memory remaining = new uint256[](TOTAL_BOXES - 1);
-        uint256 remainingIndex = 0;
-        for (uint256 i = 0; i < TOTAL_BOXES; i++) {
-            if (i != playerBoxIndex) {
-                remaining[remainingIndex] = i;
-                remainingIndex++;
-            }
-        }
 
         // Create new game
         games[gameId] = Game({
@@ -154,64 +140,135 @@ contract DealOrNot is ReentrancyGuard, Ownable {
             gameId: gameId,
             playerBoxIndex: playerBoxIndex,
             currentRound: 0,
-            lastOffer: 0,
-            remainingBoxes: remaining,
             eliminatedBoxes: new uint256[](0),
             state: GameState.Playing,
-            createdAt: block.timestamp,
             isActive: true
         });
 
         // Track player's games
         playerGames[msg.sender].push(gameId);
+        gameIds[msg.sender] = gameId;
 
         emit GameStarted(gameId, msg.sender, playerBoxIndex);
+
+        return gameId;
     }
 
     /**
-     * Eliminate boxes for the current round
+     * Eliminate boxes for the current round (randomly selected) - OPTIMIZED
+     * If called when an offer is pending, it implicitly rejects the offer
      */
-    function eliminateBoxes(uint256 gameId, uint256[] calldata boxIndexes)
-        external
-        gameExists(gameId)
-        onlyPlayer(gameId)
-        gameInState(gameId, GameState.Playing)
-        nonReentrant
-    {
+    function eliminateBoxes(uint256 gameId) external gameExists(gameId) onlyPlayer(gameId) nonReentrant {
         Game storage game = games[gameId];
-        require(game.currentRound < roundEliminations.length, "Game already finished");
-        require(boxIndexes.length == roundEliminations[game.currentRound], "Wrong number of boxes");
+        require(game.state == GameState.Playing || game.state == GameState.OfferMade, "Invalid game state");
 
-        // Verify all boxes are in remaining boxes
-        for (uint256 i = 0; i < boxIndexes.length; i++) {
-            require(_isBoxInArray(boxIndexes[i], game.remainingBoxes), "Box not available");
+        // If there was a pending offer, emit rejection event
+        if (game.state == GameState.OfferMade) {
+            emit DealRejected(gameId, game.currentRound);
         }
 
-        // Remove eliminated boxes from remaining boxes
-        for (uint256 i = 0; i < boxIndexes.length; i++) {
-            _removeBoxFromArray(boxIndexes[i], game.remainingBoxes);
-            game.eliminatedBoxes.push(boxIndexes[i]);
+        // Check if we've reached the final round
+        if (game.currentRound >= roundEliminations.length) {
+            _completeGame(gameId);
+            return;
         }
+
+        // Randomly select and directly add boxes to eliminated array
+        uint256 numToEliminate = roundEliminations[game.currentRound];
+        uint256[] memory boxesToEliminate = _selectAndEliminateBoxes(gameId, numToEliminate);
 
         game.currentRound++;
+        game.state = GameState.OfferMade;
 
-        // Calculate and make offer if not final round
-        if (game.currentRound < roundEliminations.length) {
-            uint256 offer = _calculateOffer(gameId);
-            game.lastOffer = offer;
-            game.state = GameState.OfferMade;
+        emit BoxesEliminated(gameId, boxesToEliminate, game.currentRound);
+    }
 
-            emit BoxesEliminated(gameId, boxIndexes, game.currentRound);
-            emit OfferMade(gameId, offer, game.currentRound);
-        } else {
-            // Final round - last elimination before final choice
-            uint256 finalOffer = _calculateOffer(gameId);
-            game.lastOffer = finalOffer;
-            game.state = GameState.OfferMade;
+    /**
+     * More efficient random box selection - directly adds to storage and returns for events
+     */
+    function _selectAndEliminateBoxes(uint256 gameId, uint256 numToEliminate) internal returns (uint256[] memory) {
+        Game storage game = games[gameId];
 
-            emit BoxesEliminated(gameId, boxIndexes, game.currentRound);
-            emit OfferMade(gameId, finalOffer, game.currentRound);
+        // Pre-calculate total available boxes to avoid repeated calculations
+        uint256 totalEliminated = game.eliminatedBoxes.length;
+        uint256 availableCount = TOTAL_BOXES - totalEliminated - 1; // -1 for player's box
+        require(availableCount >= numToEliminate, "Not enough boxes to eliminate");
+
+        uint256[] memory selectedBoxes = new uint256[](numToEliminate);
+        uint256 selectedCount = 0;
+        uint256 attempts = 0;
+        // More generous max attempts calculation that accounts for available boxes
+        uint256 maxAttempts = numToEliminate * availableCount + (numToEliminate * 10); // Prevent infinite loops
+
+        // More efficient selection without creating large temporary arrays
+        while (selectedCount < numToEliminate && attempts < maxAttempts) {
+            uint256 randomBox = _generateRandomBoxForElimination(gameId, selectedCount, attempts);
+
+            // Check if box is available (not player's box, not already eliminated, not already selected)
+            if (
+                randomBox != game.playerBoxIndex && !_isBoxEliminated(randomBox, game.eliminatedBoxes)
+                    && !_isBoxInSelection(randomBox, selectedBoxes, selectedCount)
+            ) {
+                selectedBoxes[selectedCount] = randomBox;
+                game.eliminatedBoxes.push(randomBox);
+                selectedCount++;
+            }
+            attempts++;
         }
+
+        require(selectedCount == numToEliminate, "Failed to select required boxes");
+        return selectedBoxes;
+    }
+
+    /**
+     * More efficient check if box is already eliminated using early termination
+     */
+    function _isBoxEliminated(uint256 box, uint256[] storage eliminatedBoxes) internal view returns (bool) {
+        uint256 length = eliminatedBoxes.length;
+        for (uint256 i = 0; i < length; i++) {
+            if (eliminatedBoxes[i] == box) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if box is in current selection (for current round)
+     */
+    function _isBoxInSelection(uint256 box, uint256[] memory selection, uint256 count) internal pure returns (bool) {
+        for (uint256 i = 0; i < count; i++) {
+            if (selection[i] == box) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Generate random box index with better entropy
+     */
+    function _generateRandomBoxForElimination(uint256 gameId, uint256 iteration, uint256 attempt)
+        internal
+        view
+        returns (uint256)
+    {
+        uint256 randomSeed = uint256(
+            keccak256(
+                abi.encodePacked(
+                    block.timestamp,
+                    block.prevrandao,
+                    gameId,
+                    iteration,
+                    attempt,
+                    games[gameId].eliminatedBoxes.length,
+                    blockhash(block.number - 1),
+                    tx.origin // Add more entropy
+                )
+            )
+        );
+
+        return randomSeed % TOTAL_BOXES;
     }
 
     /**
@@ -223,10 +280,10 @@ contract DealOrNot is ReentrancyGuard, Ownable {
         onlyPlayer(gameId)
         gameInState(gameId, GameState.OfferMade)
         nonReentrant
-        houseSolvent(games[gameId].lastOffer)
+        houseSolvent(_calculateOffer(gameId))
     {
         Game storage game = games[gameId];
-        uint256 payout = game.lastOffer;
+        uint256 payout = _calculateOffer(gameId);
 
         game.state = GameState.DealTaken;
         game.isActive = false;
@@ -237,28 +294,6 @@ contract DealOrNot is ReentrancyGuard, Ownable {
 
         emit DealAccepted(gameId, game.player, payout);
         emit GameCompleted(gameId, game.player, payout);
-    }
-
-    /**
-     * Reject the current deal offer
-     */
-    function rejectDeal(uint256 gameId)
-        external
-        gameExists(gameId)
-        onlyPlayer(gameId)
-        gameInState(gameId, GameState.OfferMade)
-        nonReentrant
-    {
-        Game storage game = games[gameId];
-
-        // If this was the final offer, complete the game
-        if (game.currentRound >= roundEliminations.length) {
-            _completeGame(gameId);
-        } else {
-            // Continue to next round
-            game.state = GameState.Playing;
-            emit DealRejected(gameId, game.currentRound);
-        }
     }
 
     /**
@@ -289,12 +324,14 @@ contract DealOrNot is ReentrancyGuard, Ownable {
         // Include player's box in calculation
         totalValue += prizePool[game.playerBoxIndex];
 
-        // Add remaining boxes
-        for (uint256 i = 0; i < game.remainingBoxes.length; i++) {
-            totalValue += prizePool[game.remainingBoxes[i]];
+        // Add remaining boxes (all boxes except eliminated ones and player's box)
+        for (uint256 i = 0; i < TOTAL_BOXES; i++) {
+            if (i != game.playerBoxIndex && !_isBoxInArray(i, game.eliminatedBoxes)) {
+                totalValue += prizePool[i];
+            }
         }
 
-        uint256 totalBoxes = game.remainingBoxes.length + 1; // +1 for player's box
+        uint256 totalBoxes = (TOTAL_BOXES - game.eliminatedBoxes.length); // Total minus eliminated
         uint256 expectedValue = totalValue / totalBoxes;
 
         return (expectedValue * HOUSE_OFFER_PERCENTAGE) / 100;
@@ -321,19 +358,6 @@ contract DealOrNot is ReentrancyGuard, Ownable {
             }
         }
         return false;
-    }
-
-    /**
-     * Remove a box from the array
-     */
-    function _removeBoxFromArray(uint256 box, uint256[] storage array) internal {
-        for (uint256 i = 0; i < array.length; i++) {
-            if (array[i] == box) {
-                array[i] = array[array.length - 1];
-                array.pop();
-                break;
-            }
-        }
     }
 
     /**
@@ -368,7 +392,21 @@ contract DealOrNot is ReentrancyGuard, Ownable {
     }
 
     function getRemainingBoxes(uint256 gameId) external view gameExists(gameId) returns (uint256[] memory) {
-        return games[gameId].remainingBoxes;
+        Game storage game = games[gameId];
+
+        // Calculate how many boxes remain
+        uint256 remainingCount = TOTAL_BOXES - game.eliminatedBoxes.length - 1; // -1 for player's box
+        uint256[] memory remaining = new uint256[](remainingCount);
+
+        uint256 index = 0;
+        for (uint256 i = 0; i < TOTAL_BOXES; i++) {
+            if (i != game.playerBoxIndex && !_isBoxInArray(i, game.eliminatedBoxes)) {
+                remaining[index] = i;
+                index++;
+            }
+        }
+
+        return remaining;
     }
 
     function getEliminatedBoxes(uint256 gameId) external view gameExists(gameId) returns (uint256[] memory) {

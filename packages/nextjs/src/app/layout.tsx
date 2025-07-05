@@ -50,7 +50,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn(roboto.className, audiowide.variable, 'bg-[#001427] sm:bg-[#00152C]')}>
+    <html
+      lang="en"
+      className={cn(
+        roboto.className,
+        audiowide.variable,
+        // eslint-disable-next-line quotes
+        "bg-[#00152C] bg-[url('/hero.png')] bg-bottom bg-cover min-h-screen bg-no-repeat"
+      )}
+    >
       <body>
         <WagmiProvider config={config}>
           <QueryClientProvider client={queryClient}>

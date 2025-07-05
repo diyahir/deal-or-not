@@ -44,7 +44,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
     mapping(address => uint256) public gameIds;
     mapping(uint256 => Game) public games;
     mapping(address => uint256[]) public playerGames;
-    mapping(uint256 => bytes32) public requestIds;
+    mapping(uint256 => uint256) public requestIds;
     uint256 public nextGameId;
 
     // House funds
@@ -155,7 +155,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
         playerGames[msg.sender].push(gameId);
         gameIds[msg.sender] = gameId;
 
-        bytes32 requestId = vrf.requestRandomNumber(bytes32(gameId));
+        uint256 requestId = vrf.requestRandomNumber(bytes32(gameId));
         requestIds[gameId] = requestId;
 
         emit GameStarted(gameId, msg.sender, playerBoxIndex);
@@ -192,7 +192,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
         emit BoxesEliminated(gameId, boxesToEliminate, game.currentRound);
 
         // request a new random number
-        bytes32 requestId = vrf.requestRandomNumber(bytes32(gameId));
+        uint256 requestId = vrf.requestRandomNumber(bytes32(gameId));
         requestIds[gameId] = requestId;
     }
 
@@ -261,7 +261,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
     /**
      * Generate random box index with better entropy
      */
-    function _generateRandomBoxForElimination(uint256 gameId) internal view returns (uint256) {
+    function _generateRandomBoxForElimination(uint256 gameId) internal returns (uint256) {
         uint256 randomSeed = vrf.getRandomNumber(requestIds[gameId]);
 
         return randomSeed % TOTAL_BOXES;

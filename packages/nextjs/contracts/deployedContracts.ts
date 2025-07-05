@@ -7,14 +7,14 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     BaseVRF: {
-      address: "0xE6E340D132b5f46d1e472DebcD681B2aBc16e57E",
+      address: "0x9E545E3C0baAB3E08CdfD552C960A1050f373042",
       abi: [
         {
           inputs: [
             {
-              internalType: "bytes32",
+              internalType: "uint256",
               name: "requestId",
-              type: "bytes32",
+              type: "uint256",
             },
           ],
           name: "getRandomNumber",
@@ -39,9 +39,9 @@ const deployedContracts = {
           name: "requestRandomNumber",
           outputs: [
             {
-              internalType: "bytes32",
+              internalType: "uint256",
               name: "",
-              type: "bytes32",
+              type: "uint256",
             },
           ],
           stateMutability: "payable",
@@ -51,7 +51,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     DealOrNot: {
-      address: "0xc3e53F4d16Ae77Db1c982e75a937B9f60FE63690",
+      address: "0xa82fF9aFd8f496c3d6ac40E2a0F282E47488CFc9",
       abi: [
         {
           inputs: [
@@ -695,9 +695,9 @@ const deployedContracts = {
           name: "requestIds",
           outputs: [
             {
-              internalType: "bytes32",
+              internalType: "uint256",
               name: "",
-              type: "bytes32",
+              type: "uint256",
             },
           ],
           stateMutability: "view",

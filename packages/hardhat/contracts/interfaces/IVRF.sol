@@ -2,7 +2,7 @@
 pragma solidity >=0.7.0 <0.9.0;
 
 interface IVRF {
-    function requestRandomNumber(bytes32 userRandomNumber) external payable returns (bytes32);
+    function requestRandomNumber(bytes32) external payable returns (uint256);
 
-    function getRandomNumber(bytes32 requestId) external view returns (uint256);
+    function getRandomNumber(uint256 requestId) external returns (uint256);
 }

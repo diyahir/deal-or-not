@@ -9,7 +9,7 @@ import "../interfaces/IVRF.sol";
 contract BaseVRF is IVRF {
     uint256 private nonce = 0;
 
-    function requestRandomNumber(bytes32 userId) external payable returns (bytes32) {
+    function requestRandomNumber(bytes32 userId) external payable returns (uint256) {
         nonce++;
         uint256 randomSeed = uint256(
             keccak256(
@@ -18,10 +18,10 @@ contract BaseVRF is IVRF {
                 )
             )
         );
-        return bytes32(randomSeed);
+        return randomSeed;
     }
 
-    function getRandomNumber(bytes32 requestId) external view returns (uint256) {
+    function getRandomNumber(uint256 requestId) external view returns (uint256) {
         uint256 randomSeed = uint256(
             keccak256(
                 abi.encodePacked(

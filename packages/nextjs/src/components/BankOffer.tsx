@@ -13,6 +13,7 @@ import { useAccount, usePublicClient, useReadContract, useWriteContract } from '
 
 export function BankOffer() {
   const client = usePublicClient();
+  const { game } = useAppContext();
   const { address, chain } = useAccount();
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingAccept, setIsLoadingAccept] = useState(false);

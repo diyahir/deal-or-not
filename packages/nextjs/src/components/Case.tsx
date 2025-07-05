@@ -54,6 +54,7 @@ export function Case({ caseNumber, gameId }: { caseNumber: number; gameId: bigin
           available: i === Number((eliminatedBoxesIndexes as bigint[])[game.eliminations]) ? false : amount.available
         };
       }),
+      canAccept: true,
       eliminations: game.eliminations + 1,
       selectedBoxes: game.selectedBoxes.concat([caseNumber])
     });

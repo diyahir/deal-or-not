@@ -1,37 +1,19 @@
-import { cn } from '@/lib/utils';
+'use client';
 
-interface AmountsProps {
-  revealedAmounts?: number[];
-}
+import { useAppContext } from '@/contexts/AppContext';
+import { formatEther } from 'viem';
 
-export function Amounts({ revealedAmounts = [] }: AmountsProps) {
-  const amounts = [
-    0.01, 1, 5, 10, 25, 50, 75, 100, 200, 300, 400, 500, 750, 1000, 5000, 10000, 25000, 50000, 75000, 100000, 200000,
-    300000, 400000, 500000, 750000, 1000000
-  ];
-
-  const formatAmount = (amount: number) => {
-    if (amount < 1) {
-      return `$${amount.toFixed(2)}`;
-    } else if (amount >= 1000) {
-      return `$${amount.toLocaleString()}`;
-    } else {
-      return `$${amount}`;
-    }
-  };
+export function Amounts() {
+  const { game } = useAppContext();
 
   return (
     <div className="bg-gradient-to-b from-yellow-400 to-yellow-600 p-4 rounded-lg shadow-lg border-2 border-yellow-700">
       <div className="grid grid-cols-2 gap-2 text-sm">
-        {amounts.map((amount, index) => (
-          <div
-            key={index}
-            className={cn('flex justify-between items-center p-2 rounded border', {
-              'bg-red-200 text-red-800 line-through opacity-50': revealedAmounts.includes(amount),
-              'bg-white text-black hover:bg-gray-100': !revealedAmounts.includes(amount)
-            })}
-          >
-            <span className="font-bold">{formatAmount(amount)}</span>
+        {game.amounts.map((amount) => (
+          <div key={amount.qty} className="flex justify-between items-center p-2 rounded border">
+            <span className="font-bold">
+              {formatEther(amount.qty)} {amount.available ? 'yes' : 'no'}
+            </span>
           </div>
         ))}
       </div>

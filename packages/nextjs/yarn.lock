@@ -3311,6 +3311,45 @@ __metadata:
   languageName: node
   linkType: hard
 
+"deal-or-not@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "deal-or-not@workspace:."
+  dependencies:
+    "@apollo/client": ^3.12.8
+    "@download/blockies": ^1.0.3
+    "@radix-ui/react-popover": ^1.1.14
+    "@rainbow-me/rainbowkit": ^2.2.8
+    "@tanstack/react-query": ^5.55.4
+    "@types/node": ^20.14.8
+    "@types/react": ^18.3.3
+    "@types/react-dom": ^18.3.0
+    "@typescript-eslint/eslint-plugin": ^7.13.1
+    "@typescript-eslint/parser": ^7.13.1
+    apexcharts: ^4.4.0
+    autoprefixer: ^10.4.19
+    class-variance-authority: ^0.7.0
+    clsx: ^2.1.1
+    eslint: ^8.56.0
+    eslint-config-next: ^14.2.4
+    eslint-config-prettier: ^9.1.0
+    graphql: ^16.10.0
+    next: ^14.2.4
+    postcss: ^8.4.38
+    prettier: ^3.3.2
+    prettier-plugin-tailwindcss: ^0.6.5
+    react: ^18.3.1
+    react-apexcharts: ^1.7.0
+    react-dom: ^18.3.1
+    react-icons: ^5.2.1
+    tailwind-merge: ^2.3.0
+    tailwindcss: ^3.4.1
+    tailwindcss-animate: ^1.0.7
+    typescript: ^5.5.2
+    viem: 2.x
+    wagmi: ^2.12.10
+  languageName: unknown
+  linkType: soft
+
 "debug@npm:4":
   version: 4.4.1
   resolution: "debug@npm:4.4.1"
@@ -5637,45 +5676,6 @@ __metadata:
   checksum: 98e8fc93691c546f719a76103ef2bee5a3ac823955c755a47641ec41f8c7fafa1baeaba466937cc1cbfa9cfd47e03536d10e2db3158a64ad91ff3a58a32c893e
   languageName: node
   linkType: hard
-
-"magma-next@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "magma-next@workspace:."
-  dependencies:
-    "@apollo/client": ^3.12.8
-    "@download/blockies": ^1.0.3
-    "@radix-ui/react-popover": ^1.1.14
-    "@rainbow-me/rainbowkit": ^2.2.8
-    "@tanstack/react-query": ^5.55.4
-    "@types/node": ^20.14.8
-    "@types/react": ^18.3.3
-    "@types/react-dom": ^18.3.0
-    "@typescript-eslint/eslint-plugin": ^7.13.1
-    "@typescript-eslint/parser": ^7.13.1
-    apexcharts: ^4.4.0
-    autoprefixer: ^10.4.19
-    class-variance-authority: ^0.7.0
-    clsx: ^2.1.1
-    eslint: ^8.56.0
-    eslint-config-next: ^14.2.4
-    eslint-config-prettier: ^9.1.0
-    graphql: ^16.10.0
-    next: ^14.2.4
-    postcss: ^8.4.38
-    prettier: ^3.3.2
-    prettier-plugin-tailwindcss: ^0.6.5
-    react: ^18.3.1
-    react-apexcharts: ^1.7.0
-    react-dom: ^18.3.1
-    react-icons: ^5.2.1
-    tailwind-merge: ^2.3.0
-    tailwindcss: ^3.4.1
-    tailwindcss-animate: ^1.0.7
-    typescript: ^5.5.2
-    viem: 2.x
-    wagmi: ^2.12.10
-  languageName: unknown
-  linkType: soft
 
 "make-fetch-happen@npm:^14.0.3":
   version: 14.0.3

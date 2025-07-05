@@ -9,6 +9,7 @@ import '@rainbow-me/rainbowkit/styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { defineChain } from 'viem';
 import { fallback, http, WagmiProvider } from 'wagmi';
+import { anvil } from 'wagmi/chains';
 import { audiowide, roboto } from './fonts';
 import './globals.css';
 
@@ -33,7 +34,7 @@ const monadTestnet = defineChain({
 const config = getDefaultConfig({
   appName: 'Deal or no deal',
   projectId: '134f0e99f1b28f5fc5482a9ac6126a51',
-  chains: [monadTestnet],
+  chains: [monadTestnet, anvil],
   transports: {
     [monadTestnet.id]: fallback([http(alchemyRpcUrl), http(monadRpcUrl)])
   },

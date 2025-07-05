@@ -1,27 +1,61 @@
-import { cn } from '@/lib/utils';
+'use client';
 
-interface CaseProps {
-  number: number;
-  isSelected?: boolean;
-  isOpened?: boolean;
-  onClick?: () => void;
-}
+import { useAppContext } from '@/contexts/AppContext';
+import { useGameContract } from '@/hooks/useGameContract';
+import DealOrNotABI from '@/shared/abi/DealOrNot.json';
+import { usePublicClient, useWriteContract } from 'wagmi';
 
-export function Case({ number, isSelected, isOpened, onClick }: CaseProps) {
+// TODO: styles when removing and loadings
+export function Case({ caseNumber, gameId }: { caseNumber: number; gameId: bigint }) {
+  const { game, setGame } = useAppContext();
+  const { writeContractAsync } = useWriteContract();
+  const client = usePublicClient();
+  const gameContract = useGameContract();
+  const eliminateBoxes = async () => {
+    const { eliminations } = game;
+    if (
+      eliminations === 0 ||
+      eliminations === 6 ||
+      eliminations === 11 ||
+      eliminations === 15 ||
+      eliminations === 18 ||
+      eliminations > 19
+    ) {
+      const hash = await writeContractAsync({
+        abi: DealOrNotABI,
+        address: gameContract,
+        functionName: 'eliminateBoxes',
+        args: [gameId]
+      });
+      await client?.waitForTransactionReceipt({
+        hash
+      });
+    }
+    const eliminatedBoxesIndexes = await client?.readContract({
+      address: gameContract,
+      abi: DealOrNotABI,
+      functionName: 'getEliminatedBoxes',
+      args: [gameId]
+    });
+    setGame({
+      ...game,
+      amounts: game.amounts.map((amount, i) => {
+        return {
+          ...amount,
+          available: i === Number((eliminatedBoxesIndexes as bigint[])[game.eliminations]) ? false : amount.available
+        };
+      }),
+      eliminations: game.eliminations + 1,
+      selectedBoxes: game.selectedBoxes.concat([caseNumber])
+    });
+  };
+
   return (
     <button
-      // onClick={onClick}
-      className={cn(
-        'relative w-16 h-16 rounded-lg shadow-md transition-all duration-200 font-bold text-black border-2',
-        {
-          'bg-blue-400 border-blue-600 transform scale-105': isSelected,
-          'bg-gray-300 border-gray-400 opacity-50 cursor-not-allowed': isOpened,
-          'bg-gray-200 border-gray-400 hover:bg-gray-100 hover:shadow-lg': !isSelected && !isOpened
-        }
-      )}
-      disabled={isOpened}
+      onClick={eliminateBoxes}
+      className="relative w-16 h-16 rounded-lg shadow-md transition-all duration-200 font-bold text-black border-2"
     >
-      {number}
+      {caseNumber}
     </button>
   );
 }

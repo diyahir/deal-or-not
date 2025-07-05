@@ -2,6 +2,7 @@
 
 import { Loading } from '@/components/Loading';
 import SwitchNetwork from '@/components/Wallet/SwitchNetwork';
+import { useAppContext } from '@/contexts/AppContext';
 import { useGameContract } from '@/hooks/useGameContract';
 import { cn } from '@/lib/utils';
 import DealOrNotABI from '@/shared/abi/DealOrNot.json';
@@ -17,29 +18,23 @@ const caseRows = [
   [1, 2, 3, 4, 5, 6]
 ];
 
-interface CasesProps {
-  selectedCase?: number;
-  openedCases?: number[];
-  onCaseClick?: (caseNumber: number) => void;
-}
-
-export function Cases({ selectedCase, openedCases = [], onCaseClick }: CasesProps) {
+export function Cases() {
   const { address, chain } = useAccount();
+  const { game } = useAppContext();
   const [isLoading, setIsLoading] = useState(false);
-  const { data: hash, writeContractAsync } = useWriteContract();
+  const { data: writeHash, writeContractAsync } = useWriteContract();
   const gameContract = useGameContract();
-  const { data } = useReadContract({
+  const { data: gameId } = useReadContract({
     abi: DealOrNotABI,
     address: gameContract,
     functionName: 'gameIds',
     args: [address],
     query: {
-      enabled: !!hash
+      enabled: !!writeHash
     }
   });
 
-  const writeContract = async () => {
-    // setIsLoading(true);
+  const startGame = async () => {
     await writeContractAsync({
       abi: DealOrNotABI,
       address: gameContract,
@@ -54,15 +49,16 @@ export function Cases({ selectedCase, openedCases = [], onCaseClick }: CasesProp
       <div className="space-y-4">
         {caseRows.map((row, rowIndex) => (
           <div key={rowIndex} className="flex justify-center gap-3">
-            {row.map((caseNumber) => (
-              <Case
-                key={caseNumber}
-                number={caseNumber}
-                isSelected={selectedCase === caseNumber}
-                isOpened={openedCases.includes(caseNumber)}
-                onClick={() => onCaseClick?.(caseNumber)}
-              />
-            ))}
+            {row.map((caseNumber) =>
+              game.selectedBoxes.find((selected) => selected === caseNumber) ? null : (
+                <Case
+                  key={caseNumber}
+                  caseNumber={caseNumber}
+                  // TODO: gameid can be undefined, also wait for tx but display ui as fallback
+                  gameId={gameId as bigint}
+                />
+              )
+            )}
           </div>
         ))}
       </div>
@@ -82,10 +78,11 @@ export function Cases({ selectedCase, openedCases = [], onCaseClick }: CasesProp
                   className={cn(
                     'bg-[#F86E00] text-white py-2 px-4 rounded-full min-w-[72px] w-full flex justify-center items-center'
                   )}
-                  onClick={isConnected ? writeContract : openConnectModal}
+                  onClick={!isConnected ? openConnectModal : startGame}
                   disabled={isLoading}
                 >
-                  {isLoading ? <Loading /> : isConnected ? 'Start Game' : 'Connect Wallet'}
+                  {/* TODO: this text and allow to start game again? also is Loading?  */}
+                  {isLoading ? <Loading /> : !isConnected ? 'Connect Wallet' : 'Start Game'}
                 </button>
               );
             }}

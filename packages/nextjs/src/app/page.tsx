@@ -9,8 +9,6 @@ export const metadata: Metadata = {
   description: 'Deal or No Deal Game'
 };
 
-// TODO: eliminate boxes, then call get game info and map data
-// TODO: every 3 and 4 get offer
 export default function Page() {
   return (
     <div

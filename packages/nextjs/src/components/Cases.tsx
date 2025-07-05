@@ -2,11 +2,20 @@
 
 import { Loading } from '@/components/Loading';
 import SwitchNetwork from '@/components/Wallet/SwitchNetwork';
+import { useGameContract } from '@/hooks/useGameContract';
 import { cn } from '@/lib/utils';
+import DealOrNotABI from '@/shared/abi/DealOrNot.json';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import React, { useEffect, useState } from 'react';
-import { useAccount } from 'wagmi';
+import React, { useState } from 'react';
+import { useAccount, useWriteContract } from 'wagmi';
 import { Case } from './Case';
+
+const caseRows = [
+  [21, 22, 23, 24, 25, 26],
+  [14, 15, 16, 17, 18, 19, 20],
+  [7, 8, 9, 10, 11, 12, 13],
+  [1, 2, 3, 4, 5, 6]
+];
 
 interface CasesProps {
   selectedCase?: number;
@@ -17,18 +26,21 @@ interface CasesProps {
 export function Cases({ selectedCase, openedCases = [], onCaseClick }: CasesProps) {
   const { chain } = useAccount();
   const [isLoading, setIsLoading] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
+  const { data: hash, error, writeContractAsync } = useWriteContract();
+  console.log('isLoading', isLoading);
+  console.log('hash', hash);
+  const gameContract = useGameContract();
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  const caseRows = [
-    [21, 22, 23, 24, 25, 26],
-    [14, 15, 16, 17, 18, 19, 20],
-    [7, 8, 9, 10, 11, 12, 13],
-    [1, 2, 3, 4, 5, 6]
-  ];
+  const writeContract = async () => {
+    // setIsLoading(true);
+    await writeContractAsync({
+      abi: DealOrNotABI,
+      address: gameContract,
+      functionName: 'startGame',
+      // 12 ether
+      value: 12000000000000000000n
+    });
+  };
 
   return (
     <div className="bg-gradient-to-b from-red-900 to-red-700 p-8 rounded-lg shadow-lg border-4 border-red-800">
@@ -61,16 +73,12 @@ export function Cases({ selectedCase, openedCases = [], onCaseClick }: CasesProp
               return (
                 <button
                   className={cn(
-                    'bg-[#F86E00] text-white py-2 px-4 rounded-full min-w-[72px] w-full flex justify-center items-center',
-                    isMounted && 'cursor-not-allowed opacity-50 hover:opacity-50'
+                    'bg-[#F86E00] text-white py-2 px-4 rounded-full min-w-[72px] w-full flex justify-center items-center'
                   )}
-                  onClick={
-                    // isConnected ? 'fn' :
-                    openConnectModal
-                  }
+                  onClick={isConnected ? writeContract : openConnectModal}
                   disabled={isLoading}
                 >
-                  {!isMounted || isLoading ? <Loading /> : isConnected ? 'Select your case' : 'Connect Wallet'}
+                  {isLoading ? <Loading /> : isConnected ? 'Start Game' : 'Connect Wallet'}
                 </button>
               );
             }}

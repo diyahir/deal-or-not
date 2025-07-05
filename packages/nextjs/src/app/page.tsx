@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <div className="grid grid-cols-5 gap-6">
+    <div className="grid grid-cols-5 gap-6 p-4">
       <div className="col-span-1">
         <Amounts />
       </div>

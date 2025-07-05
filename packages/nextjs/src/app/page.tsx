@@ -2,6 +2,7 @@ import { Amounts } from '@/components/Amounts';
 import { BankersOffer } from '@/components/BankersOffer';
 import { Cases } from '@/components/Cases';
 import type { Metadata } from 'next';
+import volcanoImage from '@/assets/volcano.png';
 
 export const metadata: Metadata = {
   title: 'Deal or No Deal',
@@ -12,23 +13,34 @@ export const metadata: Metadata = {
 // TODO: every 3 and 4 get offer
 export default function Page() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-200 via-yellow-300 to-yellow-400 p-4">
+    <div
+      className="min-h-screen p-4"
+      style={{
+        backgroundImage: `url(${volcanoImage.src})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed'
+      }}
+    >
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-6xl font-bold text-black mb-2 drop-shadow-lg">Deal or No Deal</h1>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr_1fr] gap-6">
+          {/* Low amounts - left side */}
           <div className="lg:col-span-1">
-            <BankersOffer />
+            <Amounts showLowAmounts={true} />
           </div>
 
-          <div className="lg:col-span-2">
+          {/* Cases and Banker's Offer - center */}
+          <div className="lg:col-span-1">
             <Cases />
+            <div className="mt-6">
+              <BankersOffer />
+            </div>
           </div>
 
+          {/* High amounts - right side */}
           <div className="lg:col-span-1">
-            <Amounts />
+            <Amounts showLowAmounts={false} />
           </div>
         </div>
       </div>

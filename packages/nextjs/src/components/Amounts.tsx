@@ -1,20 +1,25 @@
 'use client';
 
 import { useAppContext } from '@/contexts/AppContext';
+import { cn } from '@/lib/utils';
 import { formatEther } from 'viem';
 
 export function Amounts({ isLast }: { isLast?: boolean }) {
   const { game } = useAppContext();
-  const amounts = isLast ? game.amounts.slice(0, 13) : game.amounts.slice(13, 26);
+  const amounts = !isLast ? game.amounts.slice(0, 13) : game.amounts.slice(13, 26);
 
   return (
-    <div className="bg-gradient-to-b from-yellow-400 to-yellow-600 p-4 rounded-lg shadow-lg border-2 border-yellow-700">
-      <div className="grid grid-cols-2 gap-2 text-sm">
+    <div className="border border-[#F86E00] rounded-xl text-white bg-[#01152C] p-4">
+      <div className="flex flex-col justify-between items-center gap-4">
         {amounts.map((amount) => (
-          <div key={amount.qty} className="flex justify-between items-center p-2 rounded border">
-            <span className="font-bold">
-              {formatEther(amount.qty)} {amount.available ? 'yes' : 'no'}
-            </span>
+          <div
+            key={amount.qty}
+            className={cn(
+              'rounded-full bg-[#ff7d01] w-full flex justify-end items-center pr-4',
+              !amount.available && 'line-through text-[#01152C]'
+            )}
+          >
+            <span>{formatEther(amount.qty)} gMON</span>
           </div>
         ))}
       </div>

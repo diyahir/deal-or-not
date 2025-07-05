@@ -1,80 +1,242 @@
-# 🏗 Scaffold-ETH 2
+# 🎯 Deal or Not - Blockchain Game
 
 <h4 align="center">
-  <a href="https://docs.scaffoldeth.io">Documentation</a> |
-  <a href="https://scaffoldeth.io">Website</a>
+  <a href="#-game-mechanics">Game Mechanics</a> |
+  <a href="#-supported-networks">Networks</a> |
+  <a href="#-quick-start">Quick Start</a> |
+  <a href="#-deployment">Deployment</a>
 </h4>
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+🎮 A decentralized implementation of the classic "Deal or No Deal" game show on multiple blockchain networks. Players deposit 12 ETH to start a game and can win up to 100 ETH based on their luck and strategy.
 
-⚙️ Built using NextJS, RainbowKit, Hardhat, Wagmi, Viem, and Typescript.
+⚡ Built using NextJS, RainbowKit, Hardhat, Wagmi, Viem, and Typescript with multi-chain VRF (Verifiable Random Function) support for provably fair randomness.
 
-- ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
-- 🪝 **[Custom hooks](https://docs.scaffoldeth.io/hooks/)**: Collection of React hooks wrapper around [wagmi](https://wagmi.sh/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://docs.scaffoldeth.io/components/): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Local Faucet**: Quickly test your application with a burner wallet and local faucet.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with the Ethereum network.
+## 🎲 Game Mechanics
 
-![Debug Contracts tab](https://github.com/scaffold-eth/scaffold-eth-2/assets/55535804/b237af0c-5027-4849-a5c1-2e31495cccb1)
+### How to Play
 
-## Requirements
+1. **Start Game**: Deposit 12 ETH to begin your game
+2. **Box Selection**: You're assigned a random box (1-26) containing an unknown prize
+3. **Elimination Rounds**: In each round, a certain number of boxes are randomly eliminated:
+   - Round 1: 6 boxes eliminated
+   - Round 2: 5 boxes eliminated
+   - Round 3: 4 boxes eliminated
+   - Round 4: 3 boxes eliminated
+   - Round 5: 2 boxes eliminated
+   - Round 6: 1 box eliminated
+4. **Deal or No Deal**: After each round, the house offers you 75% of the expected value of remaining boxes
+5. **Final Decision**: Accept the offer or continue to the next round
+6. **Game End**: If you reject all offers, you win the value in your original box
 
-Before you begin, you need to install the following tools:
+### Prize Structure
 
-- [Node (>= v20.18.3)](https://nodejs.org/en/download/)
-- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
+The game features 26 boxes with prizes ranging from 0.00001 ETH to 100 ETH:
+
+| Low Prizes (ETH) | Medium Prizes (ETH) | High Prizes (ETH) |
+| ---------------- | ------------------- | ----------------- |
+| 0.00001 - 0.01   | 0.02 - 0.1          | 0.5 - 100         |
+
+### Smart Contract Features
+
+- **Multiple Concurrent Games**: Multiple players can play simultaneously
+- **House Funding**: Owner can deposit/withdraw house funds
+- **Provably Fair**: VRF ensures random box elimination
+- **Gas Optimized**: Efficient elimination algorithms
+- **Multi-Chain**: Deployed on multiple testnets
+
+## 🌐 Supported Networks
+
+| Network   | Testnet        | VRF Provider | Status      |
+| --------- | -------------- | ------------ | ----------- |
+| **Flow**  | Flow Testnet   | Flow VRF     | ✅ Deployed |
+| **Flare** | Flare Testnet  | Flare VRF    | ✅ Deployed |
+| **Oasis** | Oasis Sapphire | Oasis VRF    | ✅ Deployed |
+| **Monad** | Monad Testnet  | Pyth Entropy | ✅ Deployed |
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- [Node.js (>= v20.18.3)](https://nodejs.org/en/download/)
+- [Yarn](https://classic.yarnpkg.com/en/docs/install/)
 - [Git](https://git-scm.com/downloads)
 
-## Quickstart
+### Local Development
 
-To get started with Scaffold-ETH 2, follow the steps below:
+1. **Clone and Install**:
 
-1. Install dependencies if it was skipped in CLI:
-
-```
-cd my-dapp-example
+```bash
+git clone https://github.com/your-username/deal-or-not.git
+cd deal-or-not
 yarn install
 ```
 
-2. Run a local network in the first terminal:
+2. **Start Local Blockchain**:
 
-```
+```bash
 yarn chain
 ```
 
-This command starts a local Ethereum network using Hardhat. The network runs on your local machine and can be used for testing and development. You can customize the network configuration in `packages/hardhat/hardhat.config.ts`.
+3. **Deploy Contracts**:
 
-3. On a second terminal, deploy the test contract:
-
-```
+```bash
 yarn deploy
 ```
 
-This command deploys a test smart contract to the local network. The contract is located in `packages/hardhat/contracts` and can be modified to suit your needs. The `yarn deploy` command uses the deploy script located in `packages/hardhat/deploy` to deploy the contract to the network. You can also customize the deploy script.
+4. **Start Frontend**:
 
-4. On a third terminal, start your NextJS app:
-
-```
+```bash
 yarn start
 ```
 
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
+5. **Visit Your App**: `http://localhost:3000`
 
-Run smart contract test with `yarn hardhat:test`
+### Test the Game
 
-- Edit your smart contracts in `packages/hardhat/contracts`
-- Edit your frontend homepage at `packages/nextjs/app/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
-- Edit your deployment scripts in `packages/hardhat/deploy`
+1. Visit `http://localhost:3000/debug` to interact with contracts
+2. Deposit house funds (owner only)
+3. Start a game by depositing 12 ETH
+4. Play through the rounds making deal/no deal decisions
 
+## 🔧 Development
 
-## Documentation
+### Smart Contract Architecture
 
-Visit our [docs](https://docs.scaffoldeth.io) to learn how to start building with Scaffold-ETH 2.
+```
+contracts/
+├── DealOrNot.sol           # Main game contract
+├── interfaces/
+│   └── IVRF.sol           # VRF interface
+└── vrf/
+    ├── base.sol           # Base VRF implementation
+    ├── flow.sol           # Flow network VRF
+    ├── flare.sol          # Flare network VRF
+    ├── oasis.sol          # Oasis network VRF
+    └── monad.sol          # Monad network VRF
+```
 
-To know more about its features, check out our [website](https://scaffoldeth.io).
+### Key Functions
 
-## Contributing to Scaffold-ETH 2
+- `startGame()`: Begin a new game (12 ETH deposit)
+- `eliminateBoxes(gameId)`: Eliminate boxes for current round
+- `acceptDeal(gameId)`: Accept house offer
+- `getCurrentOffer(gameId)`: View current house offer
+- `getGameState(gameId)`: Get complete game state
 
-We welcome contributions to Scaffold-ETH 2!
+### Frontend Components
 
-Please see [CONTRIBUTING.MD](https://github.com/scaffold-eth/scaffold-eth-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-ETH 2.
+- **Game Interface**: Main game play screen
+- **Box Grid**: Visual representation of boxes
+- **Banker's Offer**: Deal offer display
+- **Case Selection**: Box elimination interface
+- **Game Statistics**: Player progress tracking
+
+## 📦 Deployment
+
+### Deploy to Testnet
+
+1. **Generate Account**:
+
+```bash
+yarn generate
+```
+
+2. **Fund Your Account**: Get testnet tokens from faucets
+
+3. **Deploy to Specific Network**:
+
+```bash
+# Flow Testnet
+yarn deploy --network flowTestnet
+
+# Flare Testnet
+yarn deploy --network flareTestnet
+
+# Oasis Testnet
+yarn deploy --network oasisTestnet
+
+# Monad Testnet
+yarn deploy --network monadTestnet
+```
+
+### Environment Variables
+
+Create `.env` file in `packages/hardhat/`:
+
+```bash
+DEPLOYER_PRIVATE_KEY_ENCRYPTED=your_encrypted_key
+ALCHEMY_API_KEY=your_alchemy_key
+MONAD_PK=your_monad_private_key
+```
+
+### Network Configuration
+
+All networks are pre-configured in `packages/hardhat/hardhat.config.ts`:
+
+- **Flow Testnet**: `https://testnet.evm.nodes.onflow.org`
+- **Flare Testnet**: `https://coston2-api.flare.network/ext/C/rpc`
+- **Oasis Testnet**: `https://testnet.sapphire.oasis.io`
+- **Monad Testnet**: `https://rpc-testnet.monadinfra.com`
+
+## 🧪 Testing
+
+### Run Tests
+
+```bash
+# Run all tests
+yarn hardhat:test
+
+# Test specific VRF implementations
+yarn test:monad-vrf-real --network monadTestnet
+```
+
+### Test Coverage
+
+- Contract deployment and initialization
+- Game state management
+- Box elimination logic
+- Deal acceptance/rejection
+- House fund management
+- VRF randomness verification
+
+## 🎮 Game Strategy
+
+### Tips for Players
+
+1. **Early Rounds**: Consider the statistical expected value
+2. **Risk Assessment**: Evaluate remaining high-value boxes
+3. **House Edge**: Remember the house offers 75% of expected value
+4. **Bankroll Management**: Only play with funds you can afford to lose
+
+### Expected Values
+
+The house calculates offers based on:
+
+- Remaining boxes (excluding eliminated and player's box)
+- Total value of remaining boxes
+- 75% of calculated expected value
+
+## 🤝 Contributing
+
+We welcome contributions to Deal or Not!
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Built with [Scaffold-ETH 2](https://scaffoldeth.io)
+- VRF implementations for multi-chain randomness
+- Inspired by the classic "Deal or No Deal" game show
+- ETH Global hackathon project
+
+---
+
+**⚠️ Disclaimer**: This is a game of chance. Only play with funds you can afford to lose. Smart contracts are provided as-is without warranty.

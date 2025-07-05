@@ -3285,6 +3285,45 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@se-2/nextjs@workspace:packages/nextjs":
+  version: 0.0.0-use.local
+  resolution: "@se-2/nextjs@workspace:packages/nextjs"
+  dependencies:
+    "@apollo/client": ^3.12.8
+    "@download/blockies": ^1.0.3
+    "@radix-ui/react-popover": ^1.1.14
+    "@rainbow-me/rainbowkit": ^2.2.8
+    "@tanstack/react-query": ^5.55.4
+    "@types/node": ^20.14.8
+    "@types/react": ^18.3.3
+    "@types/react-dom": ^18.3.0
+    "@typescript-eslint/eslint-plugin": ^7.13.1
+    "@typescript-eslint/parser": ^7.13.1
+    apexcharts: ^4.4.0
+    autoprefixer: ^10.4.19
+    class-variance-authority: ^0.7.0
+    clsx: ^2.1.1
+    eslint: ^8.56.0
+    eslint-config-next: ^14.2.4
+    eslint-config-prettier: ^9.1.0
+    graphql: ^16.10.0
+    next: ^14.2.4
+    postcss: ^8.4.38
+    prettier: ^3.3.2
+    prettier-plugin-tailwindcss: ^0.6.5
+    react: ^18.3.1
+    react-apexcharts: ^1.7.0
+    react-dom: ^18.3.1
+    react-icons: ^5.2.1
+    tailwind-merge: ^2.3.0
+    tailwindcss: ^3.4.1
+    tailwindcss-animate: ^1.0.7
+    typescript: ^5.5.2
+    viem: 2.x
+    wagmi: ^2.12.10
+  languageName: unknown
+  linkType: soft
+
 "@sentry/core@npm:5.30.0":
   version: 5.30.0
   resolution: "@sentry/core@npm:5.30.0"
@@ -6363,45 +6402,6 @@ __metadata:
   checksum: f388db88a6aa93956c1f6121644e783391c7b738b73dbc54485578736565c8931bdfba4bb94e9b1535c6e509c97d5deb918bbe1ae6b34358d994de735055cca9
   languageName: node
   linkType: hard
-
-"deal-or-not@workspace:packages/nextjs":
-  version: 0.0.0-use.local
-  resolution: "deal-or-not@workspace:packages/nextjs"
-  dependencies:
-    "@apollo/client": ^3.12.8
-    "@download/blockies": ^1.0.3
-    "@radix-ui/react-popover": ^1.1.14
-    "@rainbow-me/rainbowkit": ^2.2.8
-    "@tanstack/react-query": ^5.55.4
-    "@types/node": ^20.14.8
-    "@types/react": ^18.3.3
-    "@types/react-dom": ^18.3.0
-    "@typescript-eslint/eslint-plugin": ^7.13.1
-    "@typescript-eslint/parser": ^7.13.1
-    apexcharts: ^4.4.0
-    autoprefixer: ^10.4.19
-    class-variance-authority: ^0.7.0
-    clsx: ^2.1.1
-    eslint: ^8.56.0
-    eslint-config-next: ^14.2.4
-    eslint-config-prettier: ^9.1.0
-    graphql: ^16.10.0
-    next: ^14.2.4
-    postcss: ^8.4.38
-    prettier: ^3.3.2
-    prettier-plugin-tailwindcss: ^0.6.5
-    react: ^18.3.1
-    react-apexcharts: ^1.7.0
-    react-dom: ^18.3.1
-    react-icons: ^5.2.1
-    tailwind-merge: ^2.3.0
-    tailwindcss: ^3.4.1
-    tailwindcss-animate: ^1.0.7
-    typescript: ^5.5.2
-    viem: 2.x
-    wagmi: ^2.12.10
-  languageName: unknown
-  linkType: soft
 
 "death@npm:^1.1.0":
   version: 1.1.0

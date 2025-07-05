@@ -19,6 +19,7 @@
     "lint": "eslint",
     "lint-staged": "eslint",
     "test": "REPORT_GAS=true hardhat test --network hardhat",
+    "test:monad-vrf-real": "hardhat run scripts/testRealMonadVRF.ts --network monadTestnet",
     "verify": "hardhat etherscan-verify"
   },
   "dependencies": {

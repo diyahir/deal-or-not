@@ -178,6 +178,10 @@ const config: HardhatUserConfig = {
       url: "https://testnet.sapphire.oasis.io",
       accounts: [deployerPrivateKey],
     },
+    monadTestnet: {
+      url: "https://rpc-testnet.monadinfra.com",
+      accounts: [deployerPrivateKey],
+    },
   },
   // Configuration for harhdat-verify plugin
   etherscan: {

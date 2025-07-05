@@ -2,17 +2,22 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 
 describe("MonadVRF Contract", function () {
+  let mockEntropyAddress: string;
+
   beforeEach(async () => {
     await ethers.getSigners();
+    // Use a mock entropy address for testing
+    mockEntropyAddress = "0x1234567890123456789012345678901234567890";
   });
 
   describe("Contract Deployment", function () {
-    it("Should fail to deploy on local network (Pyth Network entropy not available)", async function () {
-      // On local Hardhat network, Pyth Network's entropy infrastructure doesn't exist
-      // so the contract deployment should fail during construction
+    it("Should deploy successfully with mock entropy address", async function () {
+      // The contract should deploy successfully with a mock entropy address
       const MonadVRFFactory = await ethers.getContractFactory("MonadVRF");
+      const monadVRF = await MonadVRFFactory.deploy(mockEntropyAddress);
 
-      await expect(MonadVRFFactory.deploy()).to.be.reverted;
+      expect(await monadVRF.getAddress()).to.match(/^0x[a-fA-F0-9]{40}$/);
+      expect(await monadVRF.entropy()).to.equal(mockEntropyAddress);
     });
 
     it("Should be deployable contract factory", async function () {
@@ -24,13 +29,17 @@ describe("MonadVRF Contract", function () {
 
   describe("Network Compatibility", function () {
     it("Should acknowledge local network limitations", async function () {
-      // This test documents that the contract only works on Monad network
-      // where Pyth Network's entropy infrastructure is available at deployment time
-
-      // On local Hardhat network, deployment will fail
-      // On Monad network, the contract would deploy successfully with entropy access
+      // This test documents that the contract can be deployed on local network
+      // but entropy functionality will be limited to mock addresses
       const MonadVRFFactory = await ethers.getContractFactory("MonadVRF");
-      await expect(MonadVRFFactory.deploy()).to.be.reverted;
+      const monadVRF = await MonadVRFFactory.deploy(mockEntropyAddress);
+
+      // Contract deploys successfully with mock entropy
+      expect(await monadVRF.getAddress()).to.match(/^0x[a-fA-F0-9]{40}$/);
+      expect(await monadVRF.entropy()).to.equal(mockEntropyAddress);
+
+      // But entropy provider will be zero address initially
+      expect(await monadVRF.entropyProvider()).to.equal(ethers.ZeroAddress);
     });
   });
 });

@@ -56,7 +56,8 @@ export function Cases() {
               <Case
                 key={caseNumber}
                 caseNumber={caseNumber}
-                // TODO: gameid can be undefined, also wait for tx but display ui as fallback
+                // TODO: last -> gameid can be undefined, also wait for tx but display ui as fallback
+                // TODO: last -> somehow set how many steps are left on each
                 gameId={gameId as bigint}
               />
             )

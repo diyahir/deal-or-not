@@ -43,7 +43,7 @@ export function BankOffer() {
   });
   const { writeContractAsync } = useWriteContract();
 
-  // TODO: implement reset context and only accept when you actually can, maybe put something different on offer accepted
+  // TODO: implement reset context and only accept when you actually can, maybe put something different on offer accepted, toast accepted
   const acceptDeal = async () => {
     setIsLoadingAccept(true);
     const hash = await writeContractAsync({

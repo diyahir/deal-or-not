@@ -1,6 +1,6 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
-import { Contract } from "ethers";
+import { Contract, Signer } from "ethers";
 
 /**
  * Deploys the MonadVRF contract using Pyth Entropy for randomness
@@ -18,21 +18,32 @@ const deployMonadVRF: DeployFunction = async function (hre: HardhatRuntimeEnviro
         existing PK which will fill DEPLOYER_PRIVATE_KEY_ENCRYPTED in the .env file (then used on hardhat.config.ts)
         You can run the `yarn account` command to check your balance in every network.
       */
-  // Use custom signer from MONAD_PK environment variable
+  // Use custom signer from MONAD_PK environment variable for live networks
+  let customSigner: Signer;
   const privateKey = process.env.MONAD_PK;
-  if (!privateKey) {
-    throw new Error("MONAD_PK environment variable is required for deployment");
-  }
 
-  const customSigner = new hre.ethers.Wallet(privateKey, hre.ethers.provider);
-  console.log(`🔑 Using custom signer: ${customSigner.address}`);
+  // Only require MONAD_PK for live networks (not localhost or hardhat)
+  if (hre.network.name !== "localhost" && hre.network.name !== "hardhat") {
+    if (!privateKey) {
+      throw new Error("MONAD_PK environment variable is required for deployment to live networks");
+    }
+    customSigner = new hre.ethers.Wallet(privateKey, hre.ethers.provider);
+    const signerAddress = await customSigner.getAddress();
+    console.log(`🔑 Using custom signer: ${signerAddress}`);
 
-  // Check signer balance
-  const signerBalance = await hre.ethers.provider.getBalance(customSigner.address);
-  console.log(`💰 Custom signer balance: ${hre.ethers.formatEther(signerBalance)} MON`);
+    // Check signer balance
+    const signerBalance = await hre.ethers.provider.getBalance(signerAddress);
+    console.log(`💰 Custom signer balance: ${hre.ethers.formatEther(signerBalance)} MON`);
 
-  if (signerBalance === 0n) {
-    throw new Error(`Signer ${customSigner.address} has insufficient balance. Please fund this account.`);
+    if (signerBalance === 0n) {
+      throw new Error(`Signer ${signerAddress} has insufficient balance. Please fund this account.`);
+    }
+  } else {
+    // For local networks, use the default hardhat signer
+    const [defaultSigner] = await hre.ethers.getSigners();
+    customSigner = defaultSigner;
+    const signerAddress = await customSigner.getAddress();
+    console.log(`🔑 Using default hardhat signer: ${signerAddress}`);
   }
 
   console.log("");

@@ -126,7 +126,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
     /**
      * Start a new game - player deposits 1 ETH and selects their box
      */
-    function startGame() external payable nonReentrant {
+    function startGame() external payable nonReentrant returns (uint256) {
         require(msg.value == ENTRY_FEE, "Must deposit exactly 1 ETH");
 
         uint256 gameId = nextGameId++;
@@ -148,20 +148,28 @@ contract DealOrNot is ReentrancyGuard, Ownable {
         playerGames[msg.sender].push(gameId);
 
         emit GameStarted(gameId, msg.sender, playerBoxIndex);
+
+        return gameId;
     }
 
     /**
      * Eliminate boxes for the current round (randomly selected) - OPTIMIZED
+     * If called when an offer is pending, it implicitly rejects the offer
      */
-    function eliminateBoxes(uint256 gameId)
-        external
-        gameExists(gameId)
-        onlyPlayer(gameId)
-        gameInState(gameId, GameState.Playing)
-        nonReentrant
-    {
+    function eliminateBoxes(uint256 gameId) external gameExists(gameId) onlyPlayer(gameId) nonReentrant {
         Game storage game = games[gameId];
-        require(game.currentRound < roundEliminations.length, "Game already finished");
+        require(game.state == GameState.Playing || game.state == GameState.OfferMade, "Invalid game state");
+
+        // If there was a pending offer, emit rejection event
+        if (game.state == GameState.OfferMade) {
+            emit DealRejected(gameId, game.currentRound);
+        }
+
+        // Check if we've reached the final round
+        if (game.currentRound >= roundEliminations.length) {
+            _completeGame(gameId);
+            return;
+        }
 
         // Randomly select and directly add boxes to eliminated array
         uint256 numToEliminate = roundEliminations[game.currentRound];
@@ -284,28 +292,6 @@ contract DealOrNot is ReentrancyGuard, Ownable {
 
         emit DealAccepted(gameId, game.player, payout);
         emit GameCompleted(gameId, game.player, payout);
-    }
-
-    /**
-     * Reject the current deal offer
-     */
-    function rejectDeal(uint256 gameId)
-        external
-        gameExists(gameId)
-        onlyPlayer(gameId)
-        gameInState(gameId, GameState.OfferMade)
-        nonReentrant
-    {
-        Game storage game = games[gameId];
-
-        // If this was the final offer, complete the game
-        if (game.currentRound >= roundEliminations.length) {
-            _completeGame(gameId);
-        } else {
-            // Continue to next round
-            game.state = GameState.Playing;
-            emit DealRejected(gameId, game.currentRound);
-        }
     }
 
     /**

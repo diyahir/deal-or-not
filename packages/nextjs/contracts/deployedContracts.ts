@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     DealOrNot: {
-      address: "0x9A676e781A523b5d0C0e43731313A708CB607508",
+      address: "0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1",
       abi: [
         {
           inputs: [
@@ -227,19 +227,6 @@ const deployedContracts = {
         {
           inputs: [],
           name: "HOUSE_OFFER_PERCENTAGE",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "MAX_PRIZE",
           outputs: [
             {
               internalType: "uint256",
@@ -622,19 +609,7 @@ const deployedContracts = {
           stateMutability: "view",
           type: "function",
         },
-        {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "gameId",
-              type: "uint256",
-            },
-          ],
-          name: "rejectDeal",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
+
         {
           inputs: [],
           name: "renounceOwnership",
@@ -664,7 +639,13 @@ const deployedContracts = {
         {
           inputs: [],
           name: "startGame",
-          outputs: [],
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
           stateMutability: "payable",
           type: "function",
         },

@@ -1,12 +1,8 @@
 'use client';
 
-import { Loading } from '@/components/Loading';
-import SwitchNetwork from '@/components/Wallet/SwitchNetwork';
 import { useAppContext } from '@/contexts/AppContext';
 import { useGameContract } from '@/hooks/useGameContract';
-import { cn } from '@/lib/utils';
 import DealOrNotABI from '@/shared/abi/DealOrNot.json';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 import React, { useState } from 'react';
 import { useAccount, useReadContract, useWriteContract } from 'wagmi';
 import { Case } from './Case';
@@ -21,7 +17,6 @@ const caseRows = [
 export function Cases() {
   const { address, chain } = useAccount();
   const { game } = useAppContext();
-  const [isLoading, setIsLoading] = useState(false);
   const { data: writeHash, writeContractAsync } = useWriteContract();
   const gameContract = useGameContract();
   const { data: gameId } = useReadContract({
@@ -61,33 +56,6 @@ export function Cases() {
             )}
           </div>
         ))}
-      </div>
-
-      <div className="mt-6 text-center">
-        <div className="bg-black bg-opacity-50 text-white p-3 rounded-lg">
-          <ConnectButton.Custom>
-            {({ account, openConnectModal, mounted }) => {
-              const isConnected = mounted && account;
-
-              if (isConnected && !chain) {
-                return <SwitchNetwork />;
-              }
-
-              return (
-                <button
-                  className={cn(
-                    'bg-[#F86E00] text-white py-2 px-4 rounded-full min-w-[72px] w-full flex justify-center items-center'
-                  )}
-                  onClick={!isConnected ? openConnectModal : startGame}
-                  disabled={isLoading}
-                >
-                  {/* TODO: this text and allow to start game again? also is Loading?  */}
-                  {isLoading ? <Loading /> : !isConnected ? 'Connect Wallet' : 'Start Game'}
-                </button>
-              );
-            }}
-          </ConnectButton.Custom>
-        </div>
       </div>
     </div>
   );

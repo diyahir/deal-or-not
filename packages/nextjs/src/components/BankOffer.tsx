@@ -45,6 +45,7 @@ export function BankOffer() {
   const { writeContractAsync } = useWriteContract();
 
   // TODO: implement reset context, maybe put something different on offer accepted, toast accepted
+  // TODO: last -> gMON change to symbol
   const acceptDeal = async () => {
     setIsLoadingAccept(true);
     const hash = await writeContractAsync({

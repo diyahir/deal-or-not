@@ -174,6 +174,10 @@ const config: HardhatUserConfig = {
       url: "https://coston2-api.flare.network/ext/C/rpc",
       accounts: [deployerPrivateKey],
     },
+    oasisTestnet: {
+      url: "https://testnet.sapphire.oasis.io",
+      accounts: [deployerPrivateKey],
+    },
   },
   // Configuration for harhdat-verify plugin
   etherscan: {

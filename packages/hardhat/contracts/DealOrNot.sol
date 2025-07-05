@@ -40,6 +40,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
     uint256[] public prizePool;
 
     // Game tracking
+    mapping(address => uint256) public gameIds;
     mapping(uint256 => Game) public games;
     mapping(address => uint256[]) public playerGames;
     uint256 public nextGameId;
@@ -146,6 +147,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
 
         // Track player's games
         playerGames[msg.sender].push(gameId);
+        gameIds[msg.sender] = gameId;
 
         emit GameStarted(gameId, msg.sender, playerBoxIndex);
 

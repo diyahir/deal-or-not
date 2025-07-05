@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import DealOrNotABI from '@/shared/abi/DealOrNot.json';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import React, { useState } from 'react';
-import { useAccount, useWriteContract } from 'wagmi';
+import { useAccount, useReadContract, useWriteContract } from 'wagmi';
 import { Case } from './Case';
 
 const caseRows = [
@@ -24,12 +24,19 @@ interface CasesProps {
 }
 
 export function Cases({ selectedCase, openedCases = [], onCaseClick }: CasesProps) {
-  const { chain } = useAccount();
+  const { address, chain } = useAccount();
   const [isLoading, setIsLoading] = useState(false);
-  const { data: hash, error, writeContractAsync } = useWriteContract();
-  console.log('isLoading', isLoading);
-  console.log('hash', hash);
+  const { data: hash, writeContractAsync } = useWriteContract();
   const gameContract = useGameContract();
+  const { data } = useReadContract({
+    abi: DealOrNotABI,
+    address: gameContract,
+    functionName: 'gameIds',
+    args: [address],
+    query: {
+      enabled: !!hash
+    }
+  });
 
   const writeContract = async () => {
     // setIsLoading(true);

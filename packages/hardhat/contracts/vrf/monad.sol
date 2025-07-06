@@ -54,7 +54,7 @@ contract MonadVRF is IVRF, IEntropyConsumer {
         require(address(entropy) != address(0), "Entropy contract not set");
 
         uint256 fee = entropy.getFee(entropyProvider);
-        //require(msg.value >= fee, "Insufficient fee provided");
+        require(msg.value >= fee, "Insufficient fee provided");
 
         uint64 sequenceNumber = entropy.requestWithCallback{ value: fee }(entropyProvider, userRandomNumber);
 

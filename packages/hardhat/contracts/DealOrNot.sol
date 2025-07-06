@@ -158,14 +158,9 @@ contract DealOrNot is ReentrancyGuard, Ownable {
         playerGames[msg.sender].push(gameId);
         gameIds[msg.sender] = gameId;
 
-        if (isMonad) {
-            // later we will have to pay the fee here for vrf
-            uint256 requestId = vrf.requestRandomNumber(bytes32(gameId));
-            requestIds[gameId] = requestId;
-        } else {
-            uint256 requestId = vrf.requestRandomNumber(bytes32(gameId));
-            requestIds[gameId] = requestId;
-        }
+        uint256 fee = vrf.getEntropyFee();
+        uint256 requestId = vrf.requestRandomNumber{ value: fee }(bytes32(gameId));
+        requestIds[gameId] = requestId;
 
         emit GameStarted(gameId, msg.sender, playerBoxIndex);
 
@@ -234,8 +229,9 @@ contract DealOrNot is ReentrancyGuard, Ownable {
 
         for (uint256 i = 0; i < numToEliminate; i++) {
             // Generate unique random index for each selection
-            uint256 randomSeed =
-                uint256(keccak256(abi.encodePacked(baseRandomSeed, i, block.timestamp, block.prevrandao)));
+            uint256 randomSeed = uint256(
+                keccak256(abi.encodePacked(baseRandomSeed, i, block.timestamp, block.prevrandao))
+            );
             uint256 randomIndex = randomSeed % (availableCount - i);
 
             // Select the box at randomIndex
@@ -267,7 +263,9 @@ contract DealOrNot is ReentrancyGuard, Ownable {
     /**
      * Accept the current deal offer
      */
-    function acceptDeal(uint256 gameId)
+    function acceptDeal(
+        uint256 gameId
+    )
         external
         gameExists(gameId)
         onlyPlayer(gameId)

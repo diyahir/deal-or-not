@@ -2,8 +2,8 @@ pragma solidity ^0.8.0;
 
 // solhint-disable-next-line no-unused-import
 import "../interfaces/IVRF.sol";
-import {IEntropyConsumer} from "@pythnetwork/entropy-sdk-solidity/IEntropyConsumer.sol";
-import {IEntropy} from "@pythnetwork/entropy-sdk-solidity/IEntropy.sol";
+import { IEntropyConsumer } from "@pythnetwork/entropy-sdk-solidity/IEntropyConsumer.sol";
+import { IEntropy } from "@pythnetwork/entropy-sdk-solidity/IEntropy.sol";
 
 // @param entropyAddress The address of the entropy contract.
 contract MonadVRF is IVRF, IEntropyConsumer {
@@ -56,7 +56,7 @@ contract MonadVRF is IVRF, IEntropyConsumer {
         uint256 fee = entropy.getFee(entropyProvider);
         require(msg.value >= fee, "Insufficient fee provided");
 
-        uint64 sequenceNumber = entropy.requestWithCallback{value: fee}(entropyProvider, userRandomNumber);
+        uint64 sequenceNumber = entropy.requestWithCallback{ value: fee }(entropyProvider, userRandomNumber);
 
         // Emit event before returning
         emit RandomNumberRequested(sequenceNumber, userRandomNumber);

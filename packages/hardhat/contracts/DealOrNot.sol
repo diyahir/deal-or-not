@@ -171,7 +171,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
      * Eliminate boxes for the current round (randomly selected) - OPTIMIZED
      * If called when an offer is pending, it implicitly rejects the offer
      */
-    function eliminateBoxes(uint256 gameId) external gameExists(gameId) onlyPlayer(gameId) nonReentrant {
+    function eliminateBoxes(uint256 gameId) external payable gameExists(gameId) onlyPlayer(gameId) nonReentrant {
         Game storage game = games[gameId];
         require(game.state == GameState.Playing || game.state == GameState.OfferMade, "Invalid game state");
 
@@ -196,7 +196,8 @@ contract DealOrNot is ReentrancyGuard, Ownable {
         emit BoxesEliminated(gameId, boxesToEliminate, game.currentRound);
 
         // request a new random number
-        uint256 requestId = vrf.requestRandomNumber(bytes32(gameId));
+        uint256 fee = vrf.getEntropyFee();
+        uint256 requestId = vrf.requestRandomNumber{ value: fee }(bytes32(gameId));
         requestIds[gameId] = requestId;
     }
 

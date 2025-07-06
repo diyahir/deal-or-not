@@ -1719,7 +1719,7 @@ const deployedContracts = {
   },
   10143: {
     DealOrNot: {
-      address: "0x7A0Af330992BFC15CE150bD157255A6F2637649d",
+      address: "0x0E15bd4D20c0e59d1fe5723292637aB012960af4",
       abi: [
         {
           inputs: [
@@ -2002,7 +2002,7 @@ const deployedContracts = {
           ],
           name: "eliminateBoxes",
           outputs: [],
-          stateMutability: "nonpayable",
+          stateMutability: "payable",
           type: "function",
         },
         {
@@ -2472,7 +2472,7 @@ const deployedContracts = {
       },
     },
     MonadVRF: {
-      address: "0x850f63EeaEd5FA402B7393E8faAa685A3574fDbF",
+      address: "0x126a323267dA7C30e48C13743efd9979ebe6E205",
       abi: [
         "constructor(address _entropyAddress)",
         "event EntropyContractSet(address indexed entropy)",

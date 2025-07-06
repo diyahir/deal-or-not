@@ -7,15 +7,19 @@ import "hardhat/console.sol";
 // Use openzeppelin to inherit battle-tested implementations
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "./interfaces/IVRF.sol";
 
 /**
  * A Deal or Not smart contract that allows multiple players to play concurrent games
- * Players deposit 1 ETH to start a game and can win up to 30 ETH
+ * Players deposit tokens to start a game and can win up to 30x their deposit
  * House offers 75% of expected value at the end of each round
  * @author BuidlGuidl
  */
 contract DealOrNot is ReentrancyGuard, Ownable {
+    using SafeERC20 for IERC20;
+
     // Game state enum
     enum GameState {
         NotStarted,
@@ -37,7 +41,10 @@ contract DealOrNot is ReentrancyGuard, Ownable {
         bool isActive; // Whether the game is still active
     }
 
-    // Prize pool (fixed amounts in wei) - 26 boxes total
+    // ERC20 token used for the game
+    IERC20 public gameToken;
+
+    // Prize pool (fixed amounts in tokens) - 26 boxes total
     uint256[] public prizePool;
 
     bool public isMonad;
@@ -53,7 +60,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
     uint256 public houseFunds;
 
     // Constants
-    uint256 public constant ENTRY_FEE = 0.1 ether;
+    uint256 public entryFee; // Entry fee in tokens
     uint256 public constant HOUSE_OFFER_PERCENTAGE = 75; // 75% of EV
     uint256 public constant TOTAL_BOXES = 26;
 
@@ -93,51 +100,57 @@ contract DealOrNot is ReentrancyGuard, Ownable {
         _;
     }
 
-    constructor(address _owner, address _vrf, bool _isMonad) Ownable(_owner) {
+    constructor(address _owner, address _vrf, bool _isMonad, address _gameToken, uint256 _entryFee) Ownable(_owner) {
+        require(_gameToken != address(0), "Game token cannot be zero address");
+        require(_entryFee > 0, "Entry fee must be greater than zero");
+
         vrf = IVRF(_vrf);
         isMonad = _isMonad;
+        gameToken = IERC20(_gameToken);
+        entryFee = _entryFee;
         _initializePrizePool();
     }
 
     /**
-     * Initialize the prize pool with 26 box values
+     * Initialize the prize pool with 26 box values (in tokens)
      */
     function _initializePrizePool() internal {
         prizePool = [
-            0.00001 ether,
-            0.0001 ether,
-            0.0005 ether,
-            0.001 ether,
-            0.0025 ether,
-            0.005 ether,
-            0.0075 ether,
-            0.01 ether,
-            0.02 ether,
-            0.03 ether,
-            0.04 ether,
-            0.05 ether,
-            0.075 ether,
-            0.1 ether,
-            0.5 ether,
-            1 ether,
-            2.5 ether,
-            5 ether,
-            7.5 ether,
-            10 ether,
-            20 ether,
-            30 ether,
-            40 ether,
-            50 ether,
-            75 ether,
-            100 ether
+            entryFee / 10000, // 0.0001x
+            entryFee / 1000, // 0.001x
+            entryFee / 200, // 0.005x
+            entryFee / 100, // 0.01x
+            entryFee / 40, // 0.025x
+            entryFee / 20, // 0.05x
+            entryFee * 75 / 1000, // 0.075x
+            entryFee / 10, // 0.1x
+            entryFee / 5, // 0.2x
+            entryFee * 3 / 10, // 0.3x
+            entryFee * 2 / 5, // 0.4x
+            entryFee / 2, // 0.5x
+            entryFee * 3 / 4, // 0.75x
+            entryFee, // 1x
+            entryFee * 5, // 5x
+            entryFee * 10, // 10x
+            entryFee * 25, // 25x
+            entryFee * 50, // 50x
+            entryFee * 75, // 75x
+            entryFee * 100, // 100x
+            entryFee * 200, // 200x
+            entryFee * 300, // 300x
+            entryFee * 400, // 400x
+            entryFee * 500, // 500x
+            entryFee * 750, // 750x
+            entryFee * 1000 // 1000x
         ];
     }
 
     /**
-     * Start a new game - player deposits 1 ETH and selects their box
+     * Start a new game - player deposits tokens and selects their box
      */
-    function startGame() external payable nonReentrant returns (uint256) {
-        require(msg.value == ENTRY_FEE, "Must deposit exactly 0.1 ETH");
+    function startGame() external nonReentrant returns (uint256) {
+        // Transfer tokens from player to contract
+        gameToken.safeTransferFrom(msg.sender, address(this), entryFee);
 
         uint256 gameId = nextGameId++;
         uint256 playerBoxIndex = _generateRandomBoxIndex(gameId, msg.sender);
@@ -145,7 +158,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
         // Create new game
         games[gameId] = Game({
             player: msg.sender,
-            deposit: msg.value,
+            deposit: entryFee,
             gameId: gameId,
             playerBoxIndex: playerBoxIndex,
             currentRound: 0,
@@ -158,8 +171,9 @@ contract DealOrNot is ReentrancyGuard, Ownable {
         playerGames[msg.sender].push(gameId);
         gameIds[msg.sender] = gameId;
 
+        // Pay VRF fee
         uint256 fee = vrf.getEntropyFee();
-        uint256 requestId = vrf.requestRandomNumber{ value: fee }(bytes32(gameId));
+        uint256 requestId = vrf.requestRandomNumber{value: fee}(bytes32(gameId));
         requestIds[gameId] = requestId;
 
         emit GameStarted(gameId, msg.sender, playerBoxIndex);
@@ -171,7 +185,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
      * Eliminate boxes for the current round (randomly selected) - OPTIMIZED
      * If called when an offer is pending, it implicitly rejects the offer
      */
-    function eliminateBoxes(uint256 gameId) external payable gameExists(gameId) onlyPlayer(gameId) nonReentrant {
+    function eliminateBoxes(uint256 gameId) external gameExists(gameId) onlyPlayer(gameId) nonReentrant {
         Game storage game = games[gameId];
         require(game.state == GameState.Playing || game.state == GameState.OfferMade, "Invalid game state");
 
@@ -197,7 +211,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
 
         // request a new random number
         uint256 fee = vrf.getEntropyFee();
-        uint256 requestId = vrf.requestRandomNumber{ value: fee }(bytes32(gameId));
+        uint256 requestId = vrf.requestRandomNumber{value: fee}(bytes32(gameId));
         requestIds[gameId] = requestId;
     }
 
@@ -230,9 +244,8 @@ contract DealOrNot is ReentrancyGuard, Ownable {
 
         for (uint256 i = 0; i < numToEliminate; i++) {
             // Generate unique random index for each selection
-            uint256 randomSeed = uint256(
-                keccak256(abi.encodePacked(baseRandomSeed, i, block.timestamp, block.prevrandao))
-            );
+            uint256 randomSeed =
+                uint256(keccak256(abi.encodePacked(baseRandomSeed, i, block.timestamp, block.prevrandao)));
             uint256 randomIndex = randomSeed % (availableCount - i);
 
             // Select the box at randomIndex
@@ -264,9 +277,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
     /**
      * Accept the current deal offer
      */
-    function acceptDeal(
-        uint256 gameId
-    )
+    function acceptDeal(uint256 gameId)
         external
         gameExists(gameId)
         onlyPlayer(gameId)
@@ -282,7 +293,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
 
         // Transfer payout to player
         houseFunds -= payout;
-        payable(game.player).transfer(payout);
+        gameToken.safeTransfer(game.player, payout);
 
         emit DealAccepted(gameId, game.player, payout);
         emit GameCompleted(gameId, game.player, payout);
@@ -301,7 +312,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
         // Transfer final payout to player
         require(houseFunds >= finalPayout, "House insufficient funds");
         houseFunds -= finalPayout;
-        payable(game.player).transfer(finalPayout);
+        gameToken.safeTransfer(game.player, finalPayout);
 
         emit GameCompleted(gameId, game.player, finalPayout);
     }
@@ -355,9 +366,10 @@ contract DealOrNot is ReentrancyGuard, Ownable {
     /**
      * Owner deposits funds to house
      */
-    function depositHouseFunds() external payable onlyOwner {
-        houseFunds += msg.value;
-        emit HouseFundsDeposited(msg.value);
+    function depositHouseFunds(uint256 amount) external onlyOwner {
+        gameToken.safeTransferFrom(msg.sender, address(this), amount);
+        houseFunds += amount;
+        emit HouseFundsDeposited(amount);
     }
 
     /**
@@ -365,10 +377,10 @@ contract DealOrNot is ReentrancyGuard, Ownable {
      */
     function withdrawHouseFunds(uint256 amount) external onlyOwner nonReentrant {
         require(amount <= houseFunds, "Insufficient house funds");
-        require(amount <= address(this).balance, "Insufficient contract balance");
+        require(amount <= gameToken.balanceOf(address(this)), "Insufficient contract balance");
 
         houseFunds -= amount;
-        payable(owner()).transfer(amount);
+        gameToken.safeTransfer(owner(), amount);
         emit HouseFundsWithdrawn(amount);
     }
 
@@ -427,10 +439,10 @@ contract DealOrNot is ReentrancyGuard, Ownable {
     }
 
     /**
-     * Emergency function to allow contract to receive ETH
+     * Emergency function to allow contract to receive ETH for VRF fees
      */
     receive() external payable {
-        houseFunds += msg.value;
-        emit HouseFundsDeposited(msg.value);
+        // ETH received is for VRF fees only, not for house funds
+        // House funds are now managed in ERC20 tokens
     }
 }

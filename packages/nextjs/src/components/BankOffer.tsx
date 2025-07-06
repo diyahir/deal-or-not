@@ -6,6 +6,7 @@ import { useAppContext } from '@/contexts/AppContext';
 import { useGameContract } from '@/hooks/useGameContract';
 import { cn } from '@/lib/utils';
 import DealOrNotABI from '@/shared/abi/DealOrNot.json';
+import MonadVRFABI from '@/shared/abi/MonadVRF.json';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
@@ -74,12 +75,28 @@ export function BankOffer() {
 
   const startGame = async () => {
     setIsLoading(true);
+
+    // Fetch VRF address from the DealOrNot contract
+    const vrfAddress = (await client?.readContract({
+      address: gameContract,
+      abi: DealOrNotABI,
+      functionName: 'vrf'
+    })) as `0x${string}`;
+
+    // Fetch entropy fee from the VRF contract
+    const entropyFee = (await client?.readContract({
+      address: vrfAddress,
+      abi: MonadVRFABI,
+      functionName: 'getEntropyFee'
+    })) as bigint;
+
+    const totalValue = 100000000000000000n + (entropyFee || 0n);
+
     const hash = await writeContractAsync({
       abi: DealOrNotABI,
       address: gameContract,
       functionName: 'startGame',
-      // 12 ether
-      value: 100000000000000000n
+      value: totalValue
     });
     await client?.waitForTransactionReceipt({
       hash

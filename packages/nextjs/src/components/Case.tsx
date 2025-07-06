@@ -4,6 +4,7 @@ import VaultClose from '@/assets/vault-close.png';
 import { useAppContext } from '@/contexts/AppContext';
 import { useGameContract } from '@/hooks/useGameContract';
 import DealOrNotABI from '@/shared/abi/DealOrNot.json';
+import MonadVRFABI from '@/shared/abi/MonadVRF.json';
 import Image from 'next/image';
 import { useState } from 'react';
 import { usePublicClient, useWriteContract } from 'wagmi';
@@ -30,11 +31,26 @@ export function Case({ caseNumber, gameId }: { caseNumber: number; gameId: bigin
       eliminations > 19
     ) {
       setLoading(true);
+      // Fetch VRF address from the game contract
+      const vrfAddress = (await client?.readContract({
+        address: gameContract,
+        abi: DealOrNotABI,
+        functionName: 'vrf'
+      })) as `0x${string}`;
+
+      // Fetch entropy fee from the VRF contract
+      const entropyFee = (await client?.readContract({
+        address: vrfAddress,
+        abi: MonadVRFABI,
+        functionName: 'getEntropyFee'
+      })) as bigint;
+
       const hash = await writeContractAsync({
         abi: DealOrNotABI,
         address: gameContract,
         functionName: 'eliminateBoxes',
-        args: [gameId]
+        args: [gameId],
+        value: entropyFee
       });
       await client?.waitForTransactionReceipt({
         hash

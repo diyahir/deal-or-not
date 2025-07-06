@@ -1719,7 +1719,7 @@ const deployedContracts = {
   },
   10143: {
     DealOrNot: {
-      address: "0xB151500Ce7E458B7395eceD2CF73B26088457C3d",
+      address: "0x7A0Af330992BFC15CE150bD157255A6F2637649d",
       abi: [
         {
           inputs: [
@@ -2472,7 +2472,7 @@ const deployedContracts = {
       },
     },
     MonadVRF: {
-      address: "0x65Ba87fcF493FD450d040ffDfDc51573B00DeBDD",
+      address: "0x850f63EeaEd5FA402B7393E8faAa685A3574fDbF",
       abi: [
         "constructor(address _entropyAddress)",
         "event EntropyContractSet(address indexed entropy)",

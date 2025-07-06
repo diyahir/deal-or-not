@@ -64,7 +64,7 @@ contract MonadVRF is IVRF, IEntropyConsumer {
         return uint256(sequenceNumber);
     }
 
-    function getEntropyFee() external view returns (uint256) {
+    function getEntropyFee() external view override returns (uint256) {
         return entropy.getFee(entropyProvider);
     }
 

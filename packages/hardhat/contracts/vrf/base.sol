@@ -14,7 +14,13 @@ contract BaseVRF is IVRF {
         uint256 randomSeed = uint256(
             keccak256(
                 abi.encodePacked(
-                    block.timestamp, block.prevrandao, userId, blockhash(block.number - 2), tx.origin, nonce, msg.sender
+                    block.timestamp,
+                    block.prevrandao,
+                    userId,
+                    blockhash(block.number - 2),
+                    tx.origin,
+                    nonce,
+                    msg.sender
                 )
             )
         );
@@ -37,5 +43,9 @@ contract BaseVRF is IVRF {
         );
 
         return randomSeed;
+    }
+
+    function getEntropyFee() external view returns (uint256) {
+        return 0;
     }
 }

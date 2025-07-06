@@ -5,4 +5,6 @@ interface IVRF {
     function requestRandomNumber(bytes32) external payable returns (uint256);
 
     function getRandomNumber(uint256 requestId) external returns (uint256);
+
+    function getEntropyFee() external view returns (uint256);
 }

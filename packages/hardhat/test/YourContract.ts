@@ -73,11 +73,11 @@ describe("DealOrNot", function () {
 
     it("Should reject game creation with incorrect entry fee", async function () {
       await expect(dealOrNot.connect(player1).startGame({ value: ethers.parseEther("0.5") })).to.be.revertedWith(
-        "Must deposit exactly 1 ETH",
+        "Must deposit exactly 0.1 ETH",
       );
 
       await expect(dealOrNot.connect(player1).startGame({ value: ethers.parseEther("2") })).to.be.revertedWith(
-        "Must deposit exactly 1 ETH",
+        "Must deposit exactly 0.1 ETH",
       );
     });
 

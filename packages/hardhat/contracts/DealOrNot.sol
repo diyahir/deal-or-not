@@ -134,7 +134,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
      * Start a new game - player deposits 1 ETH and selects their box
      */
     function startGame() external payable nonReentrant returns (uint256) {
-        require(msg.value == ENTRY_FEE, "Must deposit exactly 1 ETH");
+        require(msg.value == ENTRY_FEE, "Must deposit exactly 0.1 ETH");
 
         uint256 gameId = nextGameId++;
         uint256 playerBoxIndex = _generateRandomBoxIndex(gameId, msg.sender);
@@ -197,7 +197,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
     }
 
     /**
-     * More efficient random box selection - directly adds to storage and returns for events
+     * Efficient random box selection using Fisher-Yates shuffle - no loops needed
      */
     function _selectAndEliminateBoxes(uint256 gameId, uint256 numToEliminate) internal returns (uint256[] memory) {
         Game storage game = games[gameId];
@@ -207,29 +207,38 @@ contract DealOrNot is ReentrancyGuard, Ownable {
         uint256 availableCount = TOTAL_BOXES - totalEliminated - 1; // -1 for player's box
         require(availableCount >= numToEliminate, "Not enough boxes to eliminate");
 
-        uint256[] memory selectedBoxes = new uint256[](numToEliminate);
-        uint256 selectedCount = 0;
-        uint256 attempts = 0;
-        // More generous max attempts calculation that accounts for available boxes
-        uint256 maxAttempts = numToEliminate * availableCount + (numToEliminate * 10); // Prevent infinite loops
+        // Create array of available box indices
+        uint256[] memory availableBoxes = new uint256[](availableCount);
+        uint256 index = 0;
 
-        // More efficient selection without creating large temporary arrays
-        while (selectedCount < numToEliminate && attempts < maxAttempts) {
-            uint256 randomBox = _generateRandomBoxForElimination(gameId);
-
-            // Check if box is available (not player's box, not already eliminated, not already selected)
-            if (
-                randomBox != game.playerBoxIndex && !_isBoxEliminated(randomBox, game.eliminatedBoxes)
-                    && !_isBoxInSelection(randomBox, selectedBoxes, selectedCount)
-            ) {
-                selectedBoxes[selectedCount] = randomBox;
-                game.eliminatedBoxes.push(randomBox);
-                selectedCount++;
+        // Fill array with available boxes (excluding player's box and already eliminated boxes)
+        for (uint256 i = 0; i < TOTAL_BOXES; i++) {
+            if (i != game.playerBoxIndex && !_isBoxEliminated(i, game.eliminatedBoxes)) {
+                availableBoxes[index] = i;
+                index++;
             }
-            attempts++;
         }
 
-        require(selectedCount == numToEliminate, "Failed to select required boxes");
+        // Use Fisher-Yates shuffle to select boxes deterministically
+        uint256[] memory selectedBoxes = new uint256[](numToEliminate);
+        uint256 baseRandomSeed = vrf.getRandomNumber(requestIds[gameId]);
+
+        for (uint256 i = 0; i < numToEliminate; i++) {
+            // Generate unique random index for each selection
+            uint256 randomSeed =
+                uint256(keccak256(abi.encodePacked(baseRandomSeed, i, block.timestamp, block.prevrandao)));
+            uint256 randomIndex = randomSeed % (availableCount - i);
+
+            // Select the box at randomIndex
+            selectedBoxes[i] = availableBoxes[randomIndex];
+
+            // Swap selected box to end to avoid reselection (Fisher-Yates)
+            availableBoxes[randomIndex] = availableBoxes[availableCount - 1 - i];
+
+            // Add to eliminated boxes
+            game.eliminatedBoxes.push(selectedBoxes[i]);
+        }
+
         return selectedBoxes;
     }
 
@@ -244,27 +253,6 @@ contract DealOrNot is ReentrancyGuard, Ownable {
             }
         }
         return false;
-    }
-
-    /**
-     * Check if box is in current selection (for current round)
-     */
-    function _isBoxInSelection(uint256 box, uint256[] memory selection, uint256 count) internal pure returns (bool) {
-        for (uint256 i = 0; i < count; i++) {
-            if (selection[i] == box) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Generate random box index with better entropy
-     */
-    function _generateRandomBoxForElimination(uint256 gameId) internal returns (uint256) {
-        uint256 randomSeed = vrf.getRandomNumber(requestIds[gameId]);
-
-        return randomSeed % TOTAL_BOXES;
     }
 
     /**

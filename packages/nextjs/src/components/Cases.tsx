@@ -42,7 +42,7 @@ export function Cases() {
   return (
     <div className="border border-[#f86e02] rounded-xl text-white bg-[#01152C] p-6">
       <h1 className="text-4xl font-bold text-center">
-        Pick <span className="text-[#f86e02]">{stepsLeft()}</span>&nbsp;more boxes
+        Pick <span className="text-[#f86e02]">{stepsLeft()}</span>&nbsp;more
       </h1>
       {caseRows.map((row, rowIndex) => (
         <div key={rowIndex} className="flex justify-center gap-3">

@@ -114,7 +114,7 @@ export function BankOffer() {
   };
 
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex items-center justify-center" style={{ marginTop: "-50px" }}>
       <div
         className={cn(
           'border mx-auto border-[#f86e02] rounded-xl text-white bg-[#01152C] p-4 flex flex-col justify-center gap-6',
@@ -166,7 +166,7 @@ export function BankOffer() {
           </ConnectButton.Custom>
         )}
       </div>
-      <Image src={Lizza} alt="lizza" className="h-[200px] w-auto ml-4 object-contain" />
+      <Image src={Lizza} alt="lizza" className="h-[200px] w-auto ml-4 object-contain" style={{ height: "400px", marginTop: "-80px" }} />
     </div>
   );
 }

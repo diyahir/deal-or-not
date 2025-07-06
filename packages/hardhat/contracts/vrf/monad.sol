@@ -54,7 +54,7 @@ contract MonadVRF is IVRF, IEntropyConsumer {
         require(address(entropy) != address(0), "Entropy contract not set");
 
         uint256 fee = entropy.getFee(entropyProvider);
-        require(msg.value >= fee, "Insufficient fee provided");
+        //require(msg.value >= fee, "Insufficient fee provided");
 
         uint64 sequenceNumber = entropy.requestWithCallback{ value: fee }(entropyProvider, userRandomNumber);
 
@@ -62,6 +62,10 @@ contract MonadVRF is IVRF, IEntropyConsumer {
         emit RandomNumberRequested(sequenceNumber, userRandomNumber);
 
         return uint256(sequenceNumber);
+    }
+
+    function getEntropyFee() external view returns (uint256) {
+        return entropy.getFee(entropyProvider);
     }
 
     // @param sequenceNumber The sequence number of the request.
@@ -88,4 +92,6 @@ contract MonadVRF is IVRF, IEntropyConsumer {
     function getRandomNumber(uint256 sequenceNumber) external view override returns (uint256) {
         return uint256(randomNumbers[uint64(sequenceNumber)]);
     }
+
+    receive() external payable {}
 }

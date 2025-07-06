@@ -40,6 +40,8 @@ contract DealOrNot is ReentrancyGuard, Ownable {
     // Prize pool (fixed amounts in wei) - 26 boxes total
     uint256[] public prizePool;
 
+    bool public isMonad;
+
     // Game tracking
     mapping(address => uint256) public gameIds;
     mapping(uint256 => Game) public games;
@@ -91,8 +93,9 @@ contract DealOrNot is ReentrancyGuard, Ownable {
         _;
     }
 
-    constructor(address _owner, address _vrf) Ownable(_owner) {
+    constructor(address _owner, address _vrf, bool _isMonad) Ownable(_owner) {
         vrf = IVRF(_vrf);
+        isMonad = _isMonad;
         _initializePrizePool();
     }
 
@@ -155,8 +158,14 @@ contract DealOrNot is ReentrancyGuard, Ownable {
         playerGames[msg.sender].push(gameId);
         gameIds[msg.sender] = gameId;
 
-        uint256 requestId = vrf.requestRandomNumber(bytes32(gameId));
-        requestIds[gameId] = requestId;
+        if (isMonad) {
+            // later we will have to pay the fee here for vrf
+            uint256 requestId = vrf.requestRandomNumber(bytes32(gameId));
+            requestIds[gameId] = requestId;
+        } else {
+            uint256 requestId = vrf.requestRandomNumber(bytes32(gameId));
+            requestIds[gameId] = requestId;
+        }
 
         emit GameStarted(gameId, msg.sender, playerBoxIndex);
 
@@ -219,8 +228,9 @@ contract DealOrNot is ReentrancyGuard, Ownable {
 
             // Check if box is available (not player's box, not already eliminated, not already selected)
             if (
-                randomBox != game.playerBoxIndex && !_isBoxEliminated(randomBox, game.eliminatedBoxes)
-                    && !_isBoxInSelection(randomBox, selectedBoxes, selectedCount)
+                randomBox != game.playerBoxIndex &&
+                !_isBoxEliminated(randomBox, game.eliminatedBoxes) &&
+                !_isBoxInSelection(randomBox, selectedBoxes, selectedCount)
             ) {
                 selectedBoxes[selectedCount] = randomBox;
                 game.eliminatedBoxes.push(randomBox);
@@ -270,7 +280,9 @@ contract DealOrNot is ReentrancyGuard, Ownable {
     /**
      * Accept the current deal offer
      */
-    function acceptDeal(uint256 gameId)
+    function acceptDeal(
+        uint256 gameId
+    )
         external
         gameExists(gameId)
         onlyPlayer(gameId)

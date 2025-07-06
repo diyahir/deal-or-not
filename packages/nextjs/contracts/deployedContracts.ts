@@ -1719,7 +1719,7 @@ const deployedContracts = {
   },
   10143: {
     DealOrNot: {
-      address: "0x324898D960b8d8509dbf98AD16C6cE1e08B263dF",
+      address: "0x0a9A5Ce00d5597adA1ef890C13fb8F32627E9d4d",
       abi: [
         {
           inputs: [
@@ -1732,6 +1732,11 @@ const deployedContracts = {
               internalType: "address",
               name: "_vrf",
               type: "address",
+            },
+            {
+              internalType: "bool",
+              name: "_isMonad",
+              type: "bool",
             },
           ],
           stateMutability: "nonpayable",
@@ -2278,6 +2283,19 @@ const deployedContracts = {
         },
         {
           inputs: [],
+          name: "isMonad",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
           name: "nextGameId",
           outputs: [
             {
@@ -2454,7 +2472,7 @@ const deployedContracts = {
       },
     },
     MonadVRF: {
-      address: "0x855c497382387FcCC056770c524b3e2c0264939e",
+      address: "0x3ad5597D5F9598f82c53Cdba855735647f284f60",
       abi: [
         "constructor(address _entropyAddress)",
         "event EntropyContractSet(address indexed entropy)",
@@ -2463,12 +2481,14 @@ const deployedContracts = {
         "function _entropyCallback(uint64 sequence, address provider, bytes32 randomNumber)",
         "function entropy() view returns (address)",
         "function entropyProvider() view returns (address)",
+        "function getEntropyFee() view returns (uint256)",
         "function getRandomNumber(uint256 sequenceNumber) view returns (uint256)",
         "function initializeEntropyProvider()",
         "function owner() view returns (address)",
         "function randomNumbers(uint64) view returns (bytes32)",
         "function requestRandomNumber(bytes32 userRandomNumber) payable returns (uint256)",
         "function setEntropyProvider(address _entropyProvider)",
+        "receive() payable",
       ],
       inheritedFunctions: {},
     },

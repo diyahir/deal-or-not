@@ -67,7 +67,7 @@ export function BankOffer() {
       address: gameContract,
       functionName: 'startGame',
       // 12 ether
-      value: 12000000000000000000n
+      value: 100000000000000000n
     });
     await client?.waitForTransactionReceipt({
       hash

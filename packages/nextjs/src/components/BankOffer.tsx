@@ -166,7 +166,7 @@ export function BankOffer() {
           </ConnectButton.Custom>
         )}
       </div>
-      <Image src={Lizza} alt="lizza" className="h-[200px] w-auto ml-4 object-contain" style={{ height: "400px", marginTop: "-80px" }} />
+      <Image src={Lizza} alt="lizza" className="h-[200px] w-auto ml-4 object-contain" style={{ height: "300px", marginTop: "0px" }} />
     </div>
   );
 }

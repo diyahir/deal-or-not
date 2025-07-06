@@ -66,7 +66,7 @@ export function BankOffer() {
       hideProgressBar: true,
       position: 'bottom-left',
       theme: 'dark',
-      autoClose: false,
+      autoClose: 1000,
       className: 'border border-[#F86E00] rounded-[32px] !bg-[#00203e]'
     });
     setIsLoadingAccept(false);
@@ -88,7 +88,7 @@ export function BankOffer() {
       hideProgressBar: true,
       position: 'bottom-left',
       theme: 'dark',
-      autoClose: false,
+      autoClose: 1000,
       className: 'border border-[#F86E00] rounded-[32px] !bg-[#00203e]'
     });
     setIsLoading(false);

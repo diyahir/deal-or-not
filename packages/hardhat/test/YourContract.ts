@@ -21,7 +21,7 @@ describe("DealOrNot", function () {
     await vrfContract.waitForDeployment(); // TODO: get from deployment
     const vrfContractAddress = await vrfContract.getAddress();
 
-    dealOrNot = (await dealOrNotFactory.deploy(owner.address, vrfContractAddress)) as DealOrNot;
+    dealOrNot = await dealOrNotFactory.deploy(owner.address, vrfContractAddress, false);
     await dealOrNot.waitForDeployment();
 
     // Deposit house funds for testing
@@ -376,7 +376,7 @@ describe("DealOrNot", function () {
       await vrfContract.waitForDeployment(); // TODO: get from deployment
       const vrfContractAddress = await vrfContract.getAddress();
 
-      const testContract = await newContract.deploy(owner.address, vrfContractAddress); // TODO: get from deployment
+      const testContract = await newContract.deploy(owner.address, vrfContractAddress, false); // TODO: get from deployment
       await testContract.waitForDeployment();
 
       // Deposit minimal house funds

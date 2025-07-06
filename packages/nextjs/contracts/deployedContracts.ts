@@ -3276,7 +3276,7 @@ const deployedContracts = {
   },
   31337: {
     BaseVRF: {
-      address: "0x9E545E3C0baAB3E08CdfD552C960A1050f373042",
+      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
       abi: [
         {
           inputs: [
@@ -3320,7 +3320,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     DealOrNot: {
-      address: "0xCD8a1C3ba11CF5ECfa6267617243239504a98d90",
+      address: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
       abi: [
         {
           inputs: [
@@ -3333,6 +3333,11 @@ const deployedContracts = {
               internalType: "address",
               name: "_vrf",
               type: "address",
+            },
+            {
+              internalType: "bool",
+              name: "_isMonad",
+              type: "bool",
             },
           ],
           stateMutability: "nonpayable",
@@ -3879,6 +3884,19 @@ const deployedContracts = {
         },
         {
           inputs: [],
+          name: "isMonad",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
           name: "nextGameId",
           outputs: [
             {
@@ -4053,25 +4071,6 @@ const deployedContracts = {
         renounceOwnership: "@openzeppelin/contracts/access/Ownable.sol",
         transferOwnership: "@openzeppelin/contracts/access/Ownable.sol",
       },
-    },
-    MonadVRF: {
-      address: "0x5f3f1dBD7B74C6B46e8c44f98792A1dAf8d69154",
-      abi: [
-        "constructor(address _entropyAddress)",
-        "event EntropyContractSet(address indexed entropy)",
-        "event EntropyProviderSet(address indexed provider)",
-        "event RandomNumberRequested(uint64 indexed sequenceNumber, bytes32 userRandomNumber)",
-        "function _entropyCallback(uint64 sequence, address provider, bytes32 randomNumber)",
-        "function entropy() view returns (address)",
-        "function entropyProvider() view returns (address)",
-        "function getRandomNumber(uint256 sequenceNumber) view returns (uint256)",
-        "function initializeEntropyProvider()",
-        "function owner() view returns (address)",
-        "function randomNumbers(uint64) view returns (bytes32)",
-        "function requestRandomNumber(bytes32 userRandomNumber) payable returns (uint256)",
-        "function setEntropyProvider(address _entropyProvider)",
-      ],
-      inheritedFunctions: {},
     },
   },
 } as const;

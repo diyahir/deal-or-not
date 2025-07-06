@@ -230,29 +230,24 @@ contract DealOrNot is ReentrancyGuard, Ownable {
 
         // Use Fisher-Yates shuffle to select boxes deterministically
         uint256[] memory selectedBoxes = new uint256[](numToEliminate);
-        uint256 selectedCount = 0;
-        uint256 attempts = 0;
-        // More generous max attempts calculation that accounts for available boxes
-        uint256 maxAttempts = numToEliminate * availableCount + (numToEliminate * 10); // Prevent infinite loops
+        uint256 baseRandomSeed = vrf.getRandomNumber(requestIds[gameId]);
 
-        // More efficient selection without creating large temporary arrays
-        while (selectedCount < numToEliminate && attempts < maxAttempts) {
-            uint256 randomBox = _generateRandomBoxForElimination(gameId);
+        for (uint256 i = 0; i < numToEliminate; i++) {
+            // Generate unique random index for each selection
+            uint256 randomSeed =
+                uint256(keccak256(abi.encodePacked(baseRandomSeed, i, block.timestamp, block.prevrandao)));
+            uint256 randomIndex = randomSeed % (availableCount - i);
 
-            // Check if box is available (not player's box, not already eliminated, not already selected)
-            if (
-                randomBox != game.playerBoxIndex &&
-                !_isBoxEliminated(randomBox, game.eliminatedBoxes) &&
-                !_isBoxInSelection(randomBox, selectedBoxes, selectedCount)
-            ) {
-                selectedBoxes[selectedCount] = randomBox;
-                game.eliminatedBoxes.push(randomBox);
-                selectedCount++;
-            }
-            attempts++;
+            // Select the box at randomIndex
+            selectedBoxes[i] = availableBoxes[randomIndex];
+
+            // Swap selected box to end to avoid reselection (Fisher-Yates)
+            availableBoxes[randomIndex] = availableBoxes[availableCount - 1 - i];
+
+            // Add to eliminated boxes
+            game.eliminatedBoxes.push(selectedBoxes[i]);
         }
 
-        require(selectedCount == numToEliminate, "Failed to select required boxes");
         return selectedBoxes;
     }
 
@@ -272,9 +267,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
     /**
      * Accept the current deal offer
      */
-    function acceptDeal(
-        uint256 gameId
-    )
+    function acceptDeal(uint256 gameId)
         external
         gameExists(gameId)
         onlyPlayer(gameId)

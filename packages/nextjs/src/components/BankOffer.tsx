@@ -41,11 +41,14 @@ export function BankOffer() {
     abi: DealOrNotABI,
     address: gameContract,
     functionName: 'getCurrentOffer',
-    args: [gameId]
+    args: [gameId],
+    query: {
+      refetchInterval: 500
+    }
   });
   const { writeContractAsync } = useWriteContract();
 
-  // TODO: implement reset context
+  // TODO:  see if gaslimit needed
   // TODO: last -> gMON change to symbol
   // TODO: last, last -> see if switchnetwork makes sense
   const acceptDeal = async () => {
@@ -98,7 +101,6 @@ export function BankOffer() {
         'items-center w-[625px] h-[200px]'
       )}
     >
-      <button onClick={acceptDeal}>accept</button>
       <div
         className={cn(
           'flex items-center w-fit mx-auto justify-between bg-[#1b4061] rounded-full',

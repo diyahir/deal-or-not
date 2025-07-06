@@ -7,6 +7,7 @@ import { alchemyRpcUrl, blockExplorer, monadRpcUrl } from '@/shared/constants';
 import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import '@rainbow-me/rainbowkit/styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ToastContainer } from 'react-toastify';
 import { defineChain } from 'viem';
 import { fallback, http, WagmiProvider } from 'wagmi';
 import { anvil } from 'wagmi/chains';
@@ -66,6 +67,7 @@ export default function RootLayout({
               <AppProvider>
                 <Header />
                 {children}
+                <ToastContainer />
               </AppProvider>
             </RainbowKitProvider>
           </QueryClientProvider>

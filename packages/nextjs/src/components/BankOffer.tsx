@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 import DealOrNotABI from '@/shared/abi/DealOrNot.json';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 import { formatEther } from 'viem';
 import { useAccount, usePublicClient, useReadContract, useWriteContract } from 'wagmi';
 
@@ -44,8 +45,9 @@ export function BankOffer() {
   });
   const { writeContractAsync } = useWriteContract();
 
-  // TODO: implement reset context, maybe put something different on offer accepted, toast accepted
+  // TODO: implement reset context
   // TODO: last -> gMON change to symbol
+  // TODO: last, last -> see if switchnetwork makes sense
   const acceptDeal = async () => {
     setIsLoadingAccept(true);
     const hash = await writeContractAsync({
@@ -56,6 +58,13 @@ export function BankOffer() {
     });
     await client?.waitForTransactionReceipt({
       hash
+    });
+    toast(<span>Accepted deal: {Number(formatEther((offer as bigint) || 0n)).toFixed(5)} gMON!</span>, {
+      hideProgressBar: true,
+      position: 'bottom-left',
+      theme: 'dark',
+      autoClose: false,
+      className: 'border border-[#F86E00] rounded-[32px] !bg-[#00203e]'
     });
     setIsLoadingAccept(false);
   };
@@ -72,6 +81,13 @@ export function BankOffer() {
     await client?.waitForTransactionReceipt({
       hash
     });
+    toast(<span>Game has started!</span>, {
+      hideProgressBar: true,
+      position: 'bottom-left',
+      theme: 'dark',
+      autoClose: false,
+      className: 'border border-[#F86E00] rounded-[32px] !bg-[#00203e]'
+    });
     setIsLoading(false);
   };
 
@@ -82,6 +98,7 @@ export function BankOffer() {
         'items-center w-[625px] h-[200px]'
       )}
     >
+      <button onClick={acceptDeal}>accept</button>
       <div
         className={cn(
           'flex items-center w-fit mx-auto justify-between bg-[#1b4061] rounded-full',

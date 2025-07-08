@@ -155,13 +155,15 @@ const deployMonadVRF: DeployFunction = async function (hre: HardhatRuntimeEnviro
   console.log("3. Request random number: await contract.requestRandomNumber('0x...', { value: fee })");
   console.log("4. Get random number: await contract.getRandomNumber(sequenceNumber)");
 
+  const gameToken = "0xaEef2f6B429Cb59C9B2D7bB2141ADa993E8571c3";
+
   const { deployer } = await hre.getNamedAccounts();
   console.log("deployer", deployer);
   const { deploy } = hre.deployments;
   await deploy("DealOrNot", {
     from: deployer,
     // Contract constructor arguments
-    args: [deployer, monadVRF.address, true],
+    args: [deployer, monadVRF.address, true, gameToken],
     log: true,
     // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
     // automatically mining the contract deployment transaction. There is no effect on live networks.

@@ -33,9 +33,6 @@ const deployDealOrNot: DeployFunction = async function (hre: HardhatRuntimeEnvir
 
   console.log("🪙 Game token deployed at:", gameToken.address);
 
-  // Set entry fee and VRF fee (in token units)
-  const entryFee = hre.ethers.parseEther("100"); // 100 tokens entry fee
-
   // Get the deployed contract to interact with it after deploying.
   const vrfContract = await deploy("BaseVRF", {
     from: deployer,
@@ -47,7 +44,7 @@ const deployDealOrNot: DeployFunction = async function (hre: HardhatRuntimeEnvir
   await deploy("DealOrNot", {
     from: deployer,
     // Contract constructor arguments
-    args: [deployer, vrfContract.address, false, gameToken.address, entryFee],
+    args: [deployer, vrfContract.address, false, gameToken.address],
     log: true,
     // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
     // automatically mining the contract deployment transaction. There is no effect on live networks.
@@ -57,7 +54,6 @@ const deployDealOrNot: DeployFunction = async function (hre: HardhatRuntimeEnvir
   const dealOrNotContract = await hre.ethers.getContract<Contract>("DealOrNot", deployer);
   console.log("🎯 DealOrNot contract deployed!");
   console.log("📊 Total boxes:", await dealOrNotContract.TOTAL_BOXES());
-  console.log("💰 Entry fee:", hre.ethers.formatEther(await dealOrNotContract.entryFee()), "tokens");
   console.log("🏦 House funds:", hre.ethers.formatEther(await dealOrNotContract.getHouseFunds()), "tokens");
 
   // Optional: Deposit some initial house funds for testing

@@ -179,7 +179,7 @@ const config: HardhatUserConfig = {
       accounts: [deployerPrivateKey],
     },
     monadTestnet: {
-      url: "https://rpc-testnet.monadinfra.com",
+      url: "https://testnet-rpc.monad.xyz",
       accounts: [process.env.MONAD_PK || deployerPrivateKey],
     },
   },

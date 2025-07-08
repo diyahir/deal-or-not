@@ -3,7 +3,7 @@
 import Header from '@/components/Header/Header';
 import AppProvider from '@/contexts/AppContext';
 import { cn } from '@/lib/utils';
-import { alchemyRpcUrl, blockExplorer, flareRpcUrl, flowRpcUrl, monadRpcUrl } from '@/shared/constants';
+import { alchemyRpcUrl, blockExplorer, monadRpcUrl } from '@/shared/constants';
 import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import '@rainbow-me/rainbowkit/styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -14,10 +14,11 @@ import { anvil } from 'wagmi/chains';
 import { audiowide, roboto } from './fonts';
 import './globals.css';
 
+// TODO: remove anvil chain
 const monadTestnet = defineChain({
   id: 10143,
   name: 'Monad Testnet',
-  nativeCurrency: { name: 'TMON', symbol: 'TMON', decimals: 18 },
+  nativeCurrency: { name: 'MON', symbol: 'MON', decimals: 18 },
   rpcUrls: {
     default: {
       http: [alchemyRpcUrl]
@@ -32,49 +33,12 @@ const monadTestnet = defineChain({
   testnet: true
 });
 
-const flareTestnet = defineChain({
-  id: 114,
-  name: 'Flare Testnet',
-  nativeCurrency: { name: 'FLR', symbol: 'FLR', decimals: 18 },
-  rpcUrls: {
-    default: {
-      http: [flareRpcUrl]
-    }
-  },
-  blockExplorers: {
-    default: {
-      name: 'Flare block explorers',
-      url: blockExplorer
-    }
-  },
-  testnet: true
-});
-
-const flowTestnet = defineChain({
-  id: 545,
-  name: 'Flow Testnet',
-  nativeCurrency: { name: 'FLOW', symbol: 'FLOW', decimals: 18 },
-  rpcUrls: {
-    default: {
-      http: [flowRpcUrl]
-    }
-  },
-  blockExplorers: {
-    default: {
-      name: 'Flow block explorers',
-      url: blockExplorer
-    }
-  },
-  testnet: true
-});
-
 const config = getDefaultConfig({
   appName: 'Nad or no Nad',
   projectId: '134f0e99f1b28f5fc5482a9ac6126a51',
-  chains: [monadTestnet, flareTestnet, flowTestnet, anvil],
+  chains: [monadTestnet, anvil],
   transports: {
     [monadTestnet.id]: fallback([http(alchemyRpcUrl), http(monadRpcUrl)]),
-    [flareTestnet.id]: fallback([http(flareRpcUrl)]),
     [anvil.id]: http()
   },
   ssr: true

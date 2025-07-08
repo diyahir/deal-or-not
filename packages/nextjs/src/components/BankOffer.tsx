@@ -1,5 +1,6 @@
 'use client';
 
+import Lizza from '@/assets/lizza.png';
 import { Loading } from '@/components/Loading';
 import SwitchNetwork from '@/components/Wallet/SwitchNetwork';
 import { useAppContext } from '@/contexts/AppContext';
@@ -8,12 +9,11 @@ import { cn } from '@/lib/utils';
 import DealOrNotABI from '@/shared/abi/DealOrNot.json';
 import MonadVRFABI from '@/shared/abi/MonadVRF.json';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import Image from 'next/image';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { formatEther } from 'viem';
 import { useAccount, usePublicClient, useReadContract, useWriteContract } from 'wagmi';
-import Image from 'next/image';
-import Lizza from '@/assets/lizza.png';
 
 export function BankOffer() {
   const client = usePublicClient();
@@ -51,9 +51,6 @@ export function BankOffer() {
   });
   const { writeContractAsync } = useWriteContract();
 
-  // TODO:  see if gaslimit needed
-  // TODO: last -> gMON change to symbol
-  // TODO: last, last -> see if switchnetwork makes sense
   const acceptDeal = async () => {
     setIsLoadingAccept(true);
     const hash = await writeContractAsync({
@@ -114,7 +111,7 @@ export function BankOffer() {
   };
 
   return (
-    <div className="flex items-center justify-center" style={{ marginTop: "-50px" }}>
+    <div className="flex items-center justify-center" style={{ marginTop: '-50px' }}>
       <div
         className={cn(
           'border mx-auto border-[#f86e02] rounded-xl text-white bg-[#01152C] p-4 flex flex-col justify-center gap-6',
@@ -166,7 +163,12 @@ export function BankOffer() {
           </ConnectButton.Custom>
         )}
       </div>
-      <Image src={Lizza} alt="lizza" className="h-[200px] w-auto ml-4 object-contain" style={{ height: "300px", marginTop: "0px" }} />
+      <Image
+        src={Lizza}
+        alt="lizza"
+        className="h-[200px] w-auto ml-4 object-contain"
+        style={{ height: '300px', marginTop: '0px' }}
+      />
     </div>
   );
 }

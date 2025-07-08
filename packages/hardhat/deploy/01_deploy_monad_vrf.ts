@@ -1,6 +1,6 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
-import { Contract, Signer } from "ethers";
+import { Contract } from "ethers";
 
 /**
  * Deploys the MonadVRF contract using Pyth Entropy for randomness
@@ -18,32 +18,19 @@ const deployMonadVRF: DeployFunction = async function (hre: HardhatRuntimeEnviro
         existing PK which will fill DEPLOYER_PRIVATE_KEY_ENCRYPTED in the .env file (then used on hardhat.config.ts)
         You can run the `yarn account` command to check your balance in every network.
       */
-  // Use custom signer from MONAD_PK environment variable for live networks
-  let customSigner: Signer;
-  const privateKey = process.env.MONAD_PK;
+  const { deployer } = await hre.getNamedAccounts();
+  const { deploy } = hre.deployments;
 
-  // Only require MONAD_PK for live networks (not localhost or hardhat)
-  if (hre.network.name !== "localhost" && hre.network.name !== "hardhat") {
-    if (!privateKey) {
-      throw new Error("MONAD_PK environment variable is required for deployment to live networks");
-    }
-    customSigner = new hre.ethers.Wallet(privateKey, hre.ethers.provider);
-    const signerAddress = await customSigner.getAddress();
-    console.log(`🔑 Using custom signer: ${signerAddress}`);
+  console.log(`🔑 Using deployer account: ${deployer}`);
 
-    // Check signer balance
-    const signerBalance = await hre.ethers.provider.getBalance(signerAddress);
-    console.log(`💰 Custom signer balance: ${hre.ethers.formatEther(signerBalance)} MON`);
+  // Check deployer balance
+  const deployerBalance = await hre.ethers.provider.getBalance(deployer);
+  console.log(
+    `💰 Deployer balance: ${hre.ethers.formatEther(deployerBalance)} ${hre.network.name === "monadTestnet" ? "MON" : "ETH"}`,
+  );
 
-    if (signerBalance === 0n) {
-      throw new Error(`Signer ${signerAddress} has insufficient balance. Please fund this account.`);
-    }
-  } else {
-    // For local networks, use the default hardhat signer
-    const [defaultSigner] = await hre.ethers.getSigners();
-    customSigner = defaultSigner;
-    const signerAddress = await customSigner.getAddress();
-    console.log(`🔑 Using default hardhat signer: ${signerAddress}`);
+  if (deployerBalance === 0n) {
+    throw new Error(`Deployer ${deployer} has insufficient balance. Please fund this account.`);
   }
 
   console.log("");
@@ -75,34 +62,18 @@ const deployMonadVRF: DeployFunction = async function (hre: HardhatRuntimeEnviro
   console.log(`🔄 Deploying MonadVRF contract on ${hre.network.name}...`);
   console.log(`📍 Entropy provider address: ${entropyAddress}`);
 
-  // Deploy using ethers.js directly with custom signer
-  const MonadVRFFactory = await hre.ethers.getContractFactory("MonadVRF", customSigner);
-  const monadVRFInstance = await MonadVRFFactory.deploy(entropyAddress);
-  await monadVRFInstance.waitForDeployment();
-
-  const monadVRFAddress = await monadVRFInstance.getAddress();
-  console.log(`deploying "MonadVRF" (tx: ${monadVRFInstance.deploymentTransaction()?.hash})`);
-  console.log(`MonadVRF deployed to: ${monadVRFAddress}`);
-
-  // Store deployment information for hardhat-deploy compatibility
-  await hre.deployments.save("MonadVRF", {
-    address: monadVRFAddress,
-    abi: MonadVRFFactory.interface.format() as any,
-    bytecode: MonadVRFFactory.bytecode,
-    deployedBytecode: MonadVRFFactory.bytecode,
+  // Deploy using standard hardhat-deploy pattern
+  const monadVRF = await deploy("MonadVRF", {
+    from: deployer,
     args: [entropyAddress],
+    log: true,
+    autoMine: true,
   });
 
-  // Create a mock deployment result for compatibility
-  const monadVRF = {
-    address: monadVRFAddress,
-    abi: MonadVRFFactory.interface.format(),
-    args: [entropyAddress],
-    newlyDeployed: true,
-  };
+  console.log(`✅ MonadVRF deployed to: ${monadVRF.address}`);
 
   // Get the deployed contract to interact with it after deploying.
-  const monadVRFContract = await hre.ethers.getContract<Contract>("MonadVRF", customSigner);
+  const monadVRFContract = await hre.ethers.getContract<Contract>("MonadVRF", deployer);
   console.log("🎯 MonadVRF contract deployed!");
   console.log(`📍 Contract address: ${monadVRF.address}`);
   console.log(`🔗 Entropy contract: ${await monadVRFContract.entropy()}`);
@@ -155,15 +126,13 @@ const deployMonadVRF: DeployFunction = async function (hre: HardhatRuntimeEnviro
   console.log("3. Request random number: await contract.requestRandomNumber('0x...', { value: fee })");
   console.log("4. Get random number: await contract.getRandomNumber(sequenceNumber)");
 
-  const gameToken = "0xaEef2f6B429Cb59C9B2D7bB2141ADa993E8571c3";
+  const gMonTokenAddress = "0xaEef2f6B429Cb59C9B2D7bB2141ADa993E8571c3";
 
-  const { deployer } = await hre.getNamedAccounts();
   console.log("deployer", deployer);
-  const { deploy } = hre.deployments;
   await deploy("DealOrNot", {
     from: deployer,
     // Contract constructor arguments
-    args: [deployer, monadVRF.address, true, gameToken],
+    args: [deployer, monadVRF.address, true, gMonTokenAddress],
     log: true,
     // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
     // automatically mining the contract deployment transaction. There is no effect on live networks.
@@ -173,7 +142,6 @@ const deployMonadVRF: DeployFunction = async function (hre: HardhatRuntimeEnviro
   const dealOrNotContract = await hre.ethers.getContract<Contract>("DealOrNot", deployer);
   console.log("🎯 DealOrNot contract deployed!");
   console.log("📊 Total boxes:", await dealOrNotContract.TOTAL_BOXES());
-  console.log("💰 Entry fee:", hre.ethers.formatEther(await dealOrNotContract.ENTRY_FEE()), "ETH");
   console.log("🏦 House funds:", hre.ethers.formatEther(await dealOrNotContract.getHouseFunds()), "ETH");
 };
 

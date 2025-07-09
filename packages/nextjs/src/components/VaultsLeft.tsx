@@ -18,10 +18,9 @@ export function VaultsLeft() {
 
   return (
     <>
-      <h1 className="text-4xl font-bold text-center">
+      <span className="text-4xl font-bold text-center">
         Open <span className="text-[#f86e02]">{stepsLeft()}</span>&nbsp;{stepsLeft() < 2 ? 'vault' : 'vaults'}
-      </h1>
-      <h1 className="text-4xl font-bold text-center">You opened vault 22, value: 20 gMON</h1>
+      </span>
     </>
   );
 }

@@ -2,10 +2,7 @@
 
 import VaultOpen from '@/assets/vault-open.png';
 import { useAppContext } from '@/contexts/AppContext';
-import { useGameContract } from '@/hooks/useGameContract';
-import DealOrNotABI from '@/shared/abi/DealOrNot.json';
 import Image from 'next/image';
-import { useAccount, useReadContract } from 'wagmi';
 import { Case } from './Case';
 
 const caseRows = [
@@ -15,17 +12,8 @@ const caseRows = [
   [1, 2, 3, 4, 5, 6]
 ];
 
-export function Cases() {
-  const { address } = useAccount();
+export function Cases({ gameId, entryFee }: { gameId: bigint | unknown; entryFee: bigint | undefined }) {
   const { game } = useAppContext();
-  const gameContract = useGameContract();
-  const { data: gameId } = useReadContract({
-    abi: DealOrNotABI,
-    address: gameContract,
-    functionName: 'gameIds',
-    args: [address]
-  });
-
   return (
     <div className="border border-[#f86e02] rounded-xl text-white bg-[#01152C] p-6">
       {caseRows.map((row, rowIndex) => (
@@ -39,7 +27,7 @@ export function Cases() {
                 </span>
               </div>
             ) : (
-              <Case key={caseNumber} caseNumber={caseNumber} gameId={gameId as bigint} />
+              <Case key={caseNumber} caseNumber={caseNumber} gameId={gameId} entryFee={entryFee} />
             )
           )}
         </div>

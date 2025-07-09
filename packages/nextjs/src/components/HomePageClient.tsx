@@ -46,7 +46,7 @@ export function HomePageClient() {
         )}
       </div>
       <div className="col-span-3 flex flex-col gap-6">
-        <Cases />
+        <Cases gameId={gameId} entryFee={_gameState?.entryFee} />
         <div className="flex items-center justify-center -mt-[50px]">
           <div
             className={cn(

@@ -7,11 +7,21 @@ import { cn } from '@/lib/utils';
 import DealOrNotABI from '@/shared/abi/DealOrNot.json';
 import Image from 'next/image';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
+import { formatEther } from 'viem';
 import { usePublicClient } from 'wagmi';
 import { LoadingSmall } from './Loading';
 
 // TODO: last -> somehow set same size on every case, also glitch when clicking on boxes, see if it removes when removing loading
-export function Case({ caseNumber, gameId }: { caseNumber: number; gameId: bigint | undefined }) {
+export function Case({
+  caseNumber,
+  gameId,
+  entryFee
+}: {
+  caseNumber: number;
+  gameId: bigint | unknown;
+  entryFee: bigint | undefined;
+}) {
   const [loading, setLoading] = useState(false);
   const { game, setGame } = useAppContext();
   const client = usePublicClient();
@@ -19,7 +29,7 @@ export function Case({ caseNumber, gameId }: { caseNumber: number; gameId: bigin
 
   const eliminateBoxes = async () => {
     const eliminations = game.eliminations + 1;
-    if (typeof gameId !== 'bigint') {
+    if (typeof gameId !== 'bigint' || typeof entryFee !== 'bigint') {
       return;
     }
     setLoading(true);
@@ -33,9 +43,27 @@ export function Case({ caseNumber, gameId }: { caseNumber: number; gameId: bigin
     setGame({
       ...game,
       amounts: game.amounts.map((amount, i) => {
+        let _available;
+        if (i === Number((eliminatedBoxesIndexes as bigint[])[game.eliminations])) {
+          _available = false;
+          toast(
+            <span>
+              You opened vault {caseNumber}, value {Number(Number(formatEther(amount.qty(entryFee))).toFixed(5))} gMON
+            </span>,
+            {
+              hideProgressBar: true,
+              position: 'bottom-left',
+              theme: 'dark',
+              autoClose: 3000,
+              className: 'border border-[#F86E00] rounded-[32px] !bg-[#00203e]'
+            }
+          );
+        } else {
+          _available = amount.available;
+        }
         return {
           ...amount,
-          available: i === Number((eliminatedBoxesIndexes as bigint[])[game.eliminations]) ? false : amount.available
+          available: _available
         };
       }),
       canAccept:

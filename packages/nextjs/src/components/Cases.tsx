@@ -26,22 +26,8 @@ export function Cases() {
     args: [address]
   });
 
-  const stepsLeft = () => {
-    if (game.eliminations > 19) {
-      return 1;
-    }
-    return [6, 11, 15, 18]
-      .map((num) => num - game.eliminations)
-      .sort((a, b) => a - b)
-      .filter((num) => num >= 0)
-      .slice(0, 1)[0];
-  };
-
   return (
     <div className="border border-[#f86e02] rounded-xl text-white bg-[#01152C] p-6">
-      <h1 className="text-4xl font-bold text-center">
-        Pick <span className="text-[#f86e02]">{stepsLeft()}</span>&nbsp;more
-      </h1>
       {caseRows.map((row, rowIndex) => (
         <div key={rowIndex} className="flex justify-center gap-3">
           {row.map((caseNumber) =>

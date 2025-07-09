@@ -62,7 +62,7 @@ export function StartGame({ gameId, entryFee }: { gameId: bigint; entryFee: bigi
           available: i === Number((eliminatedBoxesIndexes as bigint[])[game.eliminations]) ? false : amount.available
         };
       }),
-      canAccept: true,
+      canAccept: false,
       eliminations: game.eliminations + 1,
       selectedBoxes: []
     });

@@ -30,13 +30,11 @@ export function Cases() {
     if (game.eliminations > 19) {
       return 1;
     }
-    return (
-      [6, 11, 15, 18]
-        .map((num) => num - game.eliminations)
-        .sort((a, b) => a - b)
-        .filter((num) => num >= 0)
-        .slice(0, 1)[0] + 1
-    );
+    return [6, 11, 15, 18]
+      .map((num) => num - game.eliminations)
+      .sort((a, b) => a - b)
+      .filter((num) => num >= 0)
+      .slice(0, 1)[0];
   };
 
   return (

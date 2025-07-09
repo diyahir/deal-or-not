@@ -16,7 +16,10 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { formatEther } from 'viem';
 import { useAccount, usePublicClient, useReadContract, useWriteContract } from 'wagmi';
+import { FundGame } from './FundGame';
+import { StartGame } from './StartGame';
 
+// TODO: rename this
 export function BankOffer() {
   const client = usePublicClient();
   const { game } = useAppContext();
@@ -25,7 +28,7 @@ export function BankOffer() {
   const [isLoadingAccept, setIsLoadingAccept] = useState(false);
   const gameContract = useGameContract();
   const gMONContract = useGMONContract();
-  const { data: gameId } = useReadContract({
+  const { data: gameId, refetch } = useReadContract({
     abi: DealOrNotABI,
     address: gameContract,
     functionName: 'gameIds',
@@ -43,6 +46,7 @@ export function BankOffer() {
       enabled: typeof gameId === 'bigint'
     }
   });
+  const _gameState = gameState as { isActive?: boolean; entryFee?: bigint };
   const { data: offer } = useReadContract({
     abi: DealOrNotABI,
     address: gameContract,
@@ -75,54 +79,6 @@ export function BankOffer() {
     setIsLoadingAccept(false);
   };
 
-  const startGame = async () => {
-    setIsLoading(true);
-
-    const totalValue = 1000000000000000000n;
-    // Fetch VRF address from the DealOrNot contract
-    const vrfAddress = (await client?.readContract({
-      address: gameContract,
-      abi: DealOrNotABI,
-      functionName: 'vrf'
-    })) as `0x${string}`;
-
-    // Fetch entropy fee from the VRF contract
-    const entropyFee = (await client?.readContract({
-      address: vrfAddress,
-      abi: MonadVRFABI,
-      functionName: 'getEntropyFee'
-    })) as bigint;
-
-    const approveHash = await writeContractAsync({
-      abi: GMonTokenABI,
-      address: gMONContract,
-      functionName: 'approve',
-      args: [gameContract, totalValue]
-    });
-    await client?.waitForTransactionReceipt({
-      hash: approveHash
-    });
-
-    const hash = await writeContractAsync({
-      abi: DealOrNotABI,
-      address: gameContract,
-      functionName: 'startGame',
-      args: [totalValue],
-      value: (entropyFee * 110n) / 100n
-    });
-    await client?.waitForTransactionReceipt({
-      hash
-    });
-    toast(<span>Game has started!</span>, {
-      hideProgressBar: true,
-      position: 'bottom-left',
-      theme: 'dark',
-      autoClose: 1000,
-      className: 'border border-[#F86E00] rounded-[32px] !bg-[#00203e]'
-    });
-    setIsLoading(false);
-  };
-
   return (
     <div className="flex items-center justify-center" style={{ marginTop: '-50px' }}>
       <div
@@ -131,7 +87,12 @@ export function BankOffer() {
           'items-center w-[625px] h-[200px]'
         )}
       >
-        <div
+        {_gameState?.isActive && _gameState?.entryFee && typeof gameId === 'bigint' ? (
+          <StartGame gameId={gameId} entryFee={_gameState.entryFee} />
+        ) : (
+          <FundGame refetch={refetch} />
+        )}
+        {/* <div
           className={cn(
             'flex items-center w-fit mx-auto justify-between bg-[#1b4061] rounded-full',
             !game.canAccept && 'opacity-50'
@@ -174,7 +135,7 @@ export function BankOffer() {
               );
             }}
           </ConnectButton.Custom>
-        )}
+        )} */}
       </div>
       <Image
         src={Lizza}

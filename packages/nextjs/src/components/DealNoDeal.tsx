@@ -47,7 +47,7 @@ export function DealNoDeal({ gameId }: { gameId: bigint }) {
       hideProgressBar: true,
       position: 'bottom-left',
       theme: 'dark',
-      autoClose: 1000,
+      autoClose: 3000,
       className: 'border border-[#F86E00] rounded-[32px] !bg-[#00203e]'
     });
     setIsLoadingAccept(false);

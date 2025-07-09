@@ -16,11 +16,10 @@ export function VaultsLeft() {
       .slice(0, 1)[0];
   };
 
-  // TODO: rename "Pick 5 more" to "Open 5 vaults", also set real quantities
   return (
     <>
       <h1 className="text-4xl font-bold text-center">
-        Pick <span className="text-[#f86e02]">{stepsLeft()}</span>&nbsp;more
+        Open <span className="text-[#f86e02]">{stepsLeft()}</span>&nbsp;{stepsLeft() < 2 ? 'vault' : 'vaults'}
       </h1>
       <h1 className="text-4xl font-bold text-center">You opened vault 22, value: 20 gMON</h1>
     </>

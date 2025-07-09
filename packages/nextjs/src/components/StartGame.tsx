@@ -70,16 +70,15 @@ export function StartGame({ gameId, entryFee }: { gameId: bigint; entryFee: bigi
       hideProgressBar: true,
       position: 'bottom-left',
       theme: 'dark',
-      autoClose: 1000,
+      autoClose: 3000,
       className: 'border border-[#F86E00] rounded-[32px] !bg-[#00203e]'
     });
     setIsLoading(false);
   };
 
   return (
-    // TODO: styles
     <>
-      <span>Game funded with {formatEther(entryFee)} gMON</span>
+      <span className="text-xl font-semibold">Game funded with {formatEther(entryFee)} gMON</span>
       <ConnectButton.Custom>
         {({ account, openConnectModal, mounted }) => {
           const isConnected = mounted && account;

@@ -65,7 +65,7 @@ export function FundGame({ refetch }: { refetch: () => void }) {
       hideProgressBar: true,
       position: 'bottom-left',
       theme: 'dark',
-      autoClose: 1000,
+      autoClose: 3000,
       className: 'border border-[#F86E00] rounded-[32px] !bg-[#00203e]'
     });
     setIsLoading(false);
@@ -73,8 +73,7 @@ export function FundGame({ refetch }: { refetch: () => void }) {
 
   return (
     <>
-      {/* TODO: styles of radio group and text here */}
-      <span>Select an amount to play with</span>
+      <span className="text-xl font-semibold">Select an amount to play with</span>
       <RadioGroup value={value} onValueChange={(value) => setValue(value)} className="flex justify-center">
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="1" id="1" />

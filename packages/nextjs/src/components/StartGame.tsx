@@ -4,6 +4,7 @@ import { Loading } from '@/components/Loading';
 import SwitchNetwork from '@/components/Wallet/SwitchNetwork';
 import { useAppContext } from '@/contexts/AppContext';
 import { useGameContract } from '@/hooks/useGameContract';
+import { getEntropyFee } from '@/lib/utils';
 import DealOrNotABI from '@/shared/abi/DealOrNot.json';
 import MonadVRFABI from '@/shared/abi/MonadVRF.json';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
@@ -42,7 +43,7 @@ export function StartGame({ gameId, entryFee }: { gameId: bigint; entryFee: bigi
       address: gameContract,
       functionName: 'eliminateBoxes',
       args: [gameId],
-      value: (entropyFee * 110n) / 100n
+      value: getEntropyFee(entropyFee)
     });
     await client?.waitForTransactionReceipt({
       hash

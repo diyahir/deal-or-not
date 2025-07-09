@@ -9,7 +9,7 @@ export function useGameContract() {
 
   const contract: ContractMap = {
     31337: '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0',
-    10143: '0x0E15bd4D20c0e59d1fe5723292637aB012960af4'
+    10143: '0x322813Fd9A801c5507c9de605d63CEA4f2CE6c44'
   };
 
   return contract[chainId];

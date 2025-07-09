@@ -6,6 +6,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import SwitchNetwork from '@/components/Wallet/SwitchNetwork';
 import { useGameContract } from '@/hooks/useGameContract';
 import { useGMONContract } from '@/hooks/useGMON';
+import { getEntropyFee } from '@/lib/utils';
 import DealOrNotABI from '@/shared/abi/DealOrNot.json';
 import GMonTokenABI from '@/shared/abi/GMonToken.json';
 import MonadVRFABI from '@/shared/abi/MonadVRF.json';
@@ -55,7 +56,7 @@ export function FundGame({ refetch }: { refetch: () => void }) {
       address: gameContract,
       functionName: 'startGame',
       args: [parseEther(value)],
-      value: (entropyFee * 110n) / 100n
+      value: getEntropyFee(entropyFee)
     });
     await client?.waitForTransactionReceipt({
       hash

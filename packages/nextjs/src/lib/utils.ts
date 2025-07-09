@@ -16,3 +16,5 @@ export function shortAddress({
 }) {
   return address && [address.substring(0, startLength), address.substring(address.length - endLength)].join('...');
 }
+
+export const getEntropyFee = (value: bigint) => value * 10n;

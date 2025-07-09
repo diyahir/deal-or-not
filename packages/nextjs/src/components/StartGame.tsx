@@ -64,7 +64,7 @@ export function StartGame({ gameId, entryFee }: { gameId: bigint; entryFee: bigi
         };
       }),
       canAccept: false,
-      eliminations: game.eliminations + 1,
+      eliminations: 0,
       selectedBoxes: []
     });
     toast(<span>Game has started!</span>, {

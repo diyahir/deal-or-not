@@ -58,7 +58,7 @@ export function HomePageClient() {
               // TODO: this part should read contract if reload, if eliminatedBoxes are undefined then start game, if not go for vaults left
               // TODO: error handling, handle reject of transactions
               // TODO: ipad, mobile, bigger screens, etc
-              game.eliminations === 0 ? (
+              game.eliminations === 0 && game.canAccept ? (
                 <StartGame gameId={gameId} entryFee={_gameState.entryFee} />
               ) : game.canAccept ? (
                 <DealNoDeal gameId={gameId} />

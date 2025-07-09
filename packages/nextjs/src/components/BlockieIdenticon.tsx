@@ -30,7 +30,7 @@ const BlockieIdenticon = ({ address, diameter, alt = 'Blockie Identicon' }: IBlo
 
   return (
     <>
-      <canvas ref={canvasRef} style={{ display: 'none' }} />
+      <canvas ref={canvasRef} className="hidden" />
       {dataUrl && <Image src={dataUrl} height={diameter} width={diameter} className="rounded-full" alt={alt} />}
     </>
   );

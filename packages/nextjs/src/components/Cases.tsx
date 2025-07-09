@@ -2,10 +2,7 @@
 
 import VaultOpen from '@/assets/vault-open.png';
 import { useAppContext } from '@/contexts/AppContext';
-import { useGameContract } from '@/hooks/useGameContract';
-import DealOrNotABI from '@/shared/abi/DealOrNot.json';
 import Image from 'next/image';
-import { useAccount, useReadContract } from 'wagmi';
 import { Case } from './Case';
 
 const caseRows = [
@@ -15,37 +12,12 @@ const caseRows = [
   [1, 2, 3, 4, 5, 6]
 ];
 
-export function Cases() {
-  const { address } = useAccount();
+export function Cases({ gameId, entryFee }: { gameId: bigint | unknown; entryFee: bigint | undefined }) {
   const { game } = useAppContext();
-  const gameContract = useGameContract();
-  const { data: gameId } = useReadContract({
-    abi: DealOrNotABI,
-    address: gameContract,
-    functionName: 'gameIds',
-    args: [address]
-  });
-
-  const stepsLeft = () => {
-    if (game.eliminations > 19) {
-      return 1;
-    }
-    return (
-      [6, 11, 15, 18]
-        .map((num) => num - game.eliminations)
-        .sort((a, b) => a - b)
-        .filter((num) => num >= 0)
-        .slice(0, 1)[0] + 1
-    );
-  };
-
   return (
-    <div className="border border-[#f86e02] rounded-xl text-white bg-[#01152C] p-6">
-      <h1 className="text-4xl font-bold text-center">
-        Pick <span className="text-[#f86e02]">{stepsLeft()}</span>&nbsp;more
-      </h1>
+    <div className="border border-[#f86e02] rounded-xl text-white bg-[#01152C] p-6 flex flex-col gap-12">
       {caseRows.map((row, rowIndex) => (
-        <div key={rowIndex} className="flex justify-center gap-3">
+        <div key={rowIndex} className="flex justify-center gap-3 min-h-[65px] max-h-[65px]">
           {row.map((caseNumber) =>
             game.selectedBoxes.find((selected) => selected === caseNumber) ? (
               <div key={caseNumber} className="flex flex-col items-center justify-end cursor-not-allowed">
@@ -55,7 +27,7 @@ export function Cases() {
                 </span>
               </div>
             ) : (
-              <Case key={caseNumber} caseNumber={caseNumber} gameId={gameId as bigint} />
+              <Case key={caseNumber} caseNumber={caseNumber} gameId={gameId} entryFee={entryFee} />
             )
           )}
         </div>

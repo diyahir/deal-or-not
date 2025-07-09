@@ -12,7 +12,6 @@ import { formatEther } from 'viem';
 import { usePublicClient } from 'wagmi';
 import { LoadingSmall } from './Loading';
 
-// TODO: last -> somehow set same size on every case, also glitch when clicking on boxes, see if it removes when removing loading
 export function Case({
   caseNumber,
   gameId,
@@ -33,7 +32,10 @@ export function Case({
       return;
     }
     setLoading(true);
-    // TODO: last -> this could be moved to hook and maybe remove loading
+    /**
+     * eliminatedBoxesIndexes should be called on every new case/vault click instead depending on a fetch interval
+     * or passing refetch along the code
+     */
     const eliminatedBoxesIndexes = await client?.readContract({
       address: gameContract,
       abi: DealOrNotABI,

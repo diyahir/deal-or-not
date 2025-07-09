@@ -15,9 +15,9 @@ const caseRows = [
 export function Cases({ gameId, entryFee }: { gameId: bigint | unknown; entryFee: bigint | undefined }) {
   const { game } = useAppContext();
   return (
-    <div className="border border-[#f86e02] rounded-xl text-white bg-[#01152C] p-6">
+    <div className="border border-[#f86e02] rounded-xl text-white bg-[#01152C] p-6 flex flex-col gap-12">
       {caseRows.map((row, rowIndex) => (
-        <div key={rowIndex} className="flex justify-center gap-3">
+        <div key={rowIndex} className="flex justify-center gap-3 min-h-[65px] max-h-[65px]">
           {row.map((caseNumber) =>
             game.selectedBoxes.find((selected) => selected === caseNumber) ? (
               <div key={caseNumber} className="flex flex-col items-center justify-end cursor-not-allowed">

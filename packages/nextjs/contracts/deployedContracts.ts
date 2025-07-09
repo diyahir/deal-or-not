@@ -3363,7 +3363,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     DealOrNot: {
-      address: "0x9A676e781A523b5d0C0e43731313A708CB607508",
+      address: "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853",
       abi: [
         {
           inputs: [
@@ -4514,23 +4514,220 @@ const deployedContracts = {
       },
     },
     MonadVRF: {
-      address: "0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE",
+      address: "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
       abi: [
-        "constructor(address _entropyAddress)",
-        "event EntropyContractSet(address indexed entropy)",
-        "event EntropyProviderSet(address indexed provider)",
-        "event RandomNumberRequested(uint64 indexed sequenceNumber, bytes32 userRandomNumber)",
-        "function _entropyCallback(uint64 sequence, address provider, bytes32 randomNumber)",
-        "function entropy() view returns (address)",
-        "function entropyProvider() view returns (address)",
-        "function getEntropyFee() view returns (uint256)",
-        "function getRandomNumber(uint256 sequenceNumber) view returns (uint256)",
-        "function initializeEntropyProvider()",
-        "function owner() view returns (address)",
-        "function randomNumbers(uint64) view returns (bytes32)",
-        "function requestRandomNumber(bytes32 userRandomNumber) payable returns (uint256)",
-        "function setEntropyProvider(address _entropyProvider)",
-        "receive() payable",
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_entropyAddress",
+              type: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "entropy",
+              type: "address",
+            },
+          ],
+          name: "EntropyContractSet",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "provider",
+              type: "address",
+            },
+          ],
+          name: "EntropyProviderSet",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint64",
+              name: "sequenceNumber",
+              type: "uint64",
+            },
+            {
+              indexed: false,
+              internalType: "bytes32",
+              name: "userRandomNumber",
+              type: "bytes32",
+            },
+          ],
+          name: "RandomNumberRequested",
+          type: "event",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint64",
+              name: "sequence",
+              type: "uint64",
+            },
+            {
+              internalType: "address",
+              name: "provider",
+              type: "address",
+            },
+            {
+              internalType: "bytes32",
+              name: "randomNumber",
+              type: "bytes32",
+            },
+          ],
+          name: "_entropyCallback",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "entropy",
+          outputs: [
+            {
+              internalType: "contract IEntropy",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "entropyProvider",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getEntropyFee",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "sequenceNumber",
+              type: "uint256",
+            },
+          ],
+          name: "getRandomNumber",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "initializeEntropyProvider",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "owner",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint64",
+              name: "",
+              type: "uint64",
+            },
+          ],
+          name: "randomNumbers",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "userRandomNumber",
+              type: "bytes32",
+            },
+          ],
+          name: "requestRandomNumber",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_entropyProvider",
+              type: "address",
+            },
+          ],
+          name: "setEntropyProvider",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          stateMutability: "payable",
+          type: "receive",
+        },
       ],
       inheritedFunctions: {},
     },

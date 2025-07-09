@@ -50,7 +50,7 @@ export function Case({ caseNumber, gameId }: { caseNumber: number; gameId: bigin
         address: gameContract,
         functionName: 'eliminateBoxes',
         args: [gameId],
-        value: entropyFee
+        value: (entropyFee * 110n) / 100n
       });
       await client?.waitForTransactionReceipt({
         hash

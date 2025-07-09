@@ -5,8 +5,10 @@ import { Loading } from '@/components/Loading';
 import SwitchNetwork from '@/components/Wallet/SwitchNetwork';
 import { useAppContext } from '@/contexts/AppContext';
 import { useGameContract } from '@/hooks/useGameContract';
+import { useGMONContract } from '@/hooks/useGMON';
 import { cn } from '@/lib/utils';
 import DealOrNotABI from '@/shared/abi/DealOrNot.json';
+import GMonTokenABI from '@/shared/abi/GMonToken.json';
 import MonadVRFABI from '@/shared/abi/MonadVRF.json';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Image from 'next/image';
@@ -22,6 +24,7 @@ export function BankOffer() {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingAccept, setIsLoadingAccept] = useState(false);
   const gameContract = useGameContract();
+  const gMONContract = useGMONContract();
   const { data: gameId } = useReadContract({
     abi: DealOrNotABI,
     address: gameContract,
@@ -75,6 +78,7 @@ export function BankOffer() {
   const startGame = async () => {
     setIsLoading(true);
 
+    const totalValue = 1000000000000000000n;
     // Fetch VRF address from the DealOrNot contract
     const vrfAddress = (await client?.readContract({
       address: gameContract,
@@ -89,13 +93,22 @@ export function BankOffer() {
       functionName: 'getEntropyFee'
     })) as bigint;
 
-    const totalValue = 100000000000000000n + (entropyFee || 0n);
+    const approveHash = await writeContractAsync({
+      abi: GMonTokenABI,
+      address: gMONContract,
+      functionName: 'approve',
+      args: [gameContract, totalValue]
+    });
+    await client?.waitForTransactionReceipt({
+      hash: approveHash
+    });
 
     const hash = await writeContractAsync({
       abi: DealOrNotABI,
       address: gameContract,
       functionName: 'startGame',
-      value: totalValue
+      args: [totalValue],
+      value: (entropyFee * 110n) / 100n
     });
     await client?.waitForTransactionReceipt({
       hash

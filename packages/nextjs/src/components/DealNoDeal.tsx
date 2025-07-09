@@ -2,7 +2,7 @@
 
 import { Loading } from '@/components/Loading';
 import SwitchNetwork from '@/components/Wallet/SwitchNetwork';
-import { useAppContext } from '@/contexts/AppContext';
+import { initialGame, useAppContext } from '@/contexts/AppContext';
 import { useGameContract } from '@/hooks/useGameContract';
 import { cn } from '@/lib/utils';
 import DealOrNotABI from '@/shared/abi/DealOrNot.json';
@@ -42,7 +42,6 @@ export function DealNoDeal({ gameId }: { gameId: bigint }) {
     await client?.waitForTransactionReceipt({
       hash
     });
-    // TODO: play game later on?
     toast(<span>Accepted deal: {Number(formatEther((offer as bigint) || 0n)).toFixed(5)} gMON!</span>, {
       hideProgressBar: true,
       position: 'bottom-left',
@@ -50,6 +49,7 @@ export function DealNoDeal({ gameId }: { gameId: bigint }) {
       autoClose: 3000,
       className: 'border border-[#F86E00] rounded-[32px] !bg-[#00203e]'
     });
+    setGame(initialGame);
     setIsLoadingAccept(false);
   };
 

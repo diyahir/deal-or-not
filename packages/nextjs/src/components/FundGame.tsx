@@ -61,7 +61,7 @@ export function FundGame({ refetch }: { refetch: () => void }) {
       hash
     });
     await refetch();
-    toast(<span>Game has been funded with {value} gMON!</span>, {
+    toast(<span>Game funded with {value} gMON!</span>, {
       hideProgressBar: true,
       position: 'bottom-left',
       theme: 'dark',

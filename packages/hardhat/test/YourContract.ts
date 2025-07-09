@@ -34,7 +34,7 @@ describe("DealOrNot", function () {
 
     const isMonad = false;
 
-    dealOrNot = await dealOrNotFactory.deploy(owner.address, vrfContractAddress, isMonad, gameTokenAddress, ENTRY_FEE);
+    dealOrNot = await dealOrNotFactory.deploy(owner.address, vrfContractAddress, isMonad, gameTokenAddress);
     await dealOrNot.waitForDeployment();
 
     // Approve tokens for contract usage
@@ -49,19 +49,9 @@ describe("DealOrNot", function () {
   describe("Deployment", function () {
     it("Should have the correct initial state", async function () {
       expect(await dealOrNot.TOTAL_BOXES()).to.equal(26);
-      expect(await dealOrNot.entryFee()).to.equal(ENTRY_FEE);
-      expect(await dealOrNot.HOUSE_OFFER_PERCENTAGE()).to.equal(75);
+      expect(await dealOrNot.HOUSE_OFFER_PERCENTAGE()).to.equal(50);
       expect(await dealOrNot.nextGameId()).to.equal(0);
       expect(await dealOrNot.getHouseFunds()).to.equal(HOUSE_FUNDS);
-    });
-
-    it("Should have the correct prize pool", async function () {
-      const prizePool = await dealOrNot.getPrizePool();
-      expect(prizePool.length).to.equal(26);
-      // Check that first prize is entry fee divided by 10000
-      expect(prizePool[0]).to.equal(ENTRY_FEE / 10000n);
-      // Check that last prize is entry fee multiplied by 1000
-      expect(prizePool[25]).to.equal(ENTRY_FEE * 1000n);
     });
 
     it("Should set the correct owner", async function () {
@@ -71,7 +61,7 @@ describe("DealOrNot", function () {
 
   describe("Game Creation", function () {
     it("Should allow starting a new game with correct entry fee", async function () {
-      const tx = await dealOrNot.connect(player1).startGame();
+      const tx = await dealOrNot.connect(player1).startGame(ENTRY_FEE);
       await tx.wait();
 
       const gameId = 0;
@@ -79,6 +69,7 @@ describe("DealOrNot", function () {
 
       expect(gameState.player).to.equal(player1.address);
       expect(gameState.deposit).to.equal(ENTRY_FEE);
+      expect(gameState.entryFee).to.equal(ENTRY_FEE);
       expect(gameState.gameId).to.equal(gameId);
       expect(gameState.state).to.equal(1); // GameState.Playing
       expect(gameState.isActive).to.equal(true);
@@ -91,12 +82,16 @@ describe("DealOrNot", function () {
       expect(remainingBoxes).to.not.include(gameState.playerBoxIndex);
     });
 
+    it("Should reject game creation with zero entry fee", async function () {
+      await expect(dealOrNot.connect(player1).startGame(0)).to.be.revertedWith("Entry fee must be greater than zero");
+    });
+
     it("Should reject game creation without sufficient token allowance", async function () {
       // Create a new player without token approval
       const [, , , newPlayer] = await ethers.getSigners();
       await gameToken.mint(newPlayer.address, ethers.parseEther("1000"));
 
-      await expect(dealOrNot.connect(newPlayer).startGame()).to.be.revertedWithCustomError(
+      await expect(dealOrNot.connect(newPlayer).startGame(ENTRY_FEE)).to.be.revertedWithCustomError(
         gameToken,
         "ERC20InsufficientAllowance",
       );
@@ -107,12 +102,22 @@ describe("DealOrNot", function () {
       expect(playerGames.length).to.equal(1);
       expect(playerGames[0]).to.equal(0);
     });
+
+    it("Should have correct prize pool based on entry fee", async function () {
+      const gameId = 0;
+      const prizePool = await dealOrNot.getPrizePool(gameId);
+      expect(prizePool.length).to.equal(26);
+      // Check that first prize is entry fee divided by 10000
+      expect(prizePool[0]).to.equal(ENTRY_FEE / 10000n);
+      // Check that last prize is entry fee multiplied by 10
+      expect(prizePool[25]).to.equal(ENTRY_FEE * 10n);
+    });
   });
 
   describe("Box Elimination", function () {
     it("Should allow eliminating boxes in round 1 (6 boxes)", async function () {
       // Start a new game for this test
-      const tx = await dealOrNot.connect(player2).startGame();
+      const tx = await dealOrNot.connect(player2).startGame(ENTRY_FEE);
       await tx.wait();
 
       // Get the current game ID
@@ -138,7 +143,7 @@ describe("DealOrNot", function () {
 
     it("Should only allow the game owner to eliminate boxes", async function () {
       // Start a new game for this test
-      const tx = await dealOrNot.connect(player2).startGame();
+      const tx = await dealOrNot.connect(player2).startGame(ENTRY_FEE);
       await tx.wait();
 
       // Get the current game ID
@@ -150,7 +155,7 @@ describe("DealOrNot", function () {
 
     it("Should allow eliminating boxes when game is in OfferMade state (rejecting deal)", async function () {
       // Start a new game for this test
-      const tx = await dealOrNot.connect(player2).startGame();
+      const tx = await dealOrNot.connect(player2).startGame(ENTRY_FEE);
       await tx.wait();
 
       // Get the current game ID
@@ -173,7 +178,7 @@ describe("DealOrNot", function () {
 
     it("Should prevent eliminating boxes when game is completed", async function () {
       // Start a new game for this test
-      const tx = await dealOrNot.connect(player2).startGame();
+      const tx = await dealOrNot.connect(player2).startGame(ENTRY_FEE);
       await tx.wait();
 
       // Get the current game ID
@@ -193,7 +198,7 @@ describe("DealOrNot", function () {
 
     it("Should eliminate different numbers of boxes per round", async function () {
       // Start a new game for this test
-      const tx = await dealOrNot.connect(player2).startGame();
+      const tx = await dealOrNot.connect(player2).startGame(ENTRY_FEE);
       await tx.wait();
 
       // Get the current game ID
@@ -213,7 +218,7 @@ describe("DealOrNot", function () {
 
     it("Should not eliminate player's box or already eliminated boxes", async function () {
       // Start a new game for this test
-      const tx = await dealOrNot.connect(player2).startGame();
+      const tx = await dealOrNot.connect(player2).startGame(ENTRY_FEE);
       await tx.wait();
 
       // Get the current game ID
@@ -236,7 +241,7 @@ describe("DealOrNot", function () {
   describe("Deal Acceptance and Rejection", function () {
     it("Should allow accepting a deal", async function () {
       // Start a new game and eliminate first round
-      const tx = await dealOrNot.connect(player1).startGame();
+      const tx = await dealOrNot.connect(player1).startGame(ENTRY_FEE);
       await tx.wait();
 
       // Get the current game ID
@@ -265,7 +270,7 @@ describe("DealOrNot", function () {
 
     it("Should allow rejecting a deal by eliminating more boxes", async function () {
       // Start a new game and eliminate first round
-      const tx = await dealOrNot.connect(player1).startGame();
+      const tx = await dealOrNot.connect(player1).startGame(ENTRY_FEE);
       await tx.wait();
 
       // Get the current game ID
@@ -291,7 +296,7 @@ describe("DealOrNot", function () {
 
     it("Should only allow the game owner to accept deals", async function () {
       // Start a new game and eliminate first round
-      const tx = await dealOrNot.connect(player1).startGame();
+      const tx = await dealOrNot.connect(player1).startGame(ENTRY_FEE);
       await tx.wait();
 
       // Get the current game ID
@@ -306,9 +311,9 @@ describe("DealOrNot", function () {
   });
 
   describe("House Offer Calculation", function () {
-    it("Should calculate offers as 75% of expected value", async function () {
+    it("Should calculate offers as 50% of expected value", async function () {
       // Start a game
-      const tx = await dealOrNot.connect(player1).startGame();
+      const tx = await dealOrNot.connect(player1).startGame(ENTRY_FEE);
       await tx.wait();
 
       // Get the current game ID
@@ -317,7 +322,7 @@ describe("DealOrNot", function () {
 
       // Get initial state
       const gameState = await dealOrNot.getGameState(gameId);
-      const prizePool = await dealOrNot.getPrizePool();
+      const prizePool = await dealOrNot.getPrizePool(gameId);
 
       // Eliminate boxes first
       const eliminateTx = await dealOrNot.connect(player1).eliminateBoxes(gameId);
@@ -332,7 +337,7 @@ describe("DealOrNot", function () {
         totalValue += prizePool[Number(updatedRemainingBoxes[i])];
       }
       const expectedValue = totalValue / BigInt(updatedRemainingBoxes.length + 1);
-      const expectedOffer = (expectedValue * 75n) / 100n;
+      const expectedOffer = (expectedValue * 50n) / 100n;
 
       const currentOffer = await dealOrNot.getCurrentOffer(gameId);
       // Allow some tolerance for rounding
@@ -376,11 +381,16 @@ describe("DealOrNot", function () {
 
   describe("View Functions", function () {
     it("Should return correct box values", async function () {
-      const prizePool = await dealOrNot.getPrizePool();
-      expect(await dealOrNot.getBoxValue(0)).to.equal(prizePool[0]);
-      expect(await dealOrNot.getBoxValue(25)).to.equal(prizePool[25]);
+      // Start a game first to get a gameId
+      const tx = await dealOrNot.connect(player1).startGame(ENTRY_FEE);
+      await tx.wait();
 
-      await expect(dealOrNot.getBoxValue(26)).to.be.revertedWith("Invalid box index");
+      const gameId = 0;
+      const prizePool = await dealOrNot.getPrizePool(gameId);
+      expect(await dealOrNot.getBoxValue(gameId, 0)).to.equal(prizePool[0]);
+      expect(await dealOrNot.getBoxValue(gameId, 25)).to.equal(prizePool[25]);
+
+      await expect(dealOrNot.getBoxValue(gameId, 26)).to.be.revertedWith("Invalid box index");
     });
 
     it("Should return correct game statistics", async function () {
@@ -403,13 +413,7 @@ describe("DealOrNot", function () {
       await newGameToken.waitForDeployment();
       const gameTokenAddress = await newGameToken.getAddress();
 
-      const testContract = await newContract.deploy(
-        owner.address,
-        vrfContractAddress,
-        false,
-        gameTokenAddress,
-        ENTRY_FEE,
-      );
+      const testContract = await newContract.deploy(owner.address, vrfContractAddress, false, gameTokenAddress);
       await testContract.waitForDeployment();
 
       // Mint and approve tokens
@@ -422,7 +426,7 @@ describe("DealOrNot", function () {
       await testContract.connect(owner).depositHouseFunds(ethers.parseEther("10"));
 
       // Start a game
-      const tx = await testContract.connect(player1).startGame();
+      const tx = await testContract.connect(player1).startGame(ENTRY_FEE);
       await tx.wait();
 
       // Try to accept a deal (should fail due to insufficient house funds)
@@ -433,9 +437,9 @@ describe("DealOrNot", function () {
 
     it("Should handle multiple concurrent games", async function () {
       // Start multiple games
-      const tx1 = await dealOrNot.connect(player1).startGame();
+      const tx1 = await dealOrNot.connect(player1).startGame(ENTRY_FEE);
       await tx1.wait();
-      const tx2 = await dealOrNot.connect(player2).startGame();
+      const tx2 = await dealOrNot.connect(player2).startGame(ENTRY_FEE);
       await tx2.wait();
 
       const player1Games = await dealOrNot.getPlayerGames(player1.address);
@@ -447,7 +451,7 @@ describe("DealOrNot", function () {
 
     it("Should complete game when reaching final round", async function () {
       // Start a new game
-      const tx = await dealOrNot.connect(player1).startGame();
+      const tx = await dealOrNot.connect(player1).startGame(ENTRY_FEE);
       await tx.wait();
 
       // Get the current game ID
@@ -478,6 +482,24 @@ describe("DealOrNot", function () {
       const finalGameState = await dealOrNot.getGameState(gameId);
       expect(finalGameState.state).to.equal(4); // GameState.GameCompleted
       expect(finalGameState.isActive).to.equal(false);
+    });
+
+    it("Should allow games with different entry fees", async function () {
+      const customEntryFee = ethers.parseEther("50"); // 50 tokens
+
+      // Start a game with custom entry fee
+      const tx = await dealOrNot.connect(player1).startGame(customEntryFee);
+      await tx.wait();
+
+      const gameId = (await dealOrNot.getTotalGames()) - 1n;
+      const gameState = await dealOrNot.getGameState(gameId);
+      const prizePool = await dealOrNot.getPrizePool(gameId);
+
+      expect(gameState.entryFee).to.equal(customEntryFee);
+      expect(gameState.deposit).to.equal(customEntryFee);
+      // Check that prizes are scaled with the custom entry fee
+      expect(prizePool[0]).to.equal(customEntryFee / 10000n);
+      expect(prizePool[25]).to.equal(customEntryFee * 10n);
     });
   });
 });

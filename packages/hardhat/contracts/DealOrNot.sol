@@ -14,7 +14,7 @@ import "./interfaces/IVRF.sol";
 /**
  * A Deal or Not smart contract that allows multiple players to play concurrent games
  * Players deposit tokens to start a game and can win up to 30x their deposit
- * House offers 75% of expected value at the end of each round
+ * House offers 50% of expected value at the end of each round
  * @author BuidlGuidl
  */
 contract DealOrNot is ReentrancyGuard, Ownable {
@@ -33,6 +33,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
     struct Game {
         address player; // Player address
         uint256 deposit; // Deposit amount
+        uint256 entryFee; // Entry fee for this specific game
         uint256 gameId; // Game ID
         uint256 playerBoxIndex; // Index of the player's box
         uint256 currentRound; // Current round of the game
@@ -43,9 +44,6 @@ contract DealOrNot is ReentrancyGuard, Ownable {
 
     // ERC20 token used for the game
     IERC20 public gameToken;
-
-    // Prize pool (fixed amounts in tokens) - 26 boxes total
-    uint256[] public prizePool;
 
     bool public isMonad;
 
@@ -60,8 +58,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
     uint256 public houseFunds;
 
     // Constants
-    uint256 public entryFee; // Entry fee in tokens
-    uint256 public constant HOUSE_OFFER_PERCENTAGE = 75; // 75% of EV
+    uint256 public constant HOUSE_OFFER_PERCENTAGE = 50; // 50% of EV
     uint256 public constant TOTAL_BOXES = 26;
 
     // VRF
@@ -100,55 +97,54 @@ contract DealOrNot is ReentrancyGuard, Ownable {
         _;
     }
 
-    constructor(address _owner, address _vrf, bool _isMonad, address _gameToken, uint256 _entryFee) Ownable(_owner) {
+    constructor(address _owner, address _vrf, bool _isMonad, address _gameToken) Ownable(_owner) {
         require(_gameToken != address(0), "Game token cannot be zero address");
-        require(_entryFee > 0, "Entry fee must be greater than zero");
 
         vrf = IVRF(_vrf);
         isMonad = _isMonad;
         gameToken = IERC20(_gameToken);
-        entryFee = _entryFee;
-        _initializePrizePool();
     }
 
     /**
-     * Initialize the prize pool with 26 box values (in tokens)
+     * Calculate the prize pool with 26 box values (in tokens) based on entry fee
      */
-    function _initializePrizePool() internal {
-        prizePool = [
-            entryFee / 10000, // 0.0001x
-            entryFee / 1000, // 0.001x
-            entryFee / 200, // 0.005x
-            entryFee / 100, // 0.01x
-            entryFee / 40, // 0.025x
-            entryFee / 20, // 0.05x
-            entryFee * 75 / 1000, // 0.075x
-            entryFee / 10, // 0.1x
-            entryFee / 5, // 0.2x
-            entryFee * 3 / 10, // 0.3x
-            entryFee * 2 / 5, // 0.4x
-            entryFee / 2, // 0.5x
-            entryFee * 3 / 4, // 0.75x
-            entryFee, // 1x
-            entryFee * 5, // 5x
-            entryFee * 10, // 10x
-            entryFee * 25, // 25x
-            entryFee * 50, // 50x
-            entryFee * 75, // 75x
-            entryFee * 100, // 100x
-            entryFee * 200, // 200x
-            entryFee * 300, // 300x
-            entryFee * 400, // 400x
-            entryFee * 500, // 500x
-            entryFee * 750, // 750x
-            entryFee * 1000 // 1000x
-        ];
+    function _calculatePrizePool(uint256 entryFee) internal pure returns (uint256[] memory) {
+        uint256[] memory prizePool = new uint256[](26);
+        prizePool[0] = entryFee / 10000; // 0.0001x
+        prizePool[1] = entryFee / 1000; // 0.001x
+        prizePool[2] = entryFee / 200; // 0.005x
+        prizePool[3] = entryFee / 100; // 0.01x
+        prizePool[4] = entryFee / 40; // 0.025x
+        prizePool[5] = entryFee / 20; // 0.05x
+        prizePool[6] = entryFee * 75 / 1000; // 0.075x
+        prizePool[7] = entryFee / 10; // 0.1x
+        prizePool[8] = entryFee / 5; // 0.2x
+        prizePool[9] = entryFee * 3 / 10; // 0.3x
+        prizePool[10] = entryFee * 2 / 5; // 0.4x
+        prizePool[11] = entryFee / 2; // 0.5x
+        prizePool[12] = entryFee * 3 / 4; // 0.75x
+        prizePool[13] = entryFee; // 1x
+        prizePool[14] = entryFee * 3 / 2; // 1.5x
+        prizePool[15] = entryFee * 2; // 2x
+        prizePool[16] = entryFee * 5 / 2; // 2.5x
+        prizePool[17] = entryFee * 3; // 3x
+        prizePool[18] = entryFee * 7 / 2; // 3.5x
+        prizePool[19] = entryFee * 15 / 4; // 3.75x
+        prizePool[20] = entryFee * 4; // 4x
+        prizePool[21] = entryFee * 17 / 4; // 4.25x
+        prizePool[22] = entryFee * 9 / 2; // 4.5x
+        prizePool[23] = entryFee * 5; // 5x
+        prizePool[24] = entryFee * 15 / 2; // 7.5x
+        prizePool[25] = entryFee * 10; // 10x
+        return prizePool;
     }
 
     /**
      * Start a new game - player deposits tokens and selects their box
      */
-    function startGame() external nonReentrant returns (uint256) {
+    function startGame(uint256 entryFee) external nonReentrant returns (uint256) {
+        require(entryFee > 0, "Entry fee must be greater than zero");
+
         // Transfer tokens from player to contract
         gameToken.safeTransferFrom(msg.sender, address(this), entryFee);
 
@@ -159,6 +155,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
         games[gameId] = Game({
             player: msg.sender,
             deposit: entryFee,
+            entryFee: entryFee,
             gameId: gameId,
             playerBoxIndex: playerBoxIndex,
             currentRound: 0,
@@ -304,6 +301,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
      */
     function _completeGame(uint256 gameId) internal {
         Game storage game = games[gameId];
+        uint256[] memory prizePool = _calculatePrizePool(game.entryFee);
         uint256 finalPayout = prizePool[game.playerBoxIndex];
 
         game.state = GameState.GameCompleted;
@@ -318,10 +316,11 @@ contract DealOrNot is ReentrancyGuard, Ownable {
     }
 
     /**
-     * Calculate house offer (75% of expected value)
+     * Calculate house offer (50% of expected value)
      */
     function _calculateOffer(uint256 gameId) internal view returns (uint256) {
         Game storage game = games[gameId];
+        uint256[] memory prizePool = _calculatePrizePool(game.entryFee);
         uint256 totalValue = 0;
 
         // Include player's box in calculation
@@ -421,13 +420,15 @@ contract DealOrNot is ReentrancyGuard, Ownable {
         return _calculateOffer(gameId);
     }
 
-    function getPrizePool() external view returns (uint256[] memory) {
-        return prizePool;
+    function getPrizePool(uint256 gameId) external view gameExists(gameId) returns (uint256[] memory) {
+        Game storage game = games[gameId];
+        return _calculatePrizePool(game.entryFee);
     }
 
-    function getBoxValue(uint256 boxIndex) external view returns (uint256) {
+    function getBoxValue(uint256 gameId, uint256 boxIndex) external view gameExists(gameId) returns (uint256) {
         require(boxIndex < TOTAL_BOXES, "Invalid box index");
-        return prizePool[boxIndex];
+        Game storage game = games[gameId];
+        return _calculatePrizePool(game.entryFee)[boxIndex];
     }
 
     function getHouseFunds() external view returns (uint256) {

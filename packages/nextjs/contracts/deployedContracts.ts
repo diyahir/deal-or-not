@@ -1719,7 +1719,7 @@ const deployedContracts = {
   },
   10143: {
     DealOrNot: {
-      address: "0x0E15bd4D20c0e59d1fe5723292637aB012960af4",
+      address: "0xCc08bBe28cbB02067E8012627bF07f4194b83c73",
       abi: [
         {
           inputs: [
@@ -1737,6 +1737,11 @@ const deployedContracts = {
               internalType: "bool",
               name: "_isMonad",
               type: "bool",
+            },
+            {
+              internalType: "address",
+              name: "_gameToken",
+              type: "address",
             },
           ],
           stateMutability: "nonpayable",
@@ -1767,6 +1772,17 @@ const deployedContracts = {
         {
           inputs: [],
           name: "ReentrancyGuardReentrantCall",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "token",
+              type: "address",
+            },
+          ],
+          name: "SafeERC20FailedOperation",
           type: "error",
         },
         {
@@ -1935,19 +1951,6 @@ const deployedContracts = {
         },
         {
           inputs: [],
-          name: "ENTRY_FEE",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
           name: "HOUSE_OFFER_PERCENTAGE",
           outputs: [
             {
@@ -1986,10 +1989,16 @@ const deployedContracts = {
           type: "function",
         },
         {
-          inputs: [],
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+          ],
           name: "depositHouseFunds",
           outputs: [],
-          stateMutability: "payable",
+          stateMutability: "nonpayable",
           type: "function",
         },
         {
@@ -2002,7 +2011,7 @@ const deployedContracts = {
           ],
           name: "eliminateBoxes",
           outputs: [],
-          stateMutability: "payable",
+          stateMutability: "nonpayable",
           type: "function",
         },
         {
@@ -2019,6 +2028,19 @@ const deployedContracts = {
               internalType: "uint256",
               name: "",
               type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "gameToken",
+          outputs: [
+            {
+              internalType: "contract IERC20",
+              name: "",
+              type: "address",
             },
           ],
           stateMutability: "view",
@@ -2042,6 +2064,11 @@ const deployedContracts = {
             {
               internalType: "uint256",
               name: "deposit",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "entryFee",
               type: "uint256",
             },
             {
@@ -2075,6 +2102,11 @@ const deployedContracts = {
         },
         {
           inputs: [
+            {
+              internalType: "uint256",
+              name: "gameId",
+              type: "uint256",
+            },
             {
               internalType: "uint256",
               name: "boxIndex",
@@ -2154,6 +2186,11 @@ const deployedContracts = {
                 },
                 {
                   internalType: "uint256",
+                  name: "entryFee",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
                   name: "gameId",
                   type: "uint256",
                 },
@@ -2224,7 +2261,13 @@ const deployedContracts = {
           type: "function",
         },
         {
-          inputs: [],
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "gameId",
+              type: "uint256",
+            },
+          ],
           name: "getPrizePool",
           outputs: [
             {
@@ -2345,25 +2388,6 @@ const deployedContracts = {
           type: "function",
         },
         {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          name: "prizePool",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
           inputs: [],
           name: "renounceOwnership",
           outputs: [],
@@ -2409,7 +2433,13 @@ const deployedContracts = {
           type: "function",
         },
         {
-          inputs: [],
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "entryFee",
+              type: "uint256",
+            },
+          ],
           name: "startGame",
           outputs: [
             {
@@ -2418,7 +2448,7 @@ const deployedContracts = {
               type: "uint256",
             },
           ],
-          stateMutability: "payable",
+          stateMutability: "nonpayable",
           type: "function",
         },
         {
@@ -3276,7 +3306,7 @@ const deployedContracts = {
   },
   31337: {
     BaseVRF: {
-      address: "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+      address: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
       abi: [
         {
           inputs: [],
@@ -3333,7 +3363,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     DealOrNot: {
-      address: "0x610178dA211FEF7D417bC0e6FeD39F05609AD788",
+      address: "0x9A676e781A523b5d0C0e43731313A708CB607508",
       abi: [
         {
           inputs: [
@@ -3356,11 +3386,6 @@ const deployedContracts = {
               internalType: "address",
               name: "_gameToken",
               type: "address",
-            },
-            {
-              internalType: "uint256",
-              name: "_entryFee",
-              type: "uint256",
             },
           ],
           stateMutability: "nonpayable",
@@ -3634,19 +3659,6 @@ const deployedContracts = {
           type: "function",
         },
         {
-          inputs: [],
-          name: "entryFee",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
           inputs: [
             {
               internalType: "address",
@@ -3700,6 +3712,11 @@ const deployedContracts = {
             },
             {
               internalType: "uint256",
+              name: "entryFee",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
               name: "gameId",
               type: "uint256",
             },
@@ -3729,6 +3746,11 @@ const deployedContracts = {
         },
         {
           inputs: [
+            {
+              internalType: "uint256",
+              name: "gameId",
+              type: "uint256",
+            },
             {
               internalType: "uint256",
               name: "boxIndex",
@@ -3808,6 +3830,11 @@ const deployedContracts = {
                 },
                 {
                   internalType: "uint256",
+                  name: "entryFee",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
                   name: "gameId",
                   type: "uint256",
                 },
@@ -3878,7 +3905,13 @@ const deployedContracts = {
           type: "function",
         },
         {
-          inputs: [],
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "gameId",
+              type: "uint256",
+            },
+          ],
           name: "getPrizePool",
           outputs: [
             {
@@ -3999,25 +4032,6 @@ const deployedContracts = {
           type: "function",
         },
         {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          name: "prizePool",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
           inputs: [],
           name: "renounceOwnership",
           outputs: [],
@@ -4063,7 +4077,13 @@ const deployedContracts = {
           type: "function",
         },
         {
-          inputs: [],
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "entryFee",
+              type: "uint256",
+            },
+          ],
           name: "startGame",
           outputs: [
             {
@@ -4126,7 +4146,7 @@ const deployedContracts = {
       },
     },
     MockERC20: {
-      address: "0x0165878A594ca255338adfa4d48449f69242Eb8F",
+      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
       abi: [
         {
           inputs: [
@@ -4492,6 +4512,27 @@ const deployedContracts = {
         transfer: "@openzeppelin/contracts/token/ERC20/ERC20.sol",
         transferFrom: "@openzeppelin/contracts/token/ERC20/ERC20.sol",
       },
+    },
+    MonadVRF: {
+      address: "0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE",
+      abi: [
+        "constructor(address _entropyAddress)",
+        "event EntropyContractSet(address indexed entropy)",
+        "event EntropyProviderSet(address indexed provider)",
+        "event RandomNumberRequested(uint64 indexed sequenceNumber, bytes32 userRandomNumber)",
+        "function _entropyCallback(uint64 sequence, address provider, bytes32 randomNumber)",
+        "function entropy() view returns (address)",
+        "function entropyProvider() view returns (address)",
+        "function getEntropyFee() view returns (uint256)",
+        "function getRandomNumber(uint256 sequenceNumber) view returns (uint256)",
+        "function initializeEntropyProvider()",
+        "function owner() view returns (address)",
+        "function randomNumbers(uint64) view returns (bytes32)",
+        "function requestRandomNumber(bytes32 userRandomNumber) payable returns (uint256)",
+        "function setEntropyProvider(address _entropyProvider)",
+        "receive() payable",
+      ],
+      inheritedFunctions: {},
     },
   },
 } as const;

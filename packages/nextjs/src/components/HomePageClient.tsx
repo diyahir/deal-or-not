@@ -55,7 +55,8 @@ export function HomePageClient() {
             )}
           >
             {_gameState?.isActive && _gameState?.entryFee && typeof gameId === 'bigint' ? (
-              // TODO: last -> this part should read contract if reload
+              // TODO: this part should read contract if reload, if eliminatedBoxes are undefined then start game, if not go for vaults left
+              // TODO: error handling, handle reject of transactions
               game.eliminations === 0 ? (
                 <StartGame gameId={gameId} entryFee={_gameState.entryFee} />
               ) : game.canAccept ? (

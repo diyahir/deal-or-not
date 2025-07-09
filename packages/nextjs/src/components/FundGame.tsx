@@ -68,7 +68,6 @@ export function FundGame({ refetch }: { refetch: () => void }) {
       autoClose: 3000,
       className: 'border border-[#F86E00] rounded-[32px] !bg-[#00203e]'
     });
-    setIsLoading(false);
   };
 
   return (

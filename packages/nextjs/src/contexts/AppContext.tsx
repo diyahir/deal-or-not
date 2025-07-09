@@ -41,7 +41,7 @@ export const initialGame = {
     { available: true, qty: (entryFee: bigint) => (entryFee * 15n) / 2n }, // 7.5x
     { available: true, qty: (entryFee: bigint) => (entryFee * 10n) / 1n } // 10x
   ],
-  canAccept: false,
+  canAccept: true,
   eliminations: 0,
   selectedBoxes: []
 };

@@ -12,7 +12,7 @@ export function VaultsLeft() {
     return [6, 11, 15, 18]
       .map((num) => num - game.eliminations)
       .sort((a, b) => a - b)
-      .filter((num) => num >= 0)
+      .filter((num) => num > 0)
       .slice(0, 1)[0];
   };
 

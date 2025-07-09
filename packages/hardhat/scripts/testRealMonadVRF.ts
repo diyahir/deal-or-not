@@ -1,5 +1,18 @@
 import { ethers, deployments } from "hardhat";
 
+// Helper function to check if a random number is zero (handles various zero representations)
+function isRandomNumberZero(randomNumber: any): boolean {
+  return (
+    randomNumber === "0x0000000000000000000000000000000000000000000000000000000000000000" ||
+    randomNumber === "0x0" ||
+    randomNumber === "0" ||
+    randomNumber === 0 ||
+    randomNumber === 0n ||
+    randomNumber === null ||
+    randomNumber === undefined
+  );
+}
+
 // Helper function to poll for random number with timeout
 async function pollForRandomNumber(
   contract: any,
@@ -14,9 +27,12 @@ async function pollForRandomNumber(
   while (Date.now() - startTime < timeoutMs) {
     try {
       const randomNumber = await contract.getRandomNumber(sequenceNumber);
-      const isZero = randomNumber === "0x0000000000000000000000000000000000000000000000000000000000000000";
 
-      if (!isZero) {
+      console.log(
+        `🔍 Retrieved random number for sequence ${sequenceNumber}: ${randomNumber} (type: ${typeof randomNumber})`,
+      );
+
+      if (!isRandomNumberZero(randomNumber)) {
         console.log(`🎲 Random number received for sequence ${sequenceNumber}: ${randomNumber}`);
         return randomNumber;
       }
@@ -51,23 +67,17 @@ async function main() {
   console.log(`🌐 Network: Monad Testnet (Chain ID: 10143)`);
   console.log("=".repeat(60));
 
-  // Get the signer from private key
-  const privateKey = process.env.MONAD_PK!;
-  const signer = new ethers.Wallet(privateKey, ethers.provider);
-  console.log(`👤 Testing with private key signer: ${signer.address}`);
-
-  // Also log the default hardhat signer for comparison
-  const [defaultSigner] = await ethers.getSigners();
-  console.log(`🔑 Default hardhat signer: ${defaultSigner.address}`);
-  const defaultBalance = await ethers.provider.getBalance(defaultSigner.address);
-  console.log(`💰 Default signer balance: ${ethers.formatEther(defaultBalance)} MON`);
+  // Get the deployer signer (standard hardhat pattern)
+  const [deployer] = await ethers.getSigners();
+  const signer = deployer;
+  console.log(`👤 Testing with deployer account: ${signer.address}`);
 
   // Check signer balance
   const balance = await ethers.provider.getBalance(signer.address);
-  console.log(`💰 Signer balance: ${ethers.formatEther(balance)} MON`);
+  console.log(`💰 Deployer balance: ${ethers.formatEther(balance)} MON`);
 
   if (balance === 0n) {
-    console.log("⚠️  Warning: Signer has no MON tokens. Get some from the faucet:");
+    console.log("⚠️  Warning: Deployer has no MON tokens. Get some from the faucet:");
     console.log("🚰 Faucet: https://faucet.monad.xyz");
     console.log("ℹ️  Continuing with tests anyway...");
   }
@@ -314,7 +324,7 @@ async function main() {
 
       // Poll for random number with timeout
       console.log(`\n⏳ Polling for random number (sequence: ${sequenceNumber})...`);
-      const randomNumber = await pollForRandomNumber(monadVRF, sequenceNumber, 120); // 2 minute timeout
+      const randomNumber = await pollForRandomNumber(monadVRF, sequenceNumber, 60); // 1 minute timeout
 
       testResults.push({
         testNumber: i + 1,
@@ -326,7 +336,7 @@ async function main() {
         randomNumber: randomNumber,
       });
 
-      if (randomNumber && randomNumber !== "0x0000000000000000000000000000000000000000000000000000000000000000") {
+      if (randomNumber && !isRandomNumberZero(randomNumber)) {
         console.log(`🎉 Test ${i + 1} completed successfully! Random number: ${randomNumber}`);
       } else {
         console.log(`⚠️  Test ${i + 1} completed but random number not received within timeout`);
@@ -350,10 +360,7 @@ async function main() {
 
   for (const result of testResults) {
     if (result.success && result.sequenceNumber) {
-      if (
-        result.randomNumber &&
-        result.randomNumber !== "0x0000000000000000000000000000000000000000000000000000000000000000"
-      ) {
+      if (result.randomNumber && !isRandomNumberZero(result.randomNumber)) {
         console.log(`🎲 Sequence ${result.sequenceNumber}: ${result.randomNumber}`);
       } else {
         console.log(`⚪ Sequence ${result.sequenceNumber}: No random number received (timed out)`);
@@ -367,9 +374,7 @@ async function main() {
 
   const successfulTests = testResults.filter(r => r.success).length;
   const failedTests = testResults.filter(r => !r.success).length;
-  const randomsReceived = testResults.filter(
-    r => r.randomNumber && r.randomNumber !== "0x0000000000000000000000000000000000000000000000000000000000000000",
-  ).length;
+  const randomsReceived = testResults.filter(r => r.randomNumber && !isRandomNumberZero(r.randomNumber)).length;
 
   console.log(`✅ Successful requests: ${successfulTests}/${numberOfTests}`);
   console.log(`❌ Failed requests: ${failedTests}/${numberOfTests}`);
@@ -391,10 +396,7 @@ async function main() {
       console.log(`   Sequence Number: ${result.sequenceNumber}`);
 
       // Show the random number if it was received during polling
-      if (
-        result.randomNumber &&
-        result.randomNumber !== "0x0000000000000000000000000000000000000000000000000000000000000000"
-      ) {
+      if (result.randomNumber && !isRandomNumberZero(result.randomNumber)) {
         console.log(`   Random Number: ${result.randomNumber}`);
       } else {
         console.log(`   Random Number: ⏳ Not received (timed out)`);

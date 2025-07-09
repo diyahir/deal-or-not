@@ -3363,7 +3363,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     DealOrNot: {
-      address: "0x9A676e781A523b5d0C0e43731313A708CB607508",
+      address: "0x322813Fd9A801c5507c9de605d63CEA4f2CE6c44",
       abi: [
         {
           inputs: [
@@ -3655,7 +3655,7 @@ const deployedContracts = {
           ],
           name: "eliminateBoxes",
           outputs: [],
-          stateMutability: "nonpayable",
+          stateMutability: "payable",
           type: "function",
         },
         {
@@ -4092,7 +4092,7 @@ const deployedContracts = {
               type: "uint256",
             },
           ],
-          stateMutability: "nonpayable",
+          stateMutability: "payable",
           type: "function",
         },
         {

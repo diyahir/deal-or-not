@@ -19,7 +19,10 @@
     "lint": "eslint",
     "lint-staged": "eslint",
     "test": "REPORT_GAS=true hardhat test --network hardhat",
-    "test:monad-vrf-real": "hardhat run scripts/testRealMonadVRF.ts --network monadTestnet",
+    "test:monad-vrf-real": "ts-node scripts/runHardhatScriptWithPK.ts run scripts/testRealMonadVRF.ts --network monadTestnet",
+    "test:deal-or-not-real": "ts-node scripts/runHardhatScriptWithPK.ts run scripts/testRealDealOrNot.ts --network monadTestnet",
+    "send-funds": "ts-node scripts/runHardhatScriptWithPK.ts run scripts/sendFunds.ts --network monadTestnet",
+    "run": "ts-node scripts/runHardhatScriptWithPK.ts",
     "verify": "hardhat etherscan-verify"
   },
   "dependencies": {

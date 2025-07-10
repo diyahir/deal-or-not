@@ -32,7 +32,6 @@ contract DealOrNot is ReentrancyGuard, Ownable {
     // Individual game struct
     struct Game {
         address player; // Player address
-        uint256 deposit; // Deposit amount
         uint256 entryFee; // Entry fee for this specific game
         uint256 gameId; // Game ID
         uint256 playerBoxIndex; // Index of the player's box
@@ -142,7 +141,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
     /**
      * Start a new game - player deposits tokens and selects their box
      */
-    function startGame(uint256 entryFee) external nonReentrant returns (uint256) {
+    function startGame(uint256 entryFee) external payable nonReentrant returns (uint256) {
         require(entryFee > 0, "Entry fee must be greater than zero");
 
         // Transfer tokens from player to contract
@@ -154,7 +153,6 @@ contract DealOrNot is ReentrancyGuard, Ownable {
         // Create new game
         games[gameId] = Game({
             player: msg.sender,
-            deposit: entryFee,
             entryFee: entryFee,
             gameId: gameId,
             playerBoxIndex: playerBoxIndex,
@@ -170,7 +168,8 @@ contract DealOrNot is ReentrancyGuard, Ownable {
 
         // Pay VRF fee
         uint256 fee = vrf.getEntropyFee();
-        uint256 requestId = vrf.requestRandomNumber{value: fee}(bytes32(gameId));
+        bytes32 vrfRequestKey = _generateVRFRequestKey(gameId, msg.sender, 0);
+        uint256 requestId = vrf.requestRandomNumber{value: fee}(vrfRequestKey);
         requestIds[gameId] = requestId;
 
         emit GameStarted(gameId, msg.sender, playerBoxIndex);
@@ -182,7 +181,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
      * Eliminate boxes for the current round (randomly selected) - OPTIMIZED
      * If called when an offer is pending, it implicitly rejects the offer
      */
-    function eliminateBoxes(uint256 gameId) external gameExists(gameId) onlyPlayer(gameId) nonReentrant {
+    function eliminateBoxes(uint256 gameId) external payable gameExists(gameId) onlyPlayer(gameId) nonReentrant {
         Game storage game = games[gameId];
         require(game.state == GameState.Playing || game.state == GameState.OfferMade, "Invalid game state");
 
@@ -208,7 +207,8 @@ contract DealOrNot is ReentrancyGuard, Ownable {
 
         // request a new random number
         uint256 fee = vrf.getEntropyFee();
-        uint256 requestId = vrf.requestRandomNumber{value: fee}(bytes32(gameId));
+        bytes32 vrfRequestKey = _generateVRFRequestKey(gameId, msg.sender, game.currentRound);
+        uint256 requestId = vrf.requestRandomNumber{value: fee}(vrfRequestKey);
         requestIds[gameId] = requestId;
     }
 
@@ -241,8 +241,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
 
         for (uint256 i = 0; i < numToEliminate; i++) {
             // Generate unique random index for each selection
-            uint256 randomSeed =
-                uint256(keccak256(abi.encodePacked(baseRandomSeed, i, block.timestamp, block.prevrandao)));
+            uint256 randomSeed = uint256(keccak256(abi.encodePacked(baseRandomSeed, i)));
             uint256 randomIndex = randomSeed % (availableCount - i);
 
             // Select the box at randomIndex
@@ -348,6 +347,17 @@ contract DealOrNot is ReentrancyGuard, Ownable {
         );
 
         return randomSeed % TOTAL_BOXES;
+    }
+
+    /**
+     * Generate unique VRF request key based on gameId, player, and currentRound
+     */
+    function _generateVRFRequestKey(uint256 gameId, address player, uint256 currentRound)
+        internal
+        pure
+        returns (bytes32)
+    {
+        return keccak256(abi.encodePacked(gameId, player, currentRound));
     }
 
     /**

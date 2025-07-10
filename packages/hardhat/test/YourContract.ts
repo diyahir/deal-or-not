@@ -68,7 +68,6 @@ describe("DealOrNot", function () {
       const gameState = await dealOrNot.getGameState(gameId);
 
       expect(gameState.player).to.equal(player1.address);
-      expect(gameState.deposit).to.equal(ENTRY_FEE);
       expect(gameState.entryFee).to.equal(ENTRY_FEE);
       expect(gameState.gameId).to.equal(gameId);
       expect(gameState.state).to.equal(1); // GameState.Playing
@@ -496,7 +495,6 @@ describe("DealOrNot", function () {
       const prizePool = await dealOrNot.getPrizePool(gameId);
 
       expect(gameState.entryFee).to.equal(customEntryFee);
-      expect(gameState.deposit).to.equal(customEntryFee);
       // Check that prizes are scaled with the custom entry fee
       expect(prizePool[0]).to.equal(customEntryFee / 10000n);
       expect(prizePool[25]).to.equal(customEntryFee * 10n);

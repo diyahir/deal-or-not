@@ -31,7 +31,7 @@ contract MonadVRF is IVRF, IEntropyConsumer {
 
         // For testing purposes, we'll set entropyProvider to zero initially
         // It can be set later using setEntropyProvider function
-        entropyProvider = address(0);
+        entropyProvider = entropy.getDefaultProvider();
 
         emit EntropyContractSet(_entropyAddress);
     }

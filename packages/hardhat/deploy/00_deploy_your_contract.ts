@@ -31,6 +31,11 @@ const deployDealOrNot: DeployFunction = async function (hre: HardhatRuntimeEnvir
     autoMine: true,
   });
 
+  // mint 1000000 tokens to 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
+
+  const gameTokenContract = await hre.ethers.getContract<Contract>("MockERC20", deployer);
+  await gameTokenContract.mint("0x70997970C51812dc3A010C7d01b50e0d17dc79C8", hre.ethers.parseEther("1000000"));
+
   console.log("🪙 Game token deployed at:", gameToken.address);
 
   // Get the deployed contract to interact with it after deploying.

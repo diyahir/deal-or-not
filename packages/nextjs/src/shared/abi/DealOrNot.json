@@ -289,7 +289,7 @@
     ],
     "name": "eliminateBoxes",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -338,11 +338,6 @@
         "internalType": "address",
         "name": "player",
         "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "deposit",
-        "type": "uint256"
       },
       {
         "internalType": "uint256",
@@ -456,11 +451,6 @@
             "internalType": "address",
             "name": "player",
             "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "deposit",
-            "type": "uint256"
           },
           {
             "internalType": "uint256",
@@ -726,7 +716,7 @@
         "type": "uint256"
       }
     ],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {

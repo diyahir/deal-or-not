@@ -36,10 +36,13 @@ const monadTestnet = defineChain({
 const config = getDefaultConfig({
   appName: 'Nad or no Nad',
   projectId: '134f0e99f1b28f5fc5482a9ac6126a51',
-  chains: [monadTestnet, anvil],
+  chains: [
+    monadTestnet
+    // anvil
+  ],
   transports: {
-    [monadTestnet.id]: fallback([http(alchemyRpcUrl), http(monadRpcUrl)]),
-    [anvil.id]: http()
+    [monadTestnet.id]: fallback([http(alchemyRpcUrl), http(monadRpcUrl)])
+    // [anvil.id]: http()
   },
   ssr: true
 });

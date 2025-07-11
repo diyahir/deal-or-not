@@ -19,7 +19,7 @@ export function Amounts({ entryFee, isLast }: { entryFee: bigint; isLast?: boole
               key={_amount}
               className={cn(
                 'rounded-full bg-[#f86e02] w-full flex justify-end items-center pr-4',
-                !amount.available && 'line-through text-[#01152C]'
+                !amount.available && 'line-through text-[#01152C] bg-red-500'
               )}
             >
               <span>{Number(Number(formatEther(_amount)).toFixed(5))} gMON</span>

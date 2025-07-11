@@ -24,10 +24,7 @@ export function DealNoDeal({ gameId }: { gameId: bigint }) {
     abi: DealOrNotABI,
     address: gameContract,
     functionName: 'getCurrentOffer',
-    args: [gameId],
-    query: {
-      refetchInterval: 500
-    }
+    args: [gameId]
   });
   const { writeContractAsync } = useWriteContract();
 

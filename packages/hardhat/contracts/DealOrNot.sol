@@ -146,6 +146,7 @@ contract DealOrNot is ReentrancyGuard, Ownable {
 
         // Transfer tokens from player to contract
         gameToken.safeTransferFrom(msg.sender, address(this), entryFee);
+        houseFunds += entryFee;
 
         uint256 gameId = nextGameId++;
         uint256 playerBoxIndex = _generateRandomBoxIndex(gameId, msg.sender);

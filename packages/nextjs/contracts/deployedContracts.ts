@@ -1719,7 +1719,7 @@ const deployedContracts = {
   },
   10143: {
     DealOrNot: {
-      address: "0x61feF763c03Cc559Dd194380abdA5795dfc27a24",
+      address: "0x752aAF45DDeb1298F5925d10d45a575758b206C4",
       abi: [
         {
           inputs: [
@@ -3353,7 +3353,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     DealOrNot: {
-      address: "0x4ed7c70F96B99c776995fB64377f0d4aB3B0e1C1",
+      address: "0x7a2088a1bFc9d81c55368AE168C2C02570cB814F",
       abi: [
         {
           inputs: [

@@ -113,6 +113,154 @@ describe("DealOrNot", function () {
     });
   });
 
+  describe("House Fund Accounting", function () {
+    it("Should increase house funds when players start games", async function () {
+      const houseBalanceBefore = await dealOrNot.getHouseFunds();
+
+      const tx = await dealOrNot.connect(player1).startGame(ENTRY_FEE);
+      await tx.wait();
+
+      const houseBalanceAfter = await dealOrNot.getHouseFunds();
+      expect(houseBalanceAfter).to.equal(houseBalanceBefore + ENTRY_FEE);
+    });
+
+    it("Should decrease house funds when players accept deals", async function () {
+      // Start a game and eliminate boxes to get an offer
+      const tx = await dealOrNot.connect(player1).startGame(ENTRY_FEE);
+      await tx.wait();
+
+      const gameId = (await dealOrNot.getTotalGames()) - 1n;
+      const houseBalanceAfterStart = await dealOrNot.getHouseFunds();
+
+      // Eliminate boxes to get an offer
+      await dealOrNot.connect(player1).eliminateBoxes(gameId);
+      const offer = await dealOrNot.getCurrentOffer(gameId);
+
+      // Accept the deal
+      const acceptTx = await dealOrNot.connect(player1).acceptDeal(gameId);
+      await acceptTx.wait();
+
+      const houseBalanceAfterDeal = await dealOrNot.getHouseFunds();
+      expect(houseBalanceAfterDeal).to.equal(houseBalanceAfterStart - offer);
+    });
+
+    it("Should decrease house funds when games complete naturally", async function () {
+      // Start a game
+      const tx = await dealOrNot.connect(player1).startGame(ENTRY_FEE);
+      await tx.wait();
+
+      const gameId = (await dealOrNot.getTotalGames()) - 1n;
+      const gameState = await dealOrNot.getGameState(gameId);
+      const prizePool = await dealOrNot.getPrizePool(gameId);
+      const expectedFinalPayout = prizePool[Number(gameState.playerBoxIndex)];
+
+      const houseBalanceAfterStart = await dealOrNot.getHouseFunds();
+
+      // Play through all rounds to completion
+      const roundEliminations = [6, 5, 4, 3, 2, 1];
+      for (let i = 0; i < roundEliminations.length; i++) {
+        await dealOrNot.connect(player1).eliminateBoxes(gameId);
+      }
+
+      // Complete the game (reject final offer)
+      await dealOrNot.connect(player1).eliminateBoxes(gameId);
+
+      const houseBalanceAfterCompletion = await dealOrNot.getHouseFunds();
+      expect(houseBalanceAfterCompletion).to.equal(houseBalanceAfterStart - expectedFinalPayout);
+    });
+
+    it("Should handle house fund accounting correctly with multiple concurrent games", async function () {
+      const initialBalance = await dealOrNot.getHouseFunds();
+
+      // Start two games simultaneously
+      const tx1 = await dealOrNot.connect(player1).startGame(ENTRY_FEE);
+      await tx1.wait();
+      const tx2 = await dealOrNot.connect(player2).startGame(ENTRY_FEE);
+      await tx2.wait();
+
+      const balanceAfterBothGames = await dealOrNot.getHouseFunds();
+      expect(balanceAfterBothGames).to.equal(initialBalance + ENTRY_FEE * 2n);
+
+      // Complete both games
+      const gameId1 = (await dealOrNot.getTotalGames()) - 2n;
+      const gameId2 = (await dealOrNot.getTotalGames()) - 1n;
+
+      // Player 1 eliminates and accepts deal
+      await dealOrNot.connect(player1).eliminateBoxes(gameId1);
+      const offer1 = await dealOrNot.getCurrentOffer(gameId1);
+      await dealOrNot.connect(player1).acceptDeal(gameId1);
+
+      // Player 2 eliminates and accepts deal
+      await dealOrNot.connect(player2).eliminateBoxes(gameId2);
+      const offer2 = await dealOrNot.getCurrentOffer(gameId2);
+      await dealOrNot.connect(player2).acceptDeal(gameId2);
+
+      const finalBalance = await dealOrNot.getHouseFunds();
+      const expectedBalance = balanceAfterBothGames - offer1 - offer2;
+      expect(finalBalance).to.equal(expectedBalance);
+    });
+
+    it("Should maintain correct house fund balance even with large payouts", async function () {
+      // Start a game with a large entry fee
+      const largeEntryFee = ethers.parseEther("1000");
+      const balanceBefore = await dealOrNot.getHouseFunds();
+
+      const tx = await dealOrNot.connect(player1).startGame(largeEntryFee);
+      await tx.wait();
+
+      const balanceAfterStart = await dealOrNot.getHouseFunds();
+      expect(balanceAfterStart).to.equal(balanceBefore + largeEntryFee);
+
+      const gameId = (await dealOrNot.getTotalGames()) - 1n;
+
+      // Complete the game to get the final payout
+      const gameState = await dealOrNot.getGameState(gameId);
+      const prizePool = await dealOrNot.getPrizePool(gameId);
+      const finalPayout = prizePool[Number(gameState.playerBoxIndex)];
+
+      // Play through all rounds
+      const roundEliminations = [6, 5, 4, 3, 2, 1];
+      for (let i = 0; i < roundEliminations.length; i++) {
+        await dealOrNot.connect(player1).eliminateBoxes(gameId);
+      }
+
+      // Complete the game
+      await dealOrNot.connect(player1).eliminateBoxes(gameId);
+
+      const finalBalance = await dealOrNot.getHouseFunds();
+      expect(finalBalance).to.equal(balanceAfterStart - finalPayout);
+
+      // Verify the house still made a profit (entry fee should be larger than most box values)
+      const profit = largeEntryFee - finalPayout;
+      expect(profit).to.be.greaterThanOrEqual(0); // House should at least break even
+    });
+
+    it("Should track house fund changes accurately across owner deposits/withdrawals", async function () {
+      const initialBalance = await dealOrNot.getHouseFunds();
+
+      // Owner deposits additional funds
+      const depositAmount = ethers.parseEther("1000");
+      await dealOrNot.connect(owner).depositHouseFunds(depositAmount);
+
+      const balanceAfterDeposit = await dealOrNot.getHouseFunds();
+      expect(balanceAfterDeposit).to.equal(initialBalance + depositAmount);
+
+      // Player starts a game
+      const tx = await dealOrNot.connect(player1).startGame(ENTRY_FEE);
+      await tx.wait();
+
+      const balanceAfterGame = await dealOrNot.getHouseFunds();
+      expect(balanceAfterGame).to.equal(balanceAfterDeposit + ENTRY_FEE);
+
+      // Owner withdraws some funds
+      const withdrawAmount = ethers.parseEther("500");
+      await dealOrNot.connect(owner).withdrawHouseFunds(withdrawAmount);
+
+      const balanceAfterWithdraw = await dealOrNot.getHouseFunds();
+      expect(balanceAfterWithdraw).to.equal(balanceAfterGame - withdrawAmount);
+    });
+  });
+
   describe("Box Elimination", function () {
     it("Should allow eliminating boxes in round 1 (6 boxes)", async function () {
       // Start a new game for this test
@@ -421,16 +569,29 @@ describe("DealOrNot", function () {
       await newGameToken.connect(owner).approve(await testContract.getAddress(), ethers.parseEther("1000"));
       await newGameToken.connect(player1).approve(await testContract.getAddress(), ethers.parseEther("1000"));
 
-      // Deposit minimal house funds
-      await testContract.connect(owner).depositHouseFunds(ethers.parseEther("10"));
-
-      // Start a game
+      // Don't deposit any house funds initially - only the entry fee will be available
+      // Start a game - this will add ENTRY_FEE to house funds
       const tx = await testContract.connect(player1).startGame(ENTRY_FEE);
       await tx.wait();
 
-      // Try to accept a deal (should fail due to insufficient house funds)
-      await testContract.connect(player1).eliminateBoxes(0);
+      // Check current house funds (should be exactly ENTRY_FEE)
+      const houseFunds = await testContract.getHouseFunds();
+      expect(houseFunds).to.equal(ENTRY_FEE);
 
+      // Eliminate boxes to get an offer
+      await testContract.connect(player1).eliminateBoxes(0);
+      const offer = await testContract.getCurrentOffer(0);
+
+      // Manually drain house funds to make them insufficient
+      // Withdraw almost all house funds, leaving less than the offer
+      const withdrawAmount = houseFunds - offer / 2n; // Leave less than half the offer
+      await testContract.connect(owner).withdrawHouseFunds(withdrawAmount);
+
+      // Verify house funds are now insufficient
+      const remainingHouseFunds = await testContract.getHouseFunds();
+      expect(remainingHouseFunds).to.be.lessThan(offer);
+
+      // Now try to accept the deal - should fail due to insufficient house funds
       await expect(testContract.connect(player1).acceptDeal(0)).to.be.revertedWith("House insufficient funds");
     });
 
